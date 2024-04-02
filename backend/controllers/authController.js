@@ -31,6 +31,12 @@ const SignUp = async (req, res) => {
 
     await newUser.save();
 
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+    res.cookie("auth_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+
     res.status(201).send({ message: "User created successful" });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
