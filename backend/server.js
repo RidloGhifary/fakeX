@@ -7,6 +7,7 @@ require("./db.js");
 
 const authRouter = require("./router/authRouter.js");
 const userRouter = require("./router/userRouter.js");
+const forgotPassRouter = require("./router/forgotPassRouter.js");
 
 const app = express();
 const PORT = process.env.PORT || 5100;
@@ -17,5 +18,6 @@ app.use(cors());
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/credentials", forgotPassRouter);
 
 app.listen(PORT, () => console.log(`Running in port : ${PORT}`));

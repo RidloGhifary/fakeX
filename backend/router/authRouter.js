@@ -11,7 +11,7 @@ router.post(
     check("username", "username is required")
       .isString()
       .isLength({ min: 3, max: 15 })
-      .custom((value) => /^[a-z]+$/.test(value))
+      .custom((value) => /^[a-z0-9_]+$/.test(value))
       .withMessage(
         "Username must contain only lowercase letters and no special characters"
       ),
