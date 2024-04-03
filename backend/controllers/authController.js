@@ -1,14 +1,22 @@
 const User = require("../models/User.js");
 const UserOtpVerification = require("../models/UserOtpVerification.js");
-const transporter = require("../utils/nodemailer.js");
-// const nodemailer = require("nodemailer");
+// const transporter = require("../utils/nodemailer.js");
+const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 
+let transporter = nodemailer.createTransport({
+  host: "live.smtp.mailtrap.io",
+  port: 587,
+  auth: {
+    user: process.env.AUTH_USER_NODEMAILER,
+    pass: process.env.AUTH_PASS_NODEMAILER,
+  },
+});
+
 transporter.verify((error, success) => {
-  if (error) console.log(error);
-  else console.log(success);
+  error ? console.log(error) : console.log(success);
 });
 
 const SignUp = async (req, res) => {
@@ -38,15 +46,15 @@ const SignUp = async (req, res) => {
       verified: false,
     });
 
-    await newUser
-      .save()
-      .then((result) => {
-        // TODO - HANDLE SEND VERIFICATION OTP CODE
-        sendOtpVerificationCode(result, res);
-      })
-      .catch((err) => {
-        res.status(400).json({ message: "Error while creating user account" });
-      });
+    const result = await newUser.save();
+
+    // TODO - Send verification OTP code
+    const otpResult = await sendOtpVerificationCode(result);
+
+    if (otpResult.status === "FAILED") {
+      // TODO - Handle failure to send OTP verification code
+      return res.status(500).json({ message: "Failed to send OTP code" });
+    }
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
     res.cookie("auth_token", token, {
@@ -91,12 +99,12 @@ const SignIn = async (req, res) => {
 
 const sendOtpVerificationCode = async ({ _id, email }, res) => {
   try {
-    const otp = Math.floor(1000 + Math.random() * 9000);
+    const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
     const mailOptions = {
-      from: `fakeX <${process.env.AUTH_USER_NODEMAILER}>`,
+      from: "fakeX <fakex@demomailtrap.com>",
       to: email,
       subject: "Verify Your Email",
-      html: `<p>Enter ${otp} in the app to verify your email address and complete the sign up</p><p>this code will expires in <b>1 hour</b></p>`,
+      html: `<p>Enter <b>${otp}</b> in the app to verify your email address and complete the sign up</p><p>this code will expires in <b>1 hour</b></p>`,
     };
 
     const hashedOtp = bcrypt.hashSync(otp, 10);
@@ -109,27 +117,22 @@ const sendOtpVerificationCode = async ({ _id, email }, res) => {
     });
 
     await newOtpVerification.save();
-    await transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
+    await transporter.sendMail(mailOptions);
 
-    res.json({
+    return {
       status: "PENDING",
       message: "Verification otp code email sent",
       data: {
         userId: _id,
         email,
       },
-    });
+    };
   } catch (err) {
-    res.json({
+    console.log(err);
+    return {
       status: "FAILED",
       message: err.message,
-    });
+    };
   }
 };
 
@@ -149,15 +152,13 @@ const verifyOTP = async (req, res) => {
           "Account record doesn`t exist or has been verified already, please sing up or sing in"
         );
       } else {
-        const { expiredAt } = userOtpVerificationRecords[0];
-        const hashedOtp = userOtpVerificationRecords[0].otp;
+        const { expiredAt, otpCode } = userOtpVerificationRecords[0];
 
         if (expiredAt < Date.now()) {
           await UserOtpVerification.deleteMany({ userId });
           throw new Error("Code has expired, please request one more time");
         } else {
-          const validOtp = bcrypt.compareSync(otp, hashedOtp);
-
+          const validOtp = bcrypt.compareSync(otp, otpCode);
           if (!validOtp) {
             throw new Error("Invalid code passed, check your email");
           } else {
