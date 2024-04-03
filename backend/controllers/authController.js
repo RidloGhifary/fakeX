@@ -104,7 +104,80 @@ const sendOtpVerificationCode = async ({ _id, email }, res) => {
       from: "fakeX <fakex@demomailtrap.com>",
       to: email,
       subject: "Verify Your Email",
-      html: `<p>Enter <b>${otp}</b> in the app to verify your email address and complete the sign up</p><p>this code will expires in <b>1 hour</b></p>`,
+      html: `<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333333;
+        }
+
+        .content {
+            margin-bottom: 30px;
+        }
+
+        .code {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .footer {
+            text-align: center;
+        }
+
+        .footer p {
+            color: #666666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Verify Your Email Address</h1>
+        </div>
+        <div class="content">
+            <p>Dear User,</p>
+            <p>To complete your sign up, please enter the verification code below in the app:</p>
+            <p class="code">${otp}</p>
+            <p>This code will expire in <b>1 hour</b>.</p>
+        </div>
+        <div class="footer">
+            <p>Thank you for choosing our service.</p>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
+`,
     };
 
     const hashedOtp = bcrypt.hashSync(otp, 10);
