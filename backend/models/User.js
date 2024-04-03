@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema(
     email: String,
     password: String,
     dateOfBirth: Date,
+    bio: String,
+    profile_picture: String,
     verified: Boolean,
   },
   { timestamps: true }

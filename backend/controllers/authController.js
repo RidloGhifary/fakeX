@@ -44,6 +44,8 @@ const SignUp = async (req, res) => {
       password: hashedPassword,
       dateOfBirth,
       verified: false,
+      bio: "",
+      profile_picture: "",
     });
 
     const result = await newUser.save();
