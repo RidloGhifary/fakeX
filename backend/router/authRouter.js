@@ -43,4 +43,6 @@ router.post(
   authController.SignIn
 );
 
+router.post("/verifyOTP", authController.verifyOTP);
+
 module.exports = router;

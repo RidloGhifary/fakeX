@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema(
     email: String,
     password: String,
     dateOfBirth: Date,
+    verified: Boolean,
   },
   { timestamps: true }
 );
