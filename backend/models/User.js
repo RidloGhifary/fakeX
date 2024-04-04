@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    lastUsernameChange: {
+      type: Date,
+      default: Date.now,
+    },
     verified: Boolean,
     resetPasswordToken: String,
     resetPasswordExpires: Date,

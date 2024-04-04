@@ -27,6 +27,18 @@ const UpdateAccount = async (req, res) => {
       });
     }
 
+    const currentUser = await User.findById(req.id);
+    if (!currentUser)
+      return res.status(404).json({ message: "User not found" });
+
+    let nextUsernameChangeDate = new Date(currentUser.lastUsernameChange);
+    nextUsernameChangeDate.setDate(nextUsernameChangeDate.getDate() + 30);
+
+    if (nextUsernameChangeDate > Date.now())
+      return res.status(400).json({
+        message: "You can change your username only once every 30 days",
+      });
+
     const updateAccount = await User.findOneAndUpdate(
       { _id: userId },
       {
@@ -34,6 +46,10 @@ const UpdateAccount = async (req, res) => {
           username: username,
           bio: bio,
           profile_picture: profile_picture,
+          lastUsernameChange:
+            username !== currentUser.username
+              ? Date.now()
+              : currentUser.lastUsernameChange,
         },
       },
       { new: true }
