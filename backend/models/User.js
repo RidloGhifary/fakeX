@@ -28,6 +28,12 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     verified: Boolean,
     resetPasswordToken: String,
     resetPasswordExpires: Date,

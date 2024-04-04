@@ -12,8 +12,6 @@ const GetAllPost = async (req, res) => {
   }
 };
 
-module.exports = { GetAllPost };
-
 const CreatePost = async (req, res) => {
   const { content } = req.body;
 
@@ -193,8 +191,6 @@ const GetCommentByPost = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
-module.exports = { GetCommentByPost };
 
 module.exports = {
   GetAllPost,
