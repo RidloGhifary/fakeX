@@ -1,6 +1,19 @@
 const Post = require("../models/Post");
 const { validationResult } = require("express-validator");
 
+const GetAllPost = async (req, res) => {
+  try {
+    const posts = await Post.find();
+
+    res.status(200).json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { GetAllPost };
+
 const CreatePost = async (req, res) => {
   const { content } = req.body;
 
@@ -51,7 +64,7 @@ const CommentPost = async (req, res) => {
     return res.status(400).json({ message: errors.array() });
 
   const {
-    body: { comment },
+    body: { content },
     params: { postId },
   } = req;
 
@@ -60,10 +73,11 @@ const CommentPost = async (req, res) => {
     if (!currentPost)
       return res.status(404).json({ message: "Cannot find post" });
 
-    currentPost.comments.push({ userId: req.id, content: comment });
+    currentPost.comments.push({ userId: req.id, content });
     await currentPost.save();
     res.status(201).json({ message: "Comment added successfully" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -167,11 +181,28 @@ const ReplyComment = async (req, res) => {
   }
 };
 
+const GetCommentByPost = async (req, res) => {
+  const { postId } = req.params;
+  try {
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    const comments = post.comments;
+    res.status(200).json(comments);
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { GetCommentByPost };
+
 module.exports = {
+  GetAllPost,
   CreatePost,
   LikePost,
   CommentPost,
   DeleteComment,
   EditComment,
   ReplyComment,
+  GetCommentByPost,
 };

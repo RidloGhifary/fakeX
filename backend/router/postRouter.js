@@ -5,6 +5,7 @@ const verifyToken = require("../middlewares/authMiddleware.js");
 
 const router = express.Router();
 
+router.get("/", postController.GetAllPost);
 router.post(
   "/create",
   verifyToken,
@@ -60,5 +61,6 @@ router.post(
   ],
   postController.ReplyComment
 );
+router.get("/comment/:postId", postController.GetCommentByPost);
 
 module.exports = router;
