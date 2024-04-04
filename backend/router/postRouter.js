@@ -67,5 +67,10 @@ router.post(
   verifyToken,
   postController.LikeComment
 );
+router.post(
+  "/comment/:commentId/like-reply/:postId/:replyCommentId",
+  verifyToken,
+  postController.LikeReplyComment
+);
 
 module.exports = router;
