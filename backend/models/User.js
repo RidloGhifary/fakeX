@@ -22,6 +22,12 @@ const userSchema = new mongoose.Schema(
     },
     bio: String,
     profile_picture: String,
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     verified: Boolean,
     resetPasswordToken: String,
     resetPasswordExpires: Date,

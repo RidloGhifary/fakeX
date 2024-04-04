@@ -47,4 +47,34 @@ const UpdateAccount = async (req, res) => {
   }
 };
 
-module.exports = { UpdateAccount, CurrentUser };
+const FollowingUser = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const currentUser = await User.findById(req.id);
+    const userToFollow = await User.findById(userId);
+
+    if (!userToFollow)
+      return res.status(404).json({ message: "User to follow not found" });
+
+    const isFollowing = currentUser.followers.includes(userId);
+
+    if (isFollowing) {
+      currentUser.followers = currentUser.followers.filter(
+        (id) => id.toString() !== userId
+      );
+      await currentUser.save();
+      return res.status(200).json({ message: "Successfully unfollowed user" });
+    } else {
+      currentUser.followers.push(userId);
+      await currentUser.save();
+      return res.status(200).json({ message: "Successfully followed user" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { FollowingUser };
+
+module.exports = { UpdateAccount, CurrentUser, FollowingUser };
