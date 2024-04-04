@@ -38,6 +38,14 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    hasBadge: {
+      type: Boolean,
+      default: false,
+    },
+    verificationBadgeRequested: {
+      type: Boolean,
+      default: false,
+    },
     verified: Boolean,
     resetPasswordToken: String,
     resetPasswordExpires: Date,

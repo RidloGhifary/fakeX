@@ -8,5 +8,11 @@ router.get("/", verifyToken, userController.CurrentUser);
 router.patch("/update/:userId", verifyToken, userController.UpdateAccount);
 router.post("/follow/:userId", verifyToken, userController.FollowingUser);
 router.post("/followers", verifyToken, userController.FollowersList);
+router.post(
+  "/verification/request",
+  verifyToken,
+  userController.VerificationRequest
+);
+router.post("/getyourbadge/:userId", verifyToken, userController.GetTheBadge);
 
 module.exports = router;

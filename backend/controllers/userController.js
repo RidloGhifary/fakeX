@@ -1,4 +1,7 @@
 const User = require("../models/User.js");
+const UserVerificationBadge = require("../models/UserVerificationBadge.js");
+const transporter = require("../utils/nodemailer.js");
+const bcrypt = require("bcrypt");
 
 const CurrentUser = async (req, res) => {
   try {
@@ -112,4 +115,160 @@ const FollowersList = async (req, res) => {
   }
 };
 
-module.exports = { UpdateAccount, CurrentUser, FollowingUser, FollowersList };
+const VerificationRequest = async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.id);
+    if (!currentUser)
+      return res.status(404).json({ message: "User not found" });
+
+    currentUser.verificationBadgeRequested = true;
+    await currentUser.save();
+    await sendVerificationBadgeEmail(currentUser);
+
+    res
+      .status(200)
+      .json({ message: "Verification request submitted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const sendVerificationBadgeEmail = async (currentUser) => {
+  try {
+    const otpCode = `${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const mailOptions = {
+      from: "fakeX <fakex@demomailtrap.com>",
+      to: currentUser.email,
+      subject: "Request for Verification Badge",
+      html: `<!DOCTYPE html>
+              <html lang="en">
+
+              <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>Email Verification</title>
+                  <style>
+                      body {
+                          font-family: Arial, sans-serif;
+                          margin: 0;
+                          padding: 0;
+                          background-color: #f4f4f4;
+                          text-align: center;
+                      }
+
+                      .container {
+                          max-width: 600px;
+                          margin: 20px auto;
+                          padding: 20px;
+                          background-color: #fff;
+                          border-radius: 8px;
+                          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                      }
+
+                      .btn {
+                          display: inline-block;
+                          padding: 8px 18px;
+                          background-color: rgba(0, 0, 0);
+                          color: #fff;
+                          text-decoration: none;
+                          border-radius: 4px;
+                          font-size: 14px;
+                      }
+                  </style>
+              </head>
+
+              <body>
+                  <div class="container">
+                      <p>Hello, <b>${currentUser.username}</b></p>
+                      <p>You've requested a verification badge for your account. Please click the button below to confirm your request:</p>
+                      <a href="http://localhost:3000/getyourbadge${currentUser._id.toString()}?token=${otpCode}" class="btn">Verify My Account</a>
+                  </div>
+              </body>
+
+              </html>
+              `,
+    };
+
+    const hashedOtpCode = bcrypt.hashSync(otpCode, 10);
+
+    const newUserVerificationBadgeStatus = new UserVerificationBadge({
+      userId: currentUser._id,
+      otpCode: hashedOtpCode,
+      createdAt: Date.now(),
+      expiredAt: Date.now() + 3600000,
+    });
+
+    await newUserVerificationBadgeStatus.save();
+    await transporter.sendMail(mailOptions);
+    return {
+      status: "PENDING",
+      message: "Request for Verification Badge sent",
+      data: {
+        userId: currentUser._id,
+        email,
+      },
+    };
+  } catch (err) {
+    return {
+      status: "FAILED",
+      message: err.message,
+    };
+  }
+};
+
+const GetTheBadge = async (req, res) => {
+  const {
+    query: { token },
+    params: { userId },
+  } = req;
+
+  if (!token) {
+    return res.status(400).json({ message: "Token is required" });
+  }
+
+  try {
+    const userVerificationBadgeRecord = await UserVerificationBadge.find({
+      userId,
+      expiredAt: { $gte: Date.now() },
+    });
+
+    if (!userVerificationBadgeRecord) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    } else {
+      const { otpCode, expiredAt, userId } = userVerificationBadgeRecord[0];
+
+      if (expiredAt < Date.now()) {
+        await UserVerificationBadge.deleteMany({ userId });
+        throw new Error("Code has expired, please request one more time");
+      }
+
+      const validCode = bcrypt.compareSync(token, otpCode);
+      if (!validCode) {
+        throw new Error("Invalid code passed, check your email");
+      }
+
+      await User.updateOne(
+        { _id: userId },
+        { hasBadge: true, verificationBadgeRequested: false }
+      );
+      await UserVerificationBadge.deleteMany({ userId });
+
+      res.json({
+        status: "GOT IT",
+        message: "User email already has a verified badge",
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = {
+  UpdateAccount,
+  CurrentUser,
+  FollowingUser,
+  FollowersList,
+  VerificationRequest,
+  GetTheBadge,
+};
