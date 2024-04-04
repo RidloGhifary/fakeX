@@ -95,9 +95,49 @@ const DeleteComment = async (req, res) => {
 
     res.status(200).json({ message: "Comment deleted successfully" });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
-module.exports = { CreatePost, LikePost, CommentPost, DeleteComment };
+const EditComment = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(400).json({ message: errors.array() });
+
+  const {
+    params: { commentId, postId },
+    body: { content },
+  } = req;
+  try {
+    const currentPost = await Post.findById(postId);
+    if (!currentPost)
+      return res.status(404).json({ message: "Cannot find post" });
+
+    const hasCommentIndex = currentPost.comments.findIndex(
+      (comment) => comment._id == commentId
+    );
+
+    if (hasCommentIndex === -1)
+      return res.status(404).json({ message: "Comment not found" });
+
+    if (req.id !== currentPost.comments[hasCommentIndex].userId.toString())
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to delete this comment" });
+
+    currentPost.comments[hasCommentIndex].content = content;
+    await currentPost.save();
+
+    res.status(200).json({ message: "Comment edited successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = {
+  CreatePost,
+  LikePost,
+  CommentPost,
+  DeleteComment,
+  EditComment,
+};

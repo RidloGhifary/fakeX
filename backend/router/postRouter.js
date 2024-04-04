@@ -18,7 +18,6 @@ router.post(
   ],
   postController.CreatePost
 );
-
 router.post("/like/:postId", verifyToken, postController.LikePost);
 router.post(
   "/comment/:postId",
@@ -36,6 +35,18 @@ router.post(
   "/comment/:commentId/delete/:postId",
   verifyToken,
   postController.DeleteComment
+);
+router.post(
+  "/comment/:commentId/edit/:postId",
+  verifyToken,
+  [
+    body("content")
+      .trim()
+      .notEmpty()
+      .withMessage("Content is required")
+      .isLength({ min: 1 }),
+  ],
+  postController.EditComment
 );
 
 module.exports = router;
