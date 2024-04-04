@@ -74,7 +74,9 @@ const FollowingUser = async (req, res) => {
       return res.status(200).json({ message: "Successfully unfollowed user" });
     } else {
       currentUser.following.push(userId);
+      userToFollow.followers.push(req.id);
       await currentUser.save();
+      await userToFollow.save();
       return res.status(200).json({ message: "Successfully followed user" });
     }
   } catch (err) {
