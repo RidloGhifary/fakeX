@@ -48,5 +48,17 @@ router.post(
   ],
   postController.EditComment
 );
+router.post(
+  "/comment/:commentId/reply/:postId",
+  verifyToken,
+  [
+    body("content")
+      .trim()
+      .notEmpty()
+      .withMessage("Content is required")
+      .isLength({ min: 1 }),
+  ],
+  postController.ReplyComment
+);
 
 module.exports = router;

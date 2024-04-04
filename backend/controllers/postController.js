@@ -134,10 +134,44 @@ const EditComment = async (req, res) => {
   }
 };
 
+const ReplyComment = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(400).json({ message: errors.array() });
+
+  const {
+    params: { commentId, postId },
+    body: { content },
+  } = req;
+
+  try {
+    const currentPost = await Post.findById(postId);
+    if (!currentPost)
+      return res.status(404).json({ message: "Cannot find post" });
+
+    const hasComment = currentPost.comments.find(
+      (comment) => comment._id == commentId
+    );
+    if (!hasComment)
+      return res.status(404).json({ message: "Comment not found" });
+
+    hasComment.replies.push({
+      userId: req.id,
+      content,
+    });
+    await currentPost.save();
+
+    res.status(200).json({ message: "Reply added successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   CreatePost,
   LikePost,
   CommentPost,
   DeleteComment,
   EditComment,
+  ReplyComment,
 };
