@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const { validationResult } = require("express-validator");
 
 const CreatePost = async (req, res) => {
   const { content } = req.body;
@@ -45,6 +46,10 @@ const LikePost = async (req, res) => {
 };
 
 const CommentPost = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(400).json({ message: errors.array() });
+
   const {
     body: { comment },
     params: { postId },
@@ -59,9 +64,40 @@ const CommentPost = async (req, res) => {
     await currentPost.save();
     res.status(201).json({ message: "Comment added successfully" });
   } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const DeleteComment = async (req, res) => {
+  const {
+    params: { commentId, postId },
+  } = req;
+
+  try {
+    const currentPost = await Post.findById(postId);
+    if (!currentPost)
+      return res.status(404).json({ message: "Cannot find post" });
+
+    const hasCommentIndex = currentPost.comments.findIndex(
+      (comment) => comment._id == commentId
+    );
+
+    if (hasCommentIndex === -1)
+      return res.status(404).json({ message: "Comment not found" });
+
+    if (req.id !== currentPost.comments[hasCommentIndex].userId.toString())
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to delete this comment" });
+
+    currentPost.comments.splice(hasCommentIndex, 1);
+    await currentPost.save();
+
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
-module.exports = { CreatePost, LikePost, CommentPost };
+module.exports = { CreatePost, LikePost, CommentPost, DeleteComment };

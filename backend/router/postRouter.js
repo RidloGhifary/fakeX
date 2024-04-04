@@ -20,6 +20,22 @@ router.post(
 );
 
 router.post("/like/:postId", verifyToken, postController.LikePost);
-router.post("/comment/:postId", verifyToken, postController.CommentPost);
+router.post(
+  "/comment/:postId",
+  verifyToken,
+  [
+    body("content")
+      .trim()
+      .notEmpty()
+      .withMessage("Content is required")
+      .isLength({ min: 1 }),
+  ],
+  postController.CommentPost
+);
+router.post(
+  "/comment/:commentId/delete/:postId",
+  verifyToken,
+  postController.DeleteComment
+);
 
 module.exports = router;
