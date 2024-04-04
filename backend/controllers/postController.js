@@ -192,6 +192,40 @@ const GetCommentByPost = async (req, res) => {
   }
 };
 
+const LikeComment = async (req, res) => {
+  const {
+    params: { commentId, postId },
+  } = req;
+
+  try {
+    const currentPost = await Post.findById(postId);
+    if (!currentPost)
+      return res.status(404).json({ message: "Post not found" });
+
+    const commentIndex = currentPost.comments.findIndex(
+      (comment) => comment._id.toString() === commentId
+    );
+
+    if (commentIndex === -1)
+      return res.status(404).json({ message: "Comment not found" });
+
+    const userHasLiked = currentPost.comments[commentIndex].likes.indexOf(
+      req.id
+    );
+
+    if (userHasLiked !== -1) {
+      currentPost.comments[commentIndex].likes.splice(userHasLiked, 1);
+    } else {
+      currentPost.comments[commentIndex].likes.push(req.id);
+    }
+
+    await currentPost.save();
+    res.status(200).json({ message: "Comment liked/unliked successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   GetAllPost,
   CreatePost,
@@ -201,4 +235,5 @@ module.exports = {
   EditComment,
   ReplyComment,
   GetCommentByPost,
+  LikeComment,
 };

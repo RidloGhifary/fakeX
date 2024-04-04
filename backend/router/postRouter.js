@@ -62,5 +62,10 @@ router.post(
   postController.ReplyComment
 );
 router.get("/comment/:postId", postController.GetCommentByPost);
+router.post(
+  "/comment/:commentId/like/:postId",
+  verifyToken,
+  postController.LikeComment
+);
 
 module.exports = router;
