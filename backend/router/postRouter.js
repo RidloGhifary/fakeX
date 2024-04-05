@@ -20,6 +20,7 @@ router.post(
   ],
   postController.CreatePost
 );
+router.post("/delete/:postId", verifyToken, postController.DeletePost);
 router.post(
   "/edit/:postId/user",
   verifyToken,

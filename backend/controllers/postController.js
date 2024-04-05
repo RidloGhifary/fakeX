@@ -52,6 +52,26 @@ const CreatePost = async (req, res) => {
   }
 };
 
+const DeletePost = async (req, res) => {
+  const { params: postId } = req;
+
+  try {
+    const currentPost = await Post.findById(postId);
+    if (!currentPost)
+      return res.status(404).json({ message: "Cannot found post" });
+
+    if (req.id !== currentPost.userId.toString())
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to edit this post" });
+
+    await currentPost.remove();
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const EditPost = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -324,6 +344,7 @@ module.exports = {
   GetAllPost,
   GetPostByFollowing,
   CreatePost,
+  DeletePost,
   EditPost,
   LikePost,
   CommentPost,
