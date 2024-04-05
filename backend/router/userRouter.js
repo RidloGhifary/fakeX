@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/", verifyToken, userController.CurrentUser);
 router.patch("/update/:userId", verifyToken, userController.UpdateAccount);
 router.post("/follow/:userId", verifyToken, userController.FollowingUser);
-router.post("/followers", verifyToken, userController.FollowersList);
+router.get("/followers", verifyToken, userController.FollowersList);
 router.post(
   "/verification/request",
   verifyToken,
