@@ -2,7 +2,7 @@ const Post = require("../models/Post.js");
 const User = require("../models/User.js");
 const { validationResult } = require("express-validator");
 
-const GetAllPost = async (req, res) => {
+const GetAllPost = async (_, res) => {
   try {
     const posts = await Post.aggregate([
       {
@@ -23,9 +23,10 @@ const GetPostByFollowing = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
 
     const followingIds = currentUser.following;
-    const posts = await Post.find({ userId: { $in: followingIds } }).populate(
-      "userId"
-    );
+    const posts = await Post.aggregate([
+      { $match: { userId: { $in: followingIds } } },
+      { $sort: { numLikes: -1, createdAt: -1 } },
+    ]);
     res.status(200).json({ posts });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
