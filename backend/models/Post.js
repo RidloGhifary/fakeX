@@ -32,6 +32,10 @@ const commentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    edited: {
+      type: Boolean,
+      default: false,
+    },
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,

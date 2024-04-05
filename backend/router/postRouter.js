@@ -92,5 +92,17 @@ router.post(
   verifyToken,
   postController.DeleteReplyComment
 );
+router.post(
+  "/comment/:commentId/edit-reply/:postId/:replyCommentId",
+  verifyToken,
+  [
+    body("content")
+      .trim()
+      .notEmpty()
+      .withMessage("Content is required")
+      .isLength({ min: 1 }),
+  ],
+  postController.EditReplyComment
+);
 
 module.exports = router;
