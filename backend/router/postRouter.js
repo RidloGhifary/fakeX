@@ -87,5 +87,10 @@ router.post(
   verifyToken,
   postController.LikeReplyComment
 );
+router.post(
+  "/comment/:commentId/delete-reply/:postId/:replyCommentId",
+  verifyToken,
+  postController.DeleteReplyComment
+);
 
 module.exports = router;

@@ -340,6 +340,49 @@ const LikeReplyComment = async (req, res) => {
   }
 };
 
+const DeleteReplyComment = async (req, res) => {
+  const {
+    params: { commentId, postId, replyCommentId },
+  } = req;
+
+  try {
+    const currentPost = await Post.findById(postId);
+    if (!currentPost)
+      return res.status(404).json({ message: "Post not found" });
+
+    const commentIndex = currentPost.comments.findIndex(
+      (comment) => comment._id.toString() === commentId
+    );
+    if (commentIndex === -1)
+      return res.status(404).json({ message: "Comment not found" });
+
+    const replyCommentIndex = currentPost.comments[
+      commentIndex
+    ].replies.findIndex(
+      (replyComment) => replyComment._id.toString() === replyCommentId
+    );
+    if (replyCommentIndex === -1)
+      return res.status(404).json({ message: "Reply comment not found" });
+
+    if (
+      req.id.toString() !==
+      currentPost.comments[commentIndex].replies[
+        replyCommentIndex
+      ].userId.toString()
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to delete this comment reply" });
+    }
+
+    currentPost.comments[commentIndex].replies.splice(replyCommentIndex, 1);
+    await currentPost.save();
+    res.status(200).json({ message: "Reply comment deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   GetAllPost,
   GetPostByFollowing,
@@ -354,4 +397,5 @@ module.exports = {
   GetCommentByPost,
   LikeComment,
   LikeReplyComment,
+  DeleteReplyComment,
 };
