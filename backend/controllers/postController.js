@@ -1,13 +1,29 @@
-const Post = require("../models/Post");
+const Post = require("../models/Post.js");
+const User = require("../models/User.js");
 const { validationResult } = require("express-validator");
 
 const GetAllPost = async (req, res) => {
   try {
     const posts = await Post.find();
-
     res.status(200).json(posts);
   } catch (err) {
-    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const GetPostByFollowing = async (req, res) => {
+  try {
+    const userId = req.id;
+    const currentUser = await User.findById(userId);
+    if (!currentUser)
+      return res.status(404).json({ message: "User not found" });
+
+    const followingIds = currentUser.following;
+    const posts = await Post.find({ userId: { $in: followingIds } }).populate(
+      "userId"
+    );
+    res.status(200).json({ posts });
+  } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -306,6 +322,7 @@ const LikeReplyComment = async (req, res) => {
 
 module.exports = {
   GetAllPost,
+  GetPostByFollowing,
   CreatePost,
   EditPost,
   LikePost,

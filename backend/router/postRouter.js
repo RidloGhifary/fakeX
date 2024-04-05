@@ -6,6 +6,7 @@ const verifyToken = require("../middlewares/authMiddleware.js");
 const router = express.Router();
 
 router.get("/", postController.GetAllPost);
+router.get("/byfollowing", verifyToken, postController.GetPostByFollowing);
 router.post(
   "/create",
   verifyToken,
