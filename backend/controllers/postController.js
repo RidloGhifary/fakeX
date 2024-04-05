@@ -13,6 +13,10 @@ const GetAllPost = async (req, res) => {
 };
 
 const CreatePost = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(400).json({ message: errors.array() });
+
   const { content } = req.body;
 
   try {
@@ -27,6 +31,34 @@ const CreatePost = async (req, res) => {
     res
       .status(201)
       .json({ message: "Post created successfully", post: newPost });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const EditPost = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(400).json({ message: errors.array() });
+
+  const {
+    params: { postId },
+    body: { content },
+  } = req;
+
+  try {
+    const currentPost = await Post.findById(postId);
+    if (!currentPost)
+      return res.status(404).json({ message: "Cannot found post" });
+
+    if (req.id !== currentPost.userId.toString())
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to edit this post" });
+
+    currentPost.content = content;
+    await currentPost.save();
+    res.status(200).json({ message: "Post updated successfully", currentPost });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -275,6 +307,7 @@ const LikeReplyComment = async (req, res) => {
 module.exports = {
   GetAllPost,
   CreatePost,
+  EditPost,
   LikePost,
   CommentPost,
   DeleteComment,

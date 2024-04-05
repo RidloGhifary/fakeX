@@ -19,6 +19,19 @@ router.post(
   ],
   postController.CreatePost
 );
+router.post(
+  "/edit/:postId/user",
+  verifyToken,
+  [
+    body("content")
+      .trim()
+      .notEmpty()
+      .withMessage("Content is required")
+      .isLength({ max: 500 })
+      .withMessage("Content cannot exceed 500 characters"),
+  ],
+  postController.EditPost
+);
 router.post("/like/:postId", verifyToken, postController.LikePost);
 router.post(
   "/comment/:postId",
