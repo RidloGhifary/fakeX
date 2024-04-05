@@ -45,4 +45,6 @@ router.post(
 
 router.post("/verifyOTP", authController.verifyOTP);
 
+router.post("/logout", verifyToken, authController.Logout);
+
 module.exports = router;
