@@ -53,6 +53,7 @@ const UpdateAccount = async (req, res) => {
             username !== currentUser.username
               ? Date.now()
               : currentUser.lastUsernameChange,
+          updatedAt: Date.now(),
         },
       },
       { new: true }
