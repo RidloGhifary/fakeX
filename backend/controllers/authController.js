@@ -83,6 +83,10 @@ const SignIn = async (req, res) => {
     if (!validatePassword)
       return res.status(401).json({ message: "Wrong credentials" });
 
+    const hasVerified = currentUser.verified;
+    if (!hasVerified)
+      return res.status(403).json({ message: "Verified your email Address" });
+
     const token = jwt.sign({ id: currentUser._id }, process.env.JWT_SECRET);
 
     const { password: pass, ...others } = currentUser._doc;
