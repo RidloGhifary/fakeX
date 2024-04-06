@@ -217,7 +217,10 @@ const sendOtpVerificationCode = async ({ _id, email }, res) => {
 
 const verifyOTP = async (req, res) => {
   try {
-    let { userId, otp } = req.body;
+    const {
+      body: { otp },
+      params: { userId },
+    } = req;
 
     if (!userId || !otp) {
       throw Error("Empty otp details are not allowed");
