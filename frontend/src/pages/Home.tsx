@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import TimeLine from "@/components/TimeLine";
+import TimeLine from "@/components/home/TimeLine";
 import React from "react";
 
 const Home = () => {

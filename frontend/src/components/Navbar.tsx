@@ -1,24 +1,23 @@
 import Logo from "../assets/fakeX.png";
-import {
-  ArrowLeftRight,
-  Home,
-  SquarePlus,
-  SquareUserRound,
-} from "lucide-react";
+import { AlignRight, Home, SquarePlus, SquareUserRound } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
-import React from "react";
 
 const Navbar = () => {
-  const [postOrder, setPostOrder] = React.useState<boolean>(false);
-
   return (
-    <header className="fixed top-0 w-full max-w-[1100px] bg-black p-3">
+    <header className="fixed top-0 z-10 w-full max-w-[1100px] bg-black p-3">
       <section className="flex w-full items-center justify-between">
         <Link to="/" className="flex-[2]">
           <img src={Logo} alt="logo" className="w-[80px] " />
@@ -61,14 +60,29 @@ const Navbar = () => {
             </TooltipProvider>
           </div>
         </div>
-        <div className="flex-[2] cursor-pointer">
-          <div
-            onClick={() => setPostOrder(!postOrder)}
-            className=" flex items-center justify-end gap-2"
-          >
-            {postOrder ? "Following" : "For you"}
-            <ArrowLeftRight />
-          </div>
+        <div className="flex-[2] cursor-pointer text-right">
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <AlignRight className="text-gray-500" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem className="cursor-pointer">
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer">
+                Liked
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer">
+                Saved
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer">
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </section>
     </header>

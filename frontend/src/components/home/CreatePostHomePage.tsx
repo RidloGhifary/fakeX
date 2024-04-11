@@ -1,6 +1,6 @@
-import User from "../assets/user.png";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import User from "../../assets/user.png";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -53,7 +53,9 @@ const CreatePostHomePage = () => {
             <Button
               type="submit"
               className="rounded-full bg-white uppercase text-black hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:bg-white/50"
-              disabled={!!form.formState.errors.content}
+              disabled={
+                !!form.formState.errors.content || !form.formState.isDirty
+              }
             >
               Post
             </Button>
