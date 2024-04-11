@@ -8,6 +8,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import VerifyOtp from "./pages/VerifyOtp";
 
 export default function App() {
   return (
@@ -18,7 +19,8 @@ export default function App() {
             <Route path="/" element={<h1>hallo world</h1>} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
-            <Route path="/reset-password/:userId" element={<ResetPassword />} />
+            <Route path="/verify-otp" element={<VerifyOtp />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/forgot-password" element={<ConfirmEmail />} />
 
             <Route path="*" element={<Navigate to="/" />} />
