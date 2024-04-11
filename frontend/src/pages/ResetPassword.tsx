@@ -37,7 +37,7 @@ const ResetPassword = () => {
   return (
     <section className="h-dvh flex items-center justify-center w-full">
       <section className="w-full grid grid-cols-2 items-center gap-40">
-        <img src={Logo} alt="logo" className="" />
+        <img src={Logo} alt="logo" className="w-[200px] lg:w-[300px] mx-auto" />
         <div className="">
           <Form {...form}>
             <form

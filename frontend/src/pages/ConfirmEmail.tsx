@@ -40,7 +40,7 @@ const ConfirmEmail = () => {
         </Link>
       </div>
       <section className="w-full grid lg:grid-cols-2 items-center gap-40">
-        <img src={Logo} alt="logo" className="w-[200px] mx-auto" />
+        <img src={Logo} alt="logo" className="w-[200px] lg:w-[300px] mx-auto" />
         <div className="-mt-20 lg:mt-0">
           <Form {...form}>
             <form

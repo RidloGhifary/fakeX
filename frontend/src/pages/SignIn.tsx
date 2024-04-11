@@ -46,7 +46,7 @@ const SignIn = () => {
   return (
     <section className="min-h-dvh flex items-center justify-center w-full p-10 lg:p-3">
       <section className="w-full grid lg:grid-cols-2 items-center gap-40">
-        <img src={Logo} alt="logo" className="w-[200px] mx-auto" />
+        <img src={Logo} alt="logo" className="w-[200px] lg:w-[300px] mx-auto" />
         <div className="-mt-20 lg:mt-0">
           <Form {...form}>
             <form
