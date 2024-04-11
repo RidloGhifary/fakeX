@@ -1,3 +1,4 @@
+import React from "react";
 import Logo from "../assets/fakeX.png";
 import GoogleLogo from "../assets/google.webp";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
+import { Eye, EyeOff } from "lucide-react";
 
 const FormSchema = z.object({
   username: z
@@ -31,6 +33,8 @@ const FormSchema = z.object({
 });
 
 const SignUp = () => {
+  const [showPassword, setShowPassword] = React.useState<boolean>(false);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -60,7 +64,7 @@ const SignUp = () => {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Username"
+                        placeholder="username"
                         {...field}
                         className="lowercase"
                       />
@@ -75,7 +79,7 @@ const SignUp = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Email" {...field} />
+                      <Input placeholder="email" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -87,12 +91,25 @@ const SignUp = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="User password"
-                        className="text-black"
-                        {...field}
-                      />
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "password" : "text"}
+                          placeholder="user password"
+                          className="text-black"
+                          {...field}
+                        />
+                        {showPassword ? (
+                          <Eye
+                            onClick={() => setShowPassword(false)}
+                            className="absolute right-3 top-[50%] translate-y-[-50%] cursor-pointer text-gray-600"
+                          />
+                        ) : (
+                          <EyeOff
+                            onClick={() => setShowPassword(true)}
+                            className="absolute right-3 top-[50%] translate-y-[-50%] cursor-pointer text-gray-600"
+                          />
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
