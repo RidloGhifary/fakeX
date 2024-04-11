@@ -12,7 +12,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/pages/input";
+import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 

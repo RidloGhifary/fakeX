@@ -10,7 +10,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/pages/input";
+import { Input } from "@/components/ui/input";
 
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
