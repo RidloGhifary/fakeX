@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormMessage,
@@ -56,6 +57,9 @@ const ResetPassword = () => {
                         {...field}
                       />
                     </FormControl>
+                    <FormDescription>
+                      This is will be your new password
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -73,6 +77,7 @@ const ResetPassword = () => {
                         {...field}
                       />
                     </FormControl>
+                    <FormDescription>Confirm your new password</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
