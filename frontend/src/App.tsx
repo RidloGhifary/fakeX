@@ -9,14 +9,15 @@ import {
   Navigate,
 } from "react-router-dom";
 import VerifyOtp from "./pages/VerifyOtp";
+import Home from "./pages/Home";
 
 export default function App() {
   return (
-    <main className="bg-black text-white min-h-dvh">
-      <div className="max-w-[1100px] mx-auto">
+    <main className=" min-h-dvh bg-black text-white">
+      <div className="mx-auto max-w-[1100px]">
         <Router>
           <Routes>
-            <Route path="/" element={<h1>hallo world</h1>} />
+            <Route path="/" element={<Home />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/verify-otp" element={<VerifyOtp />} />
