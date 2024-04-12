@@ -74,3 +74,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Width and height of the scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Handle of the scrollbar */
+::-webkit-scrollbar-thumb {
+  background: white;
+  border-radius: 5px;
+}
+
+/* Track of the scrollbar */
+::-webkit-scrollbar-track {
+  background: black;
+}
+
+/* Corner between horizontal and vertical scrollbars */
+::-webkit-scrollbar-corner {
+  background: transparent;
+}

@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import VerifyOtp from "./pages/VerifyOtp";
 import Home from "./pages/Home";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/verify-otp" element={<VerifyOtp />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/forgot-password" element={<ConfirmEmail />} />
+            <Route path="/profile/:username" element={<Profile />} />
 
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

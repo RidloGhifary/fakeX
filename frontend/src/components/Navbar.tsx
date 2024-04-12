@@ -49,7 +49,9 @@ const Navbar = () => {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <Home />
+                  <Link to={"/"}>
+                    <Home />
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Home</p>
@@ -125,7 +127,9 @@ const Navbar = () => {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <SquareUserRound />
+                  <Link to={"/profile/@rdllghifary_"}>
+                    <SquareUserRound />
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Profile</p>
@@ -141,7 +145,7 @@ const Navbar = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem className="cursor-pointer">
-                Profile
+                <Link to="/profile/@rdllghifary_">Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer">
