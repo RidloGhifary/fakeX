@@ -26,7 +26,7 @@ const CreatePostHomePage = () => {
   }
 
   return (
-    <section className="w-full">
+    <section className="hidden w-full md:block">
       <div className="flex gap-1">
         <img src={User} alt="user-photo" className="h-10 w-10" />
         <Form {...form}>

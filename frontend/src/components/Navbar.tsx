@@ -17,12 +17,12 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <header className="fixed top-0 z-10 w-full max-w-[1100px] bg-black p-3">
-      <section className="flex w-full items-center justify-between">
-        <Link to="/" className="flex-[2]">
+    <header className="fixed bottom-0 z-10 w-full max-w-[1100px] bg-black p-3 md:bottom-auto md:top-0">
+      <section className="w-full items-center justify-between md:flex">
+        <Link to="/" className="hidden flex-[2] md:block">
           <img src={Logo} alt="logo" className="w-[80px] " />
         </Link>
-        <div className="flex w-[50%] flex-[3] items-center justify-center gap-16 rounded-md py-2">
+        <div className="flex w-full flex-[3] items-center justify-center gap-16 rounded-md py-2 md:w-[50%]">
           <div>
             <TooltipProvider>
               <Tooltip>
@@ -60,7 +60,7 @@ const Navbar = () => {
             </TooltipProvider>
           </div>
         </div>
-        <div className="flex-[2] cursor-pointer text-right">
+        <div className="hidden flex-[2] cursor-pointer text-right md:block">
           <DropdownMenu>
             <DropdownMenuTrigger>
               <AlignRight className="text-gray-500" />
