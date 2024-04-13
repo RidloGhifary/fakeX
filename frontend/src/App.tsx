@@ -11,6 +11,7 @@ import {
 import VerifyOtp from "./pages/VerifyOtp";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
+import PostDetail from "./pages/PostDetail";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/forgot-password" element={<ConfirmEmail />} />
             <Route path="/profile/:username" element={<Profile />} />
+            <Route path="/:username/post/:postId" element={<PostDetail />} />
 
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
