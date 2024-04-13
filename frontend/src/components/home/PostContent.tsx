@@ -1,15 +1,8 @@
 import React, { ChangeEvent } from "react";
 import User from "../../assets/user.png";
-import { Ellipsis, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Separator } from "../ui/separator";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   HoverCard,
   HoverCardContent,
@@ -19,6 +12,7 @@ import ProfileHover from "./ProfileHover";
 import Love from "./react/Love";
 import Comment from "./react/Comment";
 import Share from "./react/Share";
+import MenuPost from "./MenuPost";
 
 const PostContent = () => {
   const [textPostComment, setTextPostComment] = React.useState<string>("");
@@ -68,7 +62,6 @@ const PostContent = () => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae
             praesentium libero natus distinctio inventore atque deserunt
             voluptas consectetur? Perspiciatis alias rerum repudiandae
-            distinctio commodi fugit magni, quos ut
           </p>
           <div className="mb-2 mt-10 flex items-center gap-3">
             <Love />
@@ -89,28 +82,7 @@ const PostContent = () => {
             </Link>
           </p>
         </div>
-        <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Ellipsis className="text-xl" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <Link to="/profile/@rdllghifary_">
-                <DropdownMenuItem className="cursor-pointer">
-                  Profile
-                </DropdownMenuItem>
-              </Link>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
-                Save
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
-                Share
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <MenuPost />
       </div>
     </section>
   );
