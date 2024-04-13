@@ -268,4 +268,8 @@ const Logout = async (req, res) => {
   }
 };
 
-module.exports = { SignUp, SignIn, verifyOTP, Logout };
+const ValidateToken = async (req, res) => {
+  res.status(200).send({ id: req.id });
+};
+
+module.exports = { SignUp, SignIn, verifyOTP, Logout, ValidateToken };

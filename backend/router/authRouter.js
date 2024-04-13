@@ -47,4 +47,6 @@ router.post("/verifyOTP", authController.verifyOTP);
 
 router.post("/logout", verifyToken, authController.Logout);
 
+router.get("/validate-token", verifyToken, authController.ValidateToken);
+
 module.exports = router;
