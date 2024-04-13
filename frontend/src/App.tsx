@@ -12,6 +12,7 @@ import VerifyOtp from "./pages/VerifyOtp";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import PostDetail from "./pages/PostDetail";
+import PrivateRoute from "./components/PrivateRoute";
 
 export default function App() {
   return (
@@ -19,14 +20,17 @@ export default function App() {
       <div className="mx-auto max-w-[1100px]">
         <Router>
           <Routes>
-            <Route path="/" element={<Home />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/verify-otp" element={<VerifyOtp />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/forgot-password" element={<ConfirmEmail />} />
-            <Route path="/profile/:username" element={<Profile />} />
-            <Route path="/:username/post/:postId" element={<PostDetail />} />
+
+            <Route element={<PrivateRoute />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/profile/:username" element={<Profile />} />
+              <Route path="/:username/post/:postId" element={<PostDetail />} />
+            </Route>
 
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

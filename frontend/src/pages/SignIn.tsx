@@ -14,9 +14,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, RotateCw } from "lucide-react";
+import { useMutation } from "react-query";
+import { UseSignIn } from "@/api/AuthApi";
+import { useToast } from "@/components/ui/use-toast";
+import { UseAppContext } from "@/context/AppContext";
 
 const FormSchema = z.object({
   username: z
@@ -35,6 +39,10 @@ const FormSchema = z.object({
 const SignIn = () => {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
+  const { isLoggedIn } = UseAppContext() as { isLoggedIn: boolean };
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -43,19 +51,41 @@ const SignIn = () => {
     },
   });
 
+  const { mutate, isLoading, error } = useMutation(UseSignIn, {
+    onSuccess: () => {
+      toast({
+        title: "Sign in: success!",
+        description: "You are currently signing in",
+      });
+      navigate("/");
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Sign in: failed!",
+        description: "Signin in failed, try again later!",
+      });
+    },
+  });
+
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
+    mutate(data);
+    console.log(error);
   };
 
+  if (isLoggedIn) return <Navigate to="/" replace />;
+
   return (
-    <section className="min-h-dvh flex items-center justify-center w-full p-10 lg:p-3">
-      <section className="w-full grid lg:grid-cols-2 items-center gap-40">
-        <img src={Logo} alt="logo" className="w-[200px] lg:w-[300px] mx-auto" />
+    <section className="flex min-h-dvh w-full items-center justify-center p-10 lg:p-3">
+      <section className="grid w-full items-center gap-40 lg:grid-cols-2">
+        <img src={Logo} alt="logo" className="mx-auto w-[200px] lg:w-[300px]" />
         <div className="-mt-20 lg:mt-0">
+          {/* {error && <p>error guys</p>} */}
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-3 text-black">
+              className="space-y-3 text-black"
+            >
               <FormField
                 control={form.control}
                 name="username"
@@ -108,25 +138,31 @@ const SignIn = () => {
                 )}
               />
               <Button
+                disabled={isLoading}
                 type="submit"
-                className="w-full bg-white text-black hover:bg-white hover:text-black">
-                Submit
+                className="w-full bg-white text-black hover:bg-white hover:text-black"
+              >
+                {isLoading && (
+                  <RotateCw className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {isLoading ? "PLease wait" : "Submit"}
               </Button>
             </form>
           </Form>
           <div className="relative my-7">
             <Separator />
-            <p className="absolute top-[-13px] right-[50%] translate-x-[50%] bg-black px-3">
+            <p className="absolute right-[50%] top-[-13px] translate-x-[50%] bg-black px-3">
               or
             </p>
           </div>
           <Button
-            className="w-full bg-white text-black hover:bg-white hover:text-black flex justify-center items-center gap-1"
-            onClick={() => alert("This feature is not available yet")}>
+            className="flex w-full items-center justify-center gap-1 bg-white text-black hover:bg-white hover:text-black"
+            onClick={() => alert("This feature is not available yet")}
+          >
             <img src={GoogleLogo} alt="google logo" className="w-6" />
             Sign in with Google
           </Button>
-          <div className="text-center mt-8">
+          <div className="mt-8 text-center">
             <Link to="/sign-up">
               Haven`t an account?,{" "}
               <span className="text-blue-500">Sign-up here</span>
