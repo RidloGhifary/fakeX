@@ -1,5 +1,6 @@
+import React, { ChangeEvent } from "react";
 import User from "../../assets/user.png";
-import { Ellipsis, Heart, MessageCircle, Plus, Send } from "lucide-react";
+import { Ellipsis, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Separator } from "../ui/separator";
 import {
@@ -15,8 +16,21 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import ProfileHover from "./ProfileHover";
+import Love from "./react/Love";
+import Comment from "./react/Comment";
+import Share from "./react/Share";
 
 const PostContent = () => {
+  const [textPostComment, setTextPostComment] = React.useState<string>("");
+
+  const handleChangePostComment = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setTextPostComment(event.target.value);
+  };
+
+  const handleSubmitPostComment = () => {
+    console.log(textPostComment);
+  };
+
   return (
     <section className="flex justify-start gap-4">
       <div className="flex flex-none flex-col items-center gap-4">
@@ -40,7 +54,7 @@ const PostContent = () => {
           <HoverCard>
             <HoverCardTrigger>
               <p className="font-semibold">
-                <Link to="/@rdllghifary_" className="hover:underline">
+                <Link to="/profile/@rdllghifary_" className="hover:underline">
                   @rdllghifary_
                 </Link>
                 <span className="ml-5 text-gray-500">2h</span>
@@ -54,24 +68,25 @@ const PostContent = () => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae
             praesentium libero natus distinctio inventore atque deserunt
             voluptas consectetur? Perspiciatis alias rerum repudiandae
-            distinctio commodi fugit magni, quos ut, mollitia obcaecati, sed
-            eveniet expedita. Beatae iusto vel dolore laudantium, nam placeat
-            similique itaque sequi dolorum molestias odio, rem quo! A, nostrum!
+            distinctio commodi fugit magni, quos ut
           </p>
           <div className="mb-2 mt-10 flex items-center gap-3">
-            <div className="cursor-pointer rounded-full p-1 hover:bg-white/15">
-              <Heart />
-            </div>
-            <div className="cursor-pointer rounded-full p-1 hover:bg-white/15">
-              <MessageCircle />
-            </div>
-            <div className="cursor-pointer rounded-full p-1 hover:bg-white/15">
-              <Send />
-            </div>
+            <Love />
+            <Comment
+              handleChangePostComment={handleChangePostComment}
+              handleSubmitPostComment={handleSubmitPostComment}
+              textPostComment={textPostComment}
+            />
+            <Share />
           </div>
           <p className="text-sm text-gray-500">
             200 likes -{" "}
-            <Link to="/@user/post/660d669a571eec5f7c60dcd9">10 replies</Link>
+            <Link
+              to="/@user/post/660d669a571eec5f7c60dcd9"
+              className="hover:underline"
+            >
+              10 replies
+            </Link>
           </p>
         </div>
         <div>
@@ -80,9 +95,11 @@ const PostContent = () => {
               <Ellipsis className="text-xl" />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem className="cursor-pointer">
-                Profile
-              </DropdownMenuItem>
+              <Link to="/profile/@rdllghifary_">
+                <DropdownMenuItem className="cursor-pointer">
+                  Profile
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer">
                 Save
