@@ -1,20 +1,13 @@
 import React, { ChangeEvent } from "react";
 import Logo from "../assets/fakeX.png";
 import User from "../assets/user.png";
-import { AlignRight, Home, SquarePlus, SquareUserRound } from "lucide-react";
+import { Home, SquarePlus, SquareUserRound } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import {
   Dialog,
@@ -26,6 +19,7 @@ import {
 import { Separator } from "./ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "./ui/button";
+import LeftSideMenu from "./LeftSideMenu";
 
 const Navbar = () => {
   const [textPostContent, setTextPostContent] = React.useState<string>("");
@@ -138,30 +132,7 @@ const Navbar = () => {
             </TooltipProvider>
           </div>
         </div>
-        <div className="hidden flex-[2] cursor-pointer text-right md:block">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <AlignRight className="text-gray-500" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem className="cursor-pointer">
-                <Link to="/profile/@rdllghifary_">Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
-                Liked
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
-                Saved
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <LeftSideMenu />
       </section>
     </header>
   );

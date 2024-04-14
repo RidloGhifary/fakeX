@@ -17,10 +17,11 @@ import { Input } from "@/components/ui/input";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, RotateCw } from "lucide-react";
-import { useMutation } from "react-query";
-import { UseSignIn } from "@/api/AuthApi";
 import { useToast } from "@/components/ui/use-toast";
 import { UseAppContext } from "@/context/AppContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UseSignIn } from "@/api/AuthApi";
+import { AxiosError } from "axios";
 
 const FormSchema = z.object({
   username: z
@@ -39,9 +40,9 @@ const FormSchema = z.object({
 const SignIn = () => {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
-  const { isLoggedIn } = UseAppContext() as { isLoggedIn: boolean };
-  const navigate = useNavigate();
+  const { isLoggedIn } = UseAppContext();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -51,26 +52,51 @@ const SignIn = () => {
     },
   });
 
-  const { mutate, isLoading, error } = useMutation(UseSignIn, {
+  // const { mutate, isPending } = useMutation({
+  //   mutationFn: async () => {
+  //     const response = await axios.post(
+  //       `http://localhost:5200/api/auth/sign-in`,
+  //       formData,
+  //       {
+  //         withCredentials: true,
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       },
+  //     );
+
+  //     return response.data;
+  //   },
+  //   onSuccess: () => {
+  //     toast({
+  //       title: "Sign in: success!",
+  //       description: "You are currently signing in",
+  //     });
+  //     navigate("/");
+  //   },
+  // });
+
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending, error, isError } = useMutation({
+    mutationFn: UseSignIn,
+    mutationKey: ["validate"],
     onSuccess: () => {
-      toast({
-        title: "Sign in: success!",
-        description: "You are currently signing in",
-      });
+      queryClient.invalidateQueries({ queryKey: ["validate"] });
       navigate("/");
-    },
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Sign in: failed!",
-        description: "Signin in failed, try again later!",
-      });
     },
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    mutate(data);
-    console.log(error);
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    try {
+      await mutate(data);
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Sign in: failed!",
+        description: "An error occurred during sign-in.",
+      });
+    }
   };
 
   if (isLoggedIn) return <Navigate to="/" replace />;
@@ -80,7 +106,12 @@ const SignIn = () => {
       <section className="grid w-full items-center gap-40 lg:grid-cols-2">
         <img src={Logo} alt="logo" className="mx-auto w-[200px] lg:w-[300px]" />
         <div className="-mt-20 lg:mt-0">
-          {/* {error && <p>error guys</p>} */}
+          {isError && (
+            <div className="mb-2 text-center text-sm text-red-500">
+              {(error as AxiosError)?.response?.data?.message ||
+                "An error occurred during sign-in."}
+            </div>
+          )}
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -138,14 +169,14 @@ const SignIn = () => {
                 )}
               />
               <Button
-                disabled={isLoading}
+                disabled={isPending}
                 type="submit"
                 className="w-full bg-white text-black hover:bg-white hover:text-black"
               >
-                {isLoading && (
+                {isPending && (
                   <RotateCw className="mr-2 h-4 w-4 animate-spin" />
                 )}
-                {isLoading ? "PLease wait" : "Submit"}
+                {isPending ? "PLease wait" : "Submit"}
               </Button>
             </form>
           </Form>
