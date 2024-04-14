@@ -7,24 +7,33 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AlignRight } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "./ui/use-toast";
 
 const LeftSideMenu = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
     mutationFn: UseLogOut,
+    mutationKey: ["validate"],
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["validate"] });
       navigate("/sign-in");
     },
   });
 
   const handleLogOut = async () => {
     try {
-      mutate();
+      await mutate();
     } catch (error) {
-      console.error("Sign-in failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Sign in: failed!",
+        description: "An error occurred during sign-in.",
+      });
     }
   };
 

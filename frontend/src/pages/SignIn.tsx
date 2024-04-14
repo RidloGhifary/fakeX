@@ -52,30 +52,6 @@ const SignIn = () => {
     },
   });
 
-  // const { mutate, isPending } = useMutation({
-  //   mutationFn: async () => {
-  //     const response = await axios.post(
-  //       `http://localhost:5200/api/auth/sign-in`,
-  //       formData,
-  //       {
-  //         withCredentials: true,
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       },
-  //     );
-
-  //     return response.data;
-  //   },
-  //   onSuccess: () => {
-  //     toast({
-  //       title: "Sign in: success!",
-  //       description: "You are currently signing in",
-  //     });
-  //     navigate("/");
-  //   },
-  // });
-
   const queryClient = useQueryClient();
 
   const { mutate, isPending, error, isError } = useMutation({

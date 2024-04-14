@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const BASE_URL = import.meta.env.VITE_API_URL;
+import { makeRequest } from "@/utils/axios";
 
 interface SignUpProps {
   username: string;
@@ -9,19 +7,8 @@ interface SignUpProps {
 }
 
 export const UseSignUp = async (formData: SignUpProps) => {
-  const response = await fetch(`${BASE_URL}/api/auth/sign-up`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData),
-  });
-
-  const responseBody = await response.json();
-  if (!responseBody) throw new Error(responseBody.message);
-
-  return responseBody;
+  const response = await makeRequest.post("/auth/sign-up", formData);
+  return response;
 };
 
 interface SignInProps {
@@ -30,31 +17,16 @@ interface SignInProps {
 }
 
 export const UseSignIn = async (formData: SignInProps) => {
-  const response = await axios.post(`${BASE_URL}/api/auth/sign-in`, formData, {
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
+  const response = await makeRequest.post("/auth/sign-in", formData);
   return response;
 };
 
 export const UseLogOut = async () => {
-  const response = await fetch(`${BASE_URL}/api/auth/logout`, {
-    method: "POST",
-    credentials: "include",
-  });
-  if (!response.ok) throw new Error("Invalid token");
-
-  return await response.json();
+  const response = await makeRequest.post("/auth/logout");
+  return response;
 };
 
 export const UseValidateToken = async () => {
-  const response = await fetch(`${BASE_URL}/api/auth/validate-token`, {
-    credentials: "include",
-  });
-  if (!response.ok) throw new Error("Invalid token");
-
-  return await response.json();
+  const response = await makeRequest.get("/auth/validate-token");
+  return response;
 };
