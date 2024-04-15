@@ -30,3 +30,14 @@ export const UseValidateToken = async () => {
   const response = await makeRequest.get("/auth/validate-token");
   return response;
 };
+
+interface VerifyOtpProps {
+  data: string;
+  userId: string;
+}
+
+export const UseVerifyOtp = async ({ data, userId }: VerifyOtpProps) => {
+  const response = await makeRequest.post(`/auth/verifyOTP/${userId}`, data);
+
+  return response;
+};

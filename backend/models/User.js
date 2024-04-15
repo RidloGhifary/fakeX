@@ -16,10 +16,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    dateOfBirth: {
-      type: Date,
-      required: true,
-    },
+    dateOfBirth: Date,
     bio: String,
     profile_picture: String,
     followers: [

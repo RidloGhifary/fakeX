@@ -13,9 +13,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff } from "lucide-react";
+import { UseAppContext } from "@/context/AppContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UseSignUp } from "@/api/AuthApi";
+import { useToast } from "@/components/ui/use-toast";
+import { AxiosError } from "axios";
 
 const FormSchema = z.object({
   username: z
@@ -35,6 +40,10 @@ const FormSchema = z.object({
 const SignUp = () => {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
+  const { toast } = useToast();
+  const { currentUser, isLoggedIn } = UseAppContext();
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -44,19 +53,53 @@ const SignUp = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending, error, isError } = useMutation({
+    mutationFn: UseSignUp,
+    mutationKey: ["user"],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
+
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    try {
+      await mutate(data);
+      if (currentUser) {
+        console.log("Navigating to /verify-otp");
+        navigate(`/verify-otp/${currentUser._id}`);
+      }
+    } catch (err) {
+      console.log(err);
+      toast({
+        variant: "destructive",
+        title: "Sign in: failed!",
+        description: "An error occurred during sign-up.",
+      });
+    }
   };
 
+  if (currentUser) {
+    navigate(`/verify-otp/${currentUser._id}`);
+  }
+
   return (
-    <section className="h-dvh flex items-center justify-center w-full p-10 lg:p-3">
-      <section className="w-full grid lg:grid-cols-2 items-center gap-40">
-        <img src={Logo} alt="logo" className="w-[200px] lg:w-[300px] mx-auto" />
+    <section className="flex h-dvh w-full items-center justify-center p-10 lg:p-3">
+      <section className="grid w-full items-center gap-40 lg:grid-cols-2">
+        <img src={Logo} alt="logo" className="mx-auto w-[200px] lg:w-[300px]" />
         <div className="-mt-20 lg:mt-0">
+          {isError && (
+            <div className="mb-2 text-center text-sm text-red-500">
+              {(error as AxiosError)?.response?.data?.message ||
+                "An error occurred during sign-in."}
+            </div>
+          )}
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-3 text-black">
+              className="space-y-3 text-black"
+            >
               <FormField
                 control={form.control}
                 name="username"
@@ -64,6 +107,7 @@ const SignUp = () => {
                   <FormItem>
                     <FormControl>
                       <Input
+                        disabled={isPending}
                         placeholder="username"
                         {...field}
                         className="lowercase"
@@ -79,7 +123,11 @@ const SignUp = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="email" {...field} />
+                      <Input
+                        disabled={isPending}
+                        placeholder="email"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -93,7 +141,8 @@ const SignUp = () => {
                     <FormControl>
                       <div className="relative">
                         <Input
-                          type={showPassword ? "password" : "text"}
+                          disabled={isPending}
+                          type={showPassword ? "text" : "password"}
                           placeholder="user password"
                           className="text-black"
                           {...field}
@@ -116,25 +165,29 @@ const SignUp = () => {
                 )}
               />
               <Button
+                disabled={isPending}
                 type="submit"
-                className="w-full bg-white text-black hover:bg-white hover:text-black">
-                Submit
+                className="w-full bg-white text-black hover:bg-white hover:text-black"
+              >
+                {isPending ? "Loading..." : "Submit"}
               </Button>
             </form>
           </Form>
           <div className="relative my-7">
             <Separator />
-            <p className="absolute top-[-13px] right-[50%] translate-x-[50%] bg-black px-3">
+            <p className="absolute right-[50%] top-[-13px] translate-x-[50%] bg-black px-3">
               or
             </p>
           </div>
           <Button
-            className="w-full bg-white text-black hover:bg-white hover:text-black flex justify-center items-center gap-1"
-            onClick={() => alert("This feature is not available yet")}>
+            disabled={isPending}
+            className="flex w-full items-center justify-center gap-1 bg-white text-black hover:bg-white hover:text-black"
+            onClick={() => alert("This feature is not available yet")}
+          >
             <img src={GoogleLogo} alt="google logo" className="w-6" />
             Sign in with Google
           </Button>
-          <div className="text-center mt-8">
+          <div className="mt-8 text-center">
             <Link to="/sign-in">
               Already have an account,{" "}
               <span className="text-blue-500">Sign-in here</span>

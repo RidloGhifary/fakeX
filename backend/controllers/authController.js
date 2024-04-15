@@ -25,7 +25,7 @@ const SignUp = async (req, res) => {
   if (!errors.isEmpty())
     return res.status(400).json({ message: errors.array() });
 
-  let { username, email, password, dateOfBirth } = req.body;
+  const { username, email, password } = req.body;
 
   try {
     const user = await User.findOne({
@@ -42,7 +42,7 @@ const SignUp = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      dateOfBirth,
+      dateOfBirth: "",
       verified: false,
       bio: "",
       profile_picture: "",
@@ -66,6 +66,7 @@ const SignUp = async (req, res) => {
 
     res.status(201).send({ message: "User created successful" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -259,7 +260,7 @@ const verifyOTP = async (req, res) => {
   }
 };
 
-const Logout = async (req, res) => {
+const Logout = async (_, res) => {
   try {
     res.clearCookie("auth_token");
     res.status(200).json({ message: "Logged out successfully" });

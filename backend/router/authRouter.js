@@ -19,7 +19,6 @@ router.post(
     check("password", "password with 8 character or more is required").isLength(
       { min: 8 }
     ),
-    check("dateOfBirth", "date of birth is required").isDate(),
   ],
   authController.SignUp
 );
@@ -43,7 +42,7 @@ router.post(
   authController.SignIn
 );
 
-router.post("/verifyOTP", authController.verifyOTP);
+router.post("/verifyOTP/:userId", authController.verifyOTP);
 
 router.post("/logout", verifyToken, authController.Logout);
 

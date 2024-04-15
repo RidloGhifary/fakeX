@@ -100,6 +100,7 @@ const SignIn = () => {
                   <FormItem>
                     <FormControl>
                       <Input
+                        disabled={isPending}
                         placeholder="Username"
                         {...field}
                         className="lowercase"
@@ -117,7 +118,8 @@ const SignIn = () => {
                     <FormControl>
                       <div className="relative">
                         <Input
-                          type={showPassword ? "password" : "text"}
+                          disabled={isPending}
+                          type={showPassword ? "text" : "password"}
                           placeholder="user password"
                           className="text-black"
                           {...field}

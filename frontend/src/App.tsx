@@ -22,7 +22,7 @@ export default function App() {
           <Routes>
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
-            <Route path="/verify-otp" element={<VerifyOtp />} />
+            <Route path="/verify-otp/:userId" element={<VerifyOtp />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/forgot-password" element={<ConfirmEmail />} />
 
