@@ -6,7 +6,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
 import React from "react";
 
-const Love: React.FC<{ post?: Post }> = ({ post }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Love: React.FC<{ post?: Post; urlLike?: string; comment?: any }> = ({
+  post,
+  urlLike,
+  comment,
+}) => {
   const { currentUser } = UseAppContext();
 
   const queryClient = useQueryClient();
@@ -15,7 +20,7 @@ const Love: React.FC<{ post?: Post }> = ({ post }) => {
   const { mutate } = useMutation({
     mutationKey: ["post"],
     mutationFn: async () => {
-      const response = await makeRequest.post(`/post/like/${post?._id}`);
+      const response = await makeRequest.post(urlLike as string);
       return response;
     },
     onSuccess: () => {
@@ -48,8 +53,18 @@ const Love: React.FC<{ post?: Post }> = ({ post }) => {
   return (
     <div className="cursor-pointer rounded-full p-1 hover:scale-105">
       <Heart
-        fill={post?.likes?.includes(currentUser?._id) ? "red" : "none"}
-        stroke={post?.likes.includes(currentUser?._id) ? "red" : "white"}
+        fill={
+          post?.likes?.includes(currentUser?._id) ||
+          comment?.likes?.includes(currentUser?._id)
+            ? "red"
+            : "none"
+        }
+        stroke={
+          post?.likes.includes(currentUser?._id) ||
+          comment?.likes?.includes(currentUser?._id)
+            ? "red"
+            : "white"
+        }
         size={27}
         onClick={handleLike}
       />

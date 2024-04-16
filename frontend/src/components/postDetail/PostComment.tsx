@@ -145,21 +145,30 @@ const PostComment = () => {
                 </p>
                 <p className="font-light">{comment?.content}</p>
                 <div className="flex items-center gap-3">
-                  <Love />
+                  <Love
+                    comment={comment}
+                    urlLike={`/post/comment/${comment?._id}/like/${postId}`}
+                  />
                   <Comment
                     handleChangePostComment={handleChangePostReplyComment}
                     handleSubmitPostComment={handleSubmitPostReplyComment}
                     textPostComment={textPostReplyComment}
                   />
                   <p className="text-sm text-gray-500">
-                    {comment?.likes.length > 0 && comment?.likes}{" "}
+                    {comment?.likes.length > 0 && comment?.likes.length}{" "}
                     {comment?.likes.length > 1
                       ? "likes"
                       : comment?.likes.length === 0
                         ? null
                         : "like"}
-                    {comment?.replies.length}{" "}
-                    {comment?.replies.length > 1 ? "replies" : "reply"}
+                    {" - "}
+                    {comment?.replies.length > 0 &&
+                      comment?.replies.length}{" "}
+                    {comment?.replies.length > 1
+                      ? "replies"
+                      : comment?.replies.length === 0
+                        ? null
+                        : "reply"}
                   </p>
                 </div>
               </div>

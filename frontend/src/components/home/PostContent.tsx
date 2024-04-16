@@ -136,7 +136,7 @@ const PostContent: React.FC<PostContentProps> = ({ data }) => {
             {data?.content}
           </Link>
           <div className="mb-2 mt-10 flex items-center gap-3">
-            <Love post={data} />
+            <Love post={data} urlLike={`/post/like/${data?._id}`} />
             <Comment
               handleChangePostComment={handleChangePostComment}
               handleSubmitPostComment={handleSubmitPostComment}

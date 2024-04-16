@@ -132,7 +132,7 @@ const Content = () => {
           </div>
           <p className="mt-2 font-light">{data?.content}</p>
           <div className="mb-2 mt-7 flex items-center gap-3">
-            <Love post={data} />
+            <Love post={data} urlLike={`/post/like/${postId}`} />
             <Comment
               handleChangePostComment={handleChangePostComment}
               handleSubmitPostComment={handleSubmitPostComment}
