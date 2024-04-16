@@ -27,7 +27,7 @@ const Comment = ({
     <div className="cursor-pointer rounded-full p-1 hover:scale-105">
       <Dialog>
         <DialogTrigger>
-          <MessageCircle size={27} />
+          <MessageCircle size={25} />
         </DialogTrigger>
         <DialogContent className="border-white/50 bg-black text-white">
           <DialogHeader>

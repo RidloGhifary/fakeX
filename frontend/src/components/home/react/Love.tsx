@@ -65,7 +65,7 @@ const Love: React.FC<{ post?: Post; urlLike?: string; comment?: any }> = ({
             ? "red"
             : "white"
         }
-        size={27}
+        size={25}
         onClick={handleLike}
       />
     </div>
