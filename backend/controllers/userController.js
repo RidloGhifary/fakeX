@@ -22,16 +22,6 @@ const CurrentUser = async (req, res) => {
   }
 };
 
-const GetUserByPostId = async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const user = await User.findById(userId).select("-password");
-    console.log(user);
-  } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
 const UpdateAccount = async (req, res) => {
   const {
     params: { userId },
@@ -101,6 +91,11 @@ const FollowingUser = async (req, res) => {
   try {
     const currentUser = await User.findById(req.id);
     const userToFollow = await User.findById(userId);
+
+    if (currentUser._id.toString() === userId)
+      return res
+        .status(403)
+        .json({ message: "Cannot follow your own account" });
 
     if (!userToFollow)
       return res.status(404).json({ message: "User to follow not found" });
@@ -312,5 +307,4 @@ module.exports = {
   FollowersList,
   VerificationRequest,
   GetTheBadge,
-  GetUserByPostId,
 };

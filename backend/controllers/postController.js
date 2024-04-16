@@ -41,8 +41,17 @@ const CreatePost = async (req, res) => {
   const { content } = req.body;
 
   try {
+    const user = await User.findById(req.id).select("-password");
+
     const newPost = new Post({
-      userId: req.id,
+      user: {
+        userId: user._id,
+        username: user.username,
+        bio: user.bio,
+        profile_picture: user.profile_picture,
+        hasBadge: user.hasBadge,
+        followers: user.followers,
+      },
       content,
       likes: [],
       comments: [],
@@ -53,6 +62,7 @@ const CreatePost = async (req, res) => {
       .status(201)
       .json({ message: "Post created successfully", post: newPost });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
