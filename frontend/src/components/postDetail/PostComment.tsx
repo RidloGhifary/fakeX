@@ -17,7 +17,18 @@ import {
 import { UseAppContext } from "@/context/AppContext";
 import { useToast } from "../ui/use-toast";
 import RepliedSection from "./RepliedSection";
-import { Reply } from "@/models/Comment";
+import { CommentUser, Reply } from "@/models/Comment";
+
+interface CommentProps {
+  user: CommentUser;
+  content: string;
+  edited: boolean;
+  likes: string[];
+  _id: string;
+  replies: Reply[];
+  createdAt: string;
+  updatedAt: string;
+}
 
 const PostComment = () => {
   const [textPostReplyComment, setTextPostReplyComment] =
@@ -81,7 +92,7 @@ const PostComment = () => {
   return (
     <div className="pb-10 pt-5">
       <Separator className="border-[.2px] border-gray-800" />
-      {data?.comments.map((comment: any, i: number) => (
+      {data?.comments.map((comment: CommentProps, i: number) => (
         <div key={i} className="my-4">
           <section className="flex justify-start gap-4">
             <div className="flex flex-none flex-col items-center ">

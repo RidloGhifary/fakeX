@@ -1,4 +1,4 @@
-interface User {
+export interface CommentUser {
   userId: string;
   username: string;
   profile_picture: string;
@@ -6,7 +6,7 @@ interface User {
 }
 
 export interface Reply {
-  user: User;
+  user: CommentUser;
   content: string;
   likes: string[];
   _id: string;
@@ -15,7 +15,7 @@ export interface Reply {
 }
 
 export interface Comment {
-  user: User;
+  user: CommentUser;
   content: string;
   edited: boolean;
   likes: string[];
