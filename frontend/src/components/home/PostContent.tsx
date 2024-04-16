@@ -73,7 +73,7 @@ const PostContent: React.FC<PostContentProps> = ({ data }) => {
 
   return (
     <section className="flex justify-start gap-4">
-      <div className="flex  flex-none flex-col items-center gap-4">
+      <div className="flex flex-none flex-col items-center gap-4">
         <div className="relative">
           <img
             src={data?.user.profile_picture || User}
@@ -126,7 +126,12 @@ const PostContent: React.FC<PostContentProps> = ({ data }) => {
               {moment(data?.createdAt).fromNow()}
             </span>
           </p>
-          <p className="mt-2 line-clamp-4 font-light">{data?.content}</p>
+          <Link
+            to={`/@${data?.user?.username}/post/${data?._id}`}
+            className="mt-2 line-clamp-4 font-light"
+          >
+            {data?.content}
+          </Link>
           <div className="mb-2 mt-10 flex items-center gap-3">
             <Love post={data} />
             <Comment
@@ -134,7 +139,7 @@ const PostContent: React.FC<PostContentProps> = ({ data }) => {
               handleSubmitPostComment={handleSubmitPostComment}
               textPostComment={textPostComment}
             />
-            <Share />
+            <Share post={data} />
           </div>
           <p className="text-sm text-gray-500">
             {data?.likes.length} {data?.likes.length > 1 ? "likes" : "like"} -{" "}
@@ -147,7 +152,7 @@ const PostContent: React.FC<PostContentProps> = ({ data }) => {
             </Link>
           </p>
         </div>
-        <MenuPost user={data?.user} />
+        <MenuPost post={data} />
       </div>
     </section>
   );
