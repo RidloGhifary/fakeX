@@ -19,7 +19,10 @@ const Love: React.FC<{ post?: Post }> = ({ post }) => {
       return response;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["post"] });
+      queryClient.invalidateQueries([
+        { queryKey: ["post"] },
+        { queryKey: ["post-detail"] },
+      ]);
     },
     onError: () => {
       toast({
