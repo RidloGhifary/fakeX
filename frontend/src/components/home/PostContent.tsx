@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react";
 import User from "../../assets/user.png";
-import { Check, Plus } from "lucide-react";
+import { BadgeCheck, Check, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Separator } from "../ui/separator";
 import Love from "./react/Love";
@@ -115,13 +115,16 @@ const PostContent: React.FC<PostContentProps> = ({ data }) => {
       </div>
       <div className="flex flex-1 gap-4">
         <div className="w-full">
-          <p className="font-semibold">
+          <p className="flex gap-1 font-semibold">
             <Link
               to={`/profile/${data?.user.username}`}
               className="hover:underline"
             >
               @{data?.user.username}
             </Link>
+            <span>
+              {data?.user.hasBadge && <BadgeCheck fill="blue" stroke="black" />}
+            </span>
             <span className="ml-3 text-sm text-gray-500">
               {moment(data?.createdAt).fromNow()}
             </span>

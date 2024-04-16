@@ -33,6 +33,17 @@ const GetPostByFollowing = async (req, res) => {
   }
 };
 
+const GetDetailPost = async (req, res) => {
+  const { postId } = req.params;
+  try {
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Cannot found post" });
+    res.status(200).json(post);
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const CreatePost = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -150,11 +161,21 @@ const CommentPost = async (req, res) => {
   } = req;
 
   try {
+    const user = await User.findById(req.id).select("-password");
+
     const currentPost = await Post.findById(postId);
     if (!currentPost)
       return res.status(404).json({ message: "Cannot find post" });
 
-    currentPost.comments.push({ userId: req.id, content });
+    currentPost.comments.push({
+      user: {
+        userId: req.id,
+        username: user.username,
+        profile_picture: user.profile_picture,
+        hasBadge: user.hasBadge,
+      },
+      content,
+    });
     await currentPost.save();
     res.status(201).json({ message: "Comment added successfully" });
   } catch (err) {
@@ -242,6 +263,8 @@ const ReplyComment = async (req, res) => {
   } = req;
 
   try {
+    const user = await User.findById(req.id).select("-password");
+
     const currentPost = await Post.findById(postId);
     if (!currentPost)
       return res.status(404).json({ message: "Cannot find post" });
@@ -253,7 +276,12 @@ const ReplyComment = async (req, res) => {
       return res.status(404).json({ message: "Comment not found" });
 
     hasComment.replies.push({
-      userId: req.id,
+      user: {
+        userId: req.id,
+        username: user.username,
+        profile_picture: user.profile_picture,
+        hasBadge: user.hasBadge,
+      },
       content,
     });
     await currentPost.save();
@@ -452,6 +480,7 @@ const EditReplyComment = async (req, res) => {
 module.exports = {
   GetAllPost,
   GetPostByFollowing,
+  GetDetailPost,
   CreatePost,
   DeletePost,
   EditPost,
