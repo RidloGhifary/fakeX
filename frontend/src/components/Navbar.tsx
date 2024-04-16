@@ -1,6 +1,5 @@
 import React, { ChangeEvent } from "react";
 import Logo from "../assets/fakeX.png";
-import User from "../assets/user.png";
 import { Home, SquarePlus, SquareUserRound } from "lucide-react";
 import {
   Tooltip,
@@ -15,21 +14,59 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Separator } from "./ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "./ui/button";
 import LeftSideMenu from "./LeftSideMenu";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "./ui/use-toast";
+import { UseCreatePost } from "@/api/PostApi";
+import { UseAppContext } from "@/context/AppContext";
+import ProfilePicture from "./ProfilePicture";
 
 const Navbar = () => {
   const [textPostContent, setTextPostContent] = React.useState<string>("");
+
+  const { currentUser } = UseAppContext();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["create-post"],
+    mutationFn: UseCreatePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["post"] });
+      toast({
+        title: "Create: success!",
+        description: "Successfully posting a new post.",
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Create: failed!",
+        description: "An error occurred during posting.",
+      });
+    },
+  });
 
   const handleChangePostContent = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setTextPostContent(event.target.value);
   };
 
-  const handleSubmitPostContent = () => {
-    console.log(textPostContent);
+  const handleSubmitPostContent = async () => {
+    try {
+      await mutate({ content: textPostContent as string });
+      setTextPostContent("");
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Create: failed!",
+        description: "An error occurred during posting.",
+      });
+    }
   };
 
   return (
@@ -72,11 +109,7 @@ const Navbar = () => {
                   <DialogTitle>
                     <div className="flex justify-start gap-4 overflow-hidden">
                       <section className="flex flex-none flex-col items-center gap-4">
-                        <img
-                          src={User}
-                          alt="user-photo"
-                          className="w-10 rounded-full border"
-                        />
+                        <ProfilePicture />
                         <Separator
                           orientation="vertical"
                           className="h-[74%] border-[.2px] border-gray-800"
@@ -85,7 +118,7 @@ const Navbar = () => {
                       <section className="flex-1">
                         <div className="w-full">
                           <p className="mb-2 text-left font-semibold">
-                            @rdllghifary_
+                            @{currentUser?.username}
                           </p>
                           <Textarea
                             autoFocus={true}
@@ -94,6 +127,7 @@ const Navbar = () => {
                             maxLength={500}
                             onChange={handleChangePostContent}
                             contentEditable={true}
+                            disabled={isPending}
                             placeholder="Write for posting..."
                             className="h-auto min-h-[100px] w-full resize-none border-0 bg-transparent px-0 font-light focus-visible:ring-0 focus-visible:ring-offset-0"
                           />
@@ -102,13 +136,15 @@ const Navbar = () => {
                           <p className="text-sm font-medium text-white/50">
                             add to public
                           </p>
-                          <Button
-                            disabled={textPostContent === ""}
-                            onClick={handleSubmitPostContent}
-                            className="rounded-full bg-white font-bold uppercase text-black transition  hover:bg-white/80 hover:text-black disabled:cursor-not-allowed disabled:bg-white/50"
-                          >
-                            post
-                          </Button>
+                          <DialogClose asChild>
+                            <Button
+                              disabled={textPostContent === "" || isPending}
+                              onClick={handleSubmitPostContent}
+                              className="rounded-full bg-white font-bold uppercase text-black transition  hover:bg-white/80 hover:text-black disabled:cursor-not-allowed disabled:bg-white/50"
+                            >
+                              post
+                            </Button>
+                          </DialogClose>
                         </div>
                       </section>
                     </div>
@@ -121,7 +157,7 @@ const Navbar = () => {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <Link to={"/profile/@rdllghifary_"}>
+                  <Link to={`/profile/@${currentUser?.username}`}>
                     <SquareUserRound />
                   </Link>
                 </TooltipTrigger>

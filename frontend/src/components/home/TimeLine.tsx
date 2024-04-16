@@ -16,7 +16,7 @@ const TimeLine = () => {
       <CreatePostHomePage />
       <SwitchContent />
 
-      <div className="hidden md:block">
+      <div className="mb-56 hidden md:block">
         {postContentIsLoading ? (
           <p>Loading...</p>
         ) : (

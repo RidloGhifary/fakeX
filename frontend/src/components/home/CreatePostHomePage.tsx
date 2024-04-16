@@ -1,10 +1,13 @@
-import User from "../../assets/user.png";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UseCreatePost } from "@/api/PostApi";
+import { useToast } from "../ui/use-toast";
+import ProfilePicture from "../ProfilePicture";
 
 const FormSchema = z.object({
   content: z.string().min(1, {
@@ -13,6 +16,9 @@ const FormSchema = z.object({
 });
 
 const CreatePostHomePage = () => {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -20,15 +26,42 @@ const CreatePostHomePage = () => {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(form.formState);
-    console.log(data);
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["create-post"],
+    mutationFn: UseCreatePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["post"] });
+      toast({
+        title: "Create: success!",
+        description: "Successfully posting a new post.",
+      });
+      form.reset();
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Create: failed!",
+        description: "An error occurred during posting.",
+      });
+    },
+  });
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      await mutate(data);
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Create: failed!",
+        description: "An error occurred during posting.",
+      });
+    }
   }
 
   return (
     <section className="hidden w-full md:block">
       <div className="flex gap-1">
-        <img src={User} alt="user-photo" className="h-10 w-10" />
+        <ProfilePicture />
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -42,6 +75,7 @@ const CreatePostHomePage = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      disabled={isPending}
                       placeholder="Create a post..."
                       min="1"
                       className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -57,7 +91,7 @@ const CreatePostHomePage = () => {
                 !!form.formState.errors.content || !form.formState.isDirty
               }
             >
-              Post
+              {isPending ? "Wait" : "Post"}
             </Button>
           </form>
         </Form>
