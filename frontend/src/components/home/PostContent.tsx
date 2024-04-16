@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import User from "../../assets/user.png";
 import { BadgeCheck, Check, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -25,19 +25,9 @@ interface PostContentProps {
 }
 
 const PostContent: React.FC<PostContentProps> = ({ data }) => {
-  const [textPostComment, setTextPostComment] = React.useState<string>("");
-
   const queryClient = useQueryClient();
   const { currentUser } = UseAppContext();
   const { toast } = useToast();
-
-  const handleChangePostComment = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setTextPostComment(event.target.value);
-  };
-
-  const handleSubmitPostComment = () => {
-    console.log(textPostComment);
-  };
 
   const { mutate } = useMutation({
     mutationKey: ["user"],
@@ -137,11 +127,7 @@ const PostContent: React.FC<PostContentProps> = ({ data }) => {
           </Link>
           <div className="mb-2 mt-10 flex items-center gap-3">
             <Love post={data} urlLike={`/post/like/${data?._id}`} />
-            <Comment
-              handleChangePostComment={handleChangePostComment}
-              handleSubmitPostComment={handleSubmitPostComment}
-              textPostComment={textPostComment}
-            />
+            <Comment post={data} />
             <Share post={data} />
           </div>
           <p className="text-sm text-gray-500">

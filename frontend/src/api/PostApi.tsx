@@ -18,3 +18,14 @@ export const UseCreatePost = async (formData: CreatePostProps) => {
   const response = await makeRequest.post("/post/create", formData);
   return response;
 };
+
+export const UseCommentPost = async (formData: {
+  content: string;
+  url: string;
+}) => {
+  const { content, url } = formData;
+  const response = await makeRequest.post(`/post/comment/${url}`, {
+    content: content,
+  });
+  return response;
+};

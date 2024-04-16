@@ -8,21 +8,58 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { MessageCircle } from "lucide-react";
-import { ChangeEvent } from "react";
+import React, { ChangeEvent } from "react";
+import ProfilePicture from "@/components/ProfilePicture";
+import Username from "@/components/Username";
+import { Post } from "@/models/Post";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UseCommentPost } from "@/api/PostApi";
+import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
-interface Props {
-  textPostComment: string;
-  handleChangePostComment: (event: ChangeEvent<HTMLTextAreaElement>) => void;
-  handleSubmitPostComment: () => void;
-}
+const Comment: React.FC<{ post?: Post }> = ({ post }) => {
+  const [textPostComment, setTextPostComment] = React.useState<string>("");
 
-const Comment = ({
-  textPostComment,
-  handleChangePostComment,
-  handleSubmitPostComment,
-}: Props) => {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const handleChangePostComment = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setTextPostComment(event.target.value);
+  };
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["comment-post"],
+    mutationFn: UseCommentPost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["post"] });
+      setTextPostComment("");
+      navigate(`/@${post?.user.username}/post/${post?._id}`);
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Create: failed!",
+        description: "An error occurred during posting.",
+      });
+    },
+  });
+
+  const handleSubmitPostComment = async () => {
+    try {
+      await mutate({ content: textPostComment, url: post?._id as string });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Create: failed!",
+        description: "An error occurred during posting.",
+      });
+    }
+  };
+
   return (
     <div className="cursor-pointer rounded-full p-1 hover:scale-105">
       <Dialog>
@@ -35,7 +72,7 @@ const Comment = ({
               <div className="flex justify-start gap-4 overflow-hidden">
                 <section className="flex flex-none flex-col items-center gap-4">
                   <img
-                    src={User}
+                    src={post?.user.profile_picture || User}
                     alt="user-photo"
                     className="w-10 rounded-full border"
                   />
@@ -45,21 +82,15 @@ const Comment = ({
                   />
                 </section>
                 <section>
-                  <p className="font-semibold">@rdllghifary_</p>
+                  <p className="font-semibold">@{post?.user.username}</p>
                   <p className="mt-2 line-clamp-3 text-sm font-light leading-normal">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Repudiandae praesentium libero natus distinctio inventore
-                    atque deserunt voluptas
+                    {post?.content}
                   </p>
                 </section>
               </div>
               <div className="mt-4 flex justify-start gap-4 overflow-hidden">
                 <section className="flex flex-none flex-col items-center gap-4">
-                  <img
-                    src={User}
-                    alt="user-photo"
-                    className="w-10 rounded-full border"
-                  />
+                  <ProfilePicture />
                   <Separator
                     orientation="vertical"
                     className="h-[74%] border-[.2px] border-gray-800"
@@ -67,9 +98,7 @@ const Comment = ({
                 </section>
                 <section className="flex-1">
                   <div className="w-full">
-                    <p className="mb-2 text-left font-semibold">
-                      @your_account
-                    </p>
+                    <Username />
                     <Textarea
                       autoFocus={true}
                       value={textPostComment}
@@ -77,6 +106,7 @@ const Comment = ({
                       maxLength={500}
                       onChange={handleChangePostComment}
                       contentEditable={true}
+                      disabled={isPending}
                       placeholder="Write for posting..."
                       className="h-auto min-h-[80px] w-full resize-none border-0 bg-transparent px-0 font-light focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
@@ -85,13 +115,15 @@ const Comment = ({
                     <p className="text-sm font-medium text-white/50">
                       add to public
                     </p>
-                    <Button
-                      disabled={textPostComment === ""}
-                      onClick={handleSubmitPostComment}
-                      className="rounded-full bg-white font-bold uppercase text-black transition  hover:bg-white/80 hover:text-black disabled:cursor-not-allowed disabled:bg-white/50"
-                    >
-                      post
-                    </Button>
+                    <DialogClose asChild>
+                      <Button
+                        disabled={textPostComment === "" || isPending}
+                        onClick={handleSubmitPostComment}
+                        className="rounded-full bg-white font-bold uppercase text-black transition  hover:bg-white/80 hover:text-black disabled:cursor-not-allowed disabled:bg-white/50"
+                      >
+                        {isPending ? "wait" : "post"}
+                      </Button>
+                    </DialogClose>
                   </div>
                 </section>
               </div>

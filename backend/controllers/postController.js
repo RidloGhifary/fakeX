@@ -6,7 +6,7 @@ const GetAllPost = async (_, res) => {
   try {
     const posts = await Post.aggregate([
       {
-        $sort: { numLikes: -1, createdAt: -1 },
+        $sort: { numLikes: -1, createdAt: 1 },
       },
     ]);
     res.status(200).json(posts);
@@ -36,7 +36,10 @@ const GetPostByFollowing = async (req, res) => {
 const GetDetailPost = async (req, res) => {
   const { postId } = req.params;
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate({
+      path: "comments",
+      options: { sort: { createdAt: "asc" } },
+    });
     if (!post) return res.status(404).json({ message: "Cannot found post" });
     res.status(200).json(post);
   } catch (err) {
