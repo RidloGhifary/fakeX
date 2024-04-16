@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/tooltip";
 import { UseAppContext } from "@/context/AppContext";
 import { useToast } from "../ui/use-toast";
+import RepliedSection from "./RepliedSection";
+import { Reply } from "@/models/Comment";
 
 const PostComment = () => {
   const [textPostReplyComment, setTextPostReplyComment] =
@@ -77,12 +79,12 @@ const PostComment = () => {
   };
 
   return (
-    <div className="py-5 pb-10">
+    <div className="pb-10 pt-5">
+      <Separator className="border-[.2px] border-gray-800" />
       {data?.comments.map((comment: any, i: number) => (
-        <div key={i}>
-          <Separator className="border-[.2px] border-gray-800" />
-          <section className="my-4 flex justify-start gap-4">
-            <div className="flex flex-none flex-col items-center gap-4">
+        <div key={i} className="my-4">
+          <section className="flex justify-start gap-4">
+            <div className="flex flex-none flex-col items-center ">
               <div className="relative">
                 <img
                   src={comment?.user.profile_picture || User}
@@ -119,12 +121,12 @@ const PostComment = () => {
               {comment?.replies.length > 0 && (
                 <Separator
                   orientation="vertical"
-                  className="h-[74%] border-[.2px] border-gray-800"
+                  className="h-[70%] border-[.2px] border-gray-800"
                 />
               )}
             </div>
             <div className="flex flex-1 gap-4">
-              <div className="w-full">
+              <div className="w-full space-y-2">
                 <p className="flex items-center gap-1 font-semibold">
                   <Link
                     to={`/profile/${comment?.user.username}`}
@@ -141,26 +143,34 @@ const PostComment = () => {
                     {moment(comment?.createdAt).fromNow()}
                   </span>
                 </p>
-                <p className="mt-2 line-clamp-4 font-light">
-                  {comment?.content}
-                </p>
-                <div className="mb-2 mt-5 flex items-center gap-3">
+                <p className="font-light">{comment?.content}</p>
+                <div className="flex items-center gap-3">
                   <Love />
                   <Comment
                     handleChangePostComment={handleChangePostReplyComment}
                     handleSubmitPostComment={handleSubmitPostReplyComment}
                     textPostComment={textPostReplyComment}
                   />
+                  <p className="text-sm text-gray-500">
+                    {comment?.likes.length > 0 && comment?.likes}{" "}
+                    {comment?.likes.length > 1
+                      ? "likes"
+                      : comment?.likes.length === 0
+                        ? null
+                        : "like"}
+                    {comment?.replies.length}{" "}
+                    {comment?.replies.length > 1 ? "replies" : "reply"}
+                  </p>
                 </div>
-                <p className="text-sm text-gray-500">
-                  {comment?.likes.length}{" "}
-                  {comment?.likes.length > 1 ? "likes" : "like"} -{" "}
-                  {comment?.replies.length}{" "}
-                  {comment?.replies.length > 1 ? "replies" : "reply"}
-                </p>
               </div>
             </div>
           </section>
+          {comment?.replies.map((reply: Reply) => (
+            <div key={reply._id}>
+              <RepliedSection reply={reply} />
+            </div>
+          ))}
+          <Separator className="border-[.2px] border-gray-800" />
         </div>
       ))}
     </div>

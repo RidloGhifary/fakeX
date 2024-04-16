@@ -130,7 +130,7 @@ const Content = () => {
               </span>
             </p>
           </div>
-          <p className="mt-2 line-clamp-4 font-light">{data?.content}</p>
+          <p className="mt-2 font-light">{data?.content}</p>
           <div className="mb-2 mt-7 flex items-center gap-3">
             <Love post={data} />
             <Comment

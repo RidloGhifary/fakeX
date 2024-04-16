@@ -5,7 +5,7 @@ interface User {
   hasBadge: boolean;
 }
 
-interface Reply {
+export interface Reply {
   user: User;
   content: string;
   likes: string[];
