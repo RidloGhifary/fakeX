@@ -16,7 +16,10 @@ import {
 import { UseAppContext } from "@/context/AppContext";
 import { useToast } from "../ui/use-toast";
 
-const RepliedSection: React.FC<{ reply: Reply }> = ({ reply }) => {
+const RepliedSection: React.FC<{ reply: Reply; commentId: string }> = ({
+  reply,
+  commentId,
+}) => {
   const queryClient = useQueryClient();
   const { postId } = useParams();
   const { currentUser } = UseAppContext();
@@ -63,7 +66,7 @@ const RepliedSection: React.FC<{ reply: Reply }> = ({ reply }) => {
   };
 
   return (
-    <section className="mb-4 flex justify-start gap-4">
+    <section className="flex justify-start gap-4">
       <div className="flex flex-none flex-col items-center gap-4">
         <div className="relative">
           <img
@@ -99,11 +102,11 @@ const RepliedSection: React.FC<{ reply: Reply }> = ({ reply }) => {
           )}
         </div>
         {/* {reply?.replies.length > 0 && (
-            <Separator
-              orientation="vertical"
-              className="h-[74%] border-[.2px] border-gray-800"
-            />
-          )} */}
+          <Separator
+            orientation="vertical"
+            className="h-[74%] border-[.2px] border-gray-800"
+          />
+        )} */}
       </div>
       <div className="flex flex-1 gap-4">
         <div className="w-full space-y-2">
@@ -125,16 +128,19 @@ const RepliedSection: React.FC<{ reply: Reply }> = ({ reply }) => {
           </p>
           <p className="font-light">{reply?.content}</p>
           <div className="flex items-center gap-3">
-            <Love />
+            <Love
+              reply={reply}
+              urlLike={`/post/comment/${commentId}/like-reply/${postId}/${reply?._id}`}
+            />
+            <p className="text-sm text-gray-500">
+              {reply?.likes.length > 0 && reply?.likes.length}{" "}
+              {reply?.likes.length > 1
+                ? "likes"
+                : reply?.likes.length === 0
+                  ? null
+                  : "like"}
+            </p>
           </div>
-          <p className="text-sm text-gray-500">
-            {reply?.likes.length > 0}{" "}
-            {reply?.likes.length > 1
-              ? "likes"
-              : reply?.likes.length === 0
-                ? null
-                : "like"}
-          </p>
         </div>
       </div>
     </section>

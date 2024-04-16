@@ -1,17 +1,29 @@
 import { useToast } from "@/components/ui/use-toast";
 import { UseAppContext } from "@/context/AppContext";
+import { CommentUser, Reply } from "@/models/Comment";
 import { Post } from "@/models/Post";
 import { makeRequest } from "@/utils/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
 import React from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Love: React.FC<{ post?: Post; urlLike?: string; comment?: any }> = ({
-  post,
-  urlLike,
-  comment,
-}) => {
+interface CommentProps {
+  user: CommentUser;
+  content: string;
+  edited: boolean;
+  likes: string[];
+  _id: string;
+  replies: Reply[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+const Love: React.FC<{
+  post?: Post;
+  urlLike?: string;
+  comment?: CommentProps;
+  reply?: Reply;
+}> = ({ post, urlLike, comment, reply }) => {
   const { currentUser } = UseAppContext();
 
   const queryClient = useQueryClient();
@@ -55,13 +67,15 @@ const Love: React.FC<{ post?: Post; urlLike?: string; comment?: any }> = ({
       <Heart
         fill={
           post?.likes?.includes(currentUser?._id) ||
-          comment?.likes?.includes(currentUser?._id)
+          comment?.likes?.includes(currentUser?._id) ||
+          reply?.likes?.includes(currentUser?._id)
             ? "red"
             : "none"
         }
         stroke={
           post?.likes.includes(currentUser?._id) ||
-          comment?.likes?.includes(currentUser?._id)
+          comment?.likes?.includes(currentUser?._id) ||
+          reply?.likes?.includes(currentUser?._id)
             ? "red"
             : "white"
         }

@@ -90,10 +90,10 @@ const PostComment = () => {
   };
 
   return (
-    <div className="pb-10 pt-5">
-      <Separator className="border-[.2px] border-gray-800" />
+    <div className="pb-44 pt-5">
+      <Separator className="mb-5 border-[.2px] border-gray-800" />
       {data?.comments.map((comment: CommentProps, i: number) => (
-        <div key={i} className="my-4">
+        <div key={i} className="">
           <section className="flex justify-start gap-4">
             <div className="flex flex-none flex-col items-center ">
               <div className="relative">
@@ -187,10 +187,10 @@ const PostComment = () => {
           </section>
           {comment?.replies.map((reply: Reply) => (
             <div key={reply._id}>
-              <RepliedSection reply={reply} />
+              <RepliedSection reply={reply} commentId={comment?._id} />
             </div>
           ))}
-          <Separator className="border-[.2px] border-gray-800" />
+          <Separator className="my-5 border-[.2px] border-gray-800" />
         </div>
       ))}
     </div>
