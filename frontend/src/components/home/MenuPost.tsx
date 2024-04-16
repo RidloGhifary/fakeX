@@ -6,9 +6,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Ellipsis } from "lucide-react";
+import React from "react";
 import { Link } from "react-router-dom";
 
-const MenuPost = () => {
+interface MenuPostProps {
+  userId: string;
+  username: string;
+  bio: string;
+  profile_picture: string;
+  hasBadge: boolean;
+  followers: string[];
+}
+
+const MenuPost: React.FC<{ user: MenuPostProps }> = ({ user }) => {
   return (
     <div>
       <DropdownMenu>
@@ -16,7 +26,7 @@ const MenuPost = () => {
           <Ellipsis className="text-xl" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <Link to="/profile/@rdllghifary_">
+          <Link to={`/profile/${user?.username}`}>
             <DropdownMenuItem className="cursor-pointer">
               Profile
             </DropdownMenuItem>

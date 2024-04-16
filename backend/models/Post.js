@@ -49,10 +49,13 @@ const commentSchema = new mongoose.Schema(
 
 const PostSchema = new mongoose.Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      require: true,
-      unique: true,
+    user: {
+      userId: mongoose.Schema.Types.ObjectId,
+      username: String,
+      bio: String,
+      profile_picture: String,
+      hasBadge: Boolean,
+      followers: [String],
     },
     content: {
       type: String,

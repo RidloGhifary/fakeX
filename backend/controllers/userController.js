@@ -2,6 +2,15 @@ const User = require("../models/User.js");
 const UserVerificationBadge = require("../models/UserVerificationBadge.js");
 const transporter = require("../utils/nodemailer.js");
 const bcrypt = require("bcrypt");
+const multer = require("multer");
+
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
 
 const CurrentUser = async (req, res) => {
   try {
@@ -13,13 +22,25 @@ const CurrentUser = async (req, res) => {
   }
 };
 
-const UpdateAccount = async (req, res) => {
+const GetUserByPostId = async (req, res) => {
+  const { userId } = req.params;
   try {
-    const {
-      params: { userId },
-      body: { profile_picture, username, bio },
-    } = req;
+    const user = await User.findById(userId).select("-password");
+    console.log(user);
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
+const UpdateAccount = async (req, res) => {
+  const {
+    params: { userId },
+    body: { profile_picture, username, bio },
+  } = req;
+
+  console.log(req.body);
+
+  try {
     if (req.id !== userId)
       return res.status(401).send({ message: "Unauthorized" });
 
@@ -37,10 +58,16 @@ const UpdateAccount = async (req, res) => {
     let nextUsernameChangeDate = new Date(currentUser.lastUsernameChange);
     nextUsernameChangeDate.setDate(nextUsernameChangeDate.getDate() + 30);
 
-    if (nextUsernameChangeDate > Date.now())
+    if (
+      username !== undefined &&
+      username !== currentUser.username &&
+      Date.now() < nextUsernameChangeDate
+    )
       return res.status(400).json({
         message: "You can change your username only once every 30 days",
       });
+
+    const imageUrl = profile_picture && (await uploadImage(profile_picture));
 
     const updateAccount = await User.findOneAndUpdate(
       { _id: userId },
@@ -48,7 +75,7 @@ const UpdateAccount = async (req, res) => {
         $set: {
           username: username,
           bio: bio,
-          profile_picture: profile_picture,
+          profile_picture: imageUrl,
           lastUsernameChange:
             username !== currentUser.username
               ? Date.now()
@@ -63,6 +90,7 @@ const UpdateAccount = async (req, res) => {
 
     res.status(200).json(others);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -265,6 +293,18 @@ const GetTheBadge = async (req, res) => {
   }
 };
 
+async function uploadImage(imageFile) {
+  console.log(imageFile);
+  try {
+    const b64 = Buffer.from(imageFile.buffer).toString("base64");
+    const dataURI = "data:" + imageFile.mimetype + ";base64," + b64;
+    const res = await cloudinary.uploader.upload(dataURI);
+    return res.url;
+  } catch (error) {
+    throw new Error("Error uploading image to Cloudinary: " + error.message);
+  }
+}
+
 module.exports = {
   UpdateAccount,
   CurrentUser,
@@ -272,4 +312,5 @@ module.exports = {
   FollowersList,
   VerificationRequest,
   GetTheBadge,
+  GetUserByPostId,
 };

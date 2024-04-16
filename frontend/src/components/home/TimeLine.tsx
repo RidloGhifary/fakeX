@@ -1,12 +1,15 @@
 import React from "react";
 import CreatePostHomePage from "./CreatePostHomePage";
-import { Separator } from "../ui/separator";
-import PostContent from "./PostContent";
 import { ArrowLeftRight } from "lucide-react";
 import SwitchContent from "./SwitchContent";
+import { Post } from "@/models/Post";
+import { UseAppContext } from "@/context/AppContext";
+import PostContent from "./PostContent";
+import { Separator } from "../ui/separator";
 
 const TimeLine = () => {
   const [postOrder, setPostOrder] = React.useState<boolean>(false);
+  const { postContentDatas, postContentIsLoading } = UseAppContext();
 
   return (
     <section className="mx-auto max-w-[600px] px-3 pb-20 pt-4 md:px-0 md:py-20 md:pb-0">
@@ -14,13 +17,15 @@ const TimeLine = () => {
       <SwitchContent />
 
       <div className="hidden md:block">
-        {Array.from(
-          [1, 2, 3, 4, 5, 6].map((_, i) => (
+        {postContentIsLoading ? (
+          <p>Loading...</p>
+        ) : (
+          postContentDatas?.map((post: Post, i: number) => (
             <div key={i}>
               <Separator className="my-6 border-[.2px] border-gray-800" />
-              <PostContent />
+              <PostContent data={post} />
             </div>
-          )),
+          ))
         )}
       </div>
 
