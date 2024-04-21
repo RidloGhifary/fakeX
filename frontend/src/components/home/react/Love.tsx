@@ -36,10 +36,12 @@ const Love: React.FC<{
       return response;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([
-        { queryKey: ["post"] },
-        { queryKey: ["post-detail"] },
-      ]);
+      queryClient.invalidateQueries({
+        queryKey: ["post"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["post-detail"],
+      });
     },
     onError: () => {
       toast({

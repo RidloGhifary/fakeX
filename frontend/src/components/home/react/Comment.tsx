@@ -10,8 +10,8 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import { MessageCircle } from "lucide-react";
-import React, { ChangeEvent } from "react";
+import { Repeat2 } from "lucide-react";
+import React, { ChangeEvent, useEffect } from "react";
 import ProfilePicture from "@/components/ProfilePicture";
 import Username from "@/components/Username";
 import { Post } from "@/models/Post";
@@ -20,8 +20,9 @@ import { UseCommentPost } from "@/api/PostApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 
-const Comment: React.FC<{ post?: Post }> = ({ post }) => {
+const Comment: React.FC<{ post: Post; url?: string }> = ({ post, url }) => {
   const [textPostComment, setTextPostComment] = React.useState<string>("");
+  const [postData, setPostData] = React.useState({} as Post | undefined);
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -35,11 +36,17 @@ const Comment: React.FC<{ post?: Post }> = ({ post }) => {
     mutationKey: ["comment-post"],
     mutationFn: UseCommentPost,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["post"] });
+      queryClient.invalidateQueries({
+        queryKey: ["post-detail"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["post"],
+      });
       setTextPostComment("");
       navigate(`/@${post?.user.username}/post/${post?._id}`);
     },
-    onError: () => {
+    onError: (err) => {
+      console.log(err);
       toast({
         variant: "destructive",
         title: "Create: failed!",
@@ -50,7 +57,7 @@ const Comment: React.FC<{ post?: Post }> = ({ post }) => {
 
   const handleSubmitPostComment = async () => {
     try {
-      await mutate({ content: textPostComment, url: post?._id as string });
+      await mutate({ content: textPostComment, url: url as string });
     } catch (err) {
       toast({
         variant: "destructive",
@@ -60,11 +67,15 @@ const Comment: React.FC<{ post?: Post }> = ({ post }) => {
     }
   };
 
+  useEffect(() => {
+    setPostData(post);
+  }, [post]);
+
   return (
     <div className="cursor-pointer rounded-full p-1 hover:scale-105">
       <Dialog>
-        <DialogTrigger>
-          <MessageCircle size={25} />
+        <DialogTrigger className="flex items-center justify-center">
+          <Repeat2 size={27} />
         </DialogTrigger>
         <DialogContent className="border-white/50 bg-black text-white">
           <DialogHeader>
@@ -72,7 +83,7 @@ const Comment: React.FC<{ post?: Post }> = ({ post }) => {
               <div className="flex justify-start gap-4 overflow-hidden">
                 <section className="flex flex-none flex-col items-center gap-4">
                   <img
-                    src={post?.user.profile_picture || User}
+                    src={(postData && postData?.user?.profile_picture) || User}
                     alt="user-photo"
                     className="w-10 rounded-full border"
                   />
@@ -82,9 +93,11 @@ const Comment: React.FC<{ post?: Post }> = ({ post }) => {
                   />
                 </section>
                 <section>
-                  <p className="font-semibold">@{post?.user.username}</p>
+                  <p className="font-semibold">
+                    @{postData && postData?.user?.username}
+                  </p>
                   <p className="mt-2 line-clamp-3 text-sm font-light leading-normal">
-                    {post?.content}
+                    {postData && postData?.content}
                   </p>
                 </section>
               </div>

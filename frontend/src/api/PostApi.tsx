@@ -1,12 +1,18 @@
+import { Post } from "@/models/Post";
 import { makeRequest } from "@/utils/axios";
 
-export const getSuggestContent = async () => {
+export const UseGetSuggestContent = async () => {
   const response = await makeRequest.get("/post");
   return response.data;
 };
 
-export const getContentByFollowing = async () => {
+export const UseGetContentByFollowing = async () => {
   const response = await makeRequest.get("/post/byfollowing");
+  return response.data;
+};
+
+export const UseGetPostDetail = async (postId: string): Promise<Post> => {
+  const response = await makeRequest.get(`/post/${postId}`);
   return response.data;
 };
 

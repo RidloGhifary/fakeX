@@ -1,11 +1,11 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { createContext, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { makeRequest } from "@/utils/axios";
 import { User } from "@/models/User";
-// import { getSuggestContent } from "@/api/PostApi";
 import { Post } from "@/models/Post";
+import { UseGetSuggestContent } from "@/api/PostApi";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -14,10 +14,12 @@ interface AppContextType {
   currentUser: User;
   postContentIsLoading: boolean;
   postContentDatas: Post[];
+  postDetail: Post;
+  postDetailIsLoading: boolean;
 }
 
 interface AppContextProviderProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 const AppContext = createContext<AppContextType>({
@@ -25,6 +27,8 @@ const AppContext = createContext<AppContextType>({
   postContentIsLoading: false,
   currentUser: {} as User,
   postContentDatas: [] as Post[],
+  postDetail: {} as Post,
+  postDetailIsLoading: true,
 });
 
 export const AppContextProvider: React.FC<AppContextProviderProps> = ({
@@ -39,6 +43,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
 
       return response;
     },
+    _optimisticResults: "optimistic",
   });
 
   const { data: currentUser } = useQuery({
@@ -52,12 +57,17 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
 
   const { data: postContentDatas, isLoading: postContentIsLoading } = useQuery({
     queryKey: ["post"],
-    queryFn: async () => {
-      const response = await makeRequest.get("/post");
+    queryFn: async () => await UseGetSuggestContent(),
+  });
+
+  const { data: postDetail, isLoading: postDetailIsLoading } = useQuery({
+    queryKey: ["post-detail"],
+    queryFn: async ({ queryKey }) => {
+      const postId = queryKey[1];
+      const response = await makeRequest.get(`/post/${postId}`);
       return response.data;
     },
   });
-
   return (
     <AppContext.Provider
       value={{
@@ -65,6 +75,8 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         currentUser,
         postContentDatas,
         postContentIsLoading,
+        postDetail,
+        postDetailIsLoading,
       }}
     >
       {children}

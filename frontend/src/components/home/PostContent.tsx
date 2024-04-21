@@ -127,7 +127,7 @@ const PostContent: React.FC<PostContentProps> = ({ data }) => {
           </Link>
           <div className="mb-2 mt-10 flex items-center gap-3">
             <Love post={data} urlLike={`/post/like/${data?._id}`} />
-            <Comment post={data} />
+            <Comment post={data && data} url={`${data?._id}`} />
             <Share post={data} />
           </div>
           <p className="text-sm text-gray-500">

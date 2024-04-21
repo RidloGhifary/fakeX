@@ -1,10 +1,9 @@
-import React, { ChangeEvent } from "react";
 import User from "../../assets/user.png";
 import { BadgeCheck, Check, Plus } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import Love from "../home/react/Love";
 import Comment from "../home/react/Comment";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "@/utils/axios";
 import moment from "moment";
 import Share from "../home/react/Share";
@@ -19,34 +18,16 @@ import { UseAppContext } from "@/context/AppContext";
 import { useToast } from "../ui/use-toast";
 
 const Content = () => {
-  const [textPostComment, setTextPostComment] = React.useState<string>("");
-
   const queryClient = useQueryClient();
-  const { currentUser } = UseAppContext();
+  const { currentUser, postDetail } = UseAppContext();
   const { postId } = useParams();
   const { toast } = useToast();
 
-  const handleChangePostComment = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setTextPostComment(event.target.value);
-  };
-
-  const handleSubmitPostComment = () => {
-    console.log(textPostComment);
-  };
-
-  const { data } = useQuery({
-    queryKey: ["post-detail"],
-    queryFn: async () => {
-      const response = await makeRequest.get(`/post/${postId}`);
-      return response.data;
-    },
-  });
-
   const { mutate } = useMutation({
-    mutationKey: ["user"],
+    mutationKey: ["follow-user"],
     mutationFn: async () => {
       const response = await makeRequest.post(
-        `/user/follow/${data?.user?.userId.toString()}`,
+        `/user/follow/${postDetail?.user?.userId.toString()}`,
       );
       return response;
     },
@@ -81,14 +62,14 @@ const Content = () => {
           <div className="flex items-center gap-4">
             <div className="relative">
               <img
-                src={data?.user.profile_picture || User}
-                alt={data?.user.username}
+                src={postDetail?.user.profile_picture || User}
+                alt={postDetail?.user.username}
                 className="w-10 rounded-full border"
               />
 
               {currentUser._id ===
-              data?.user?.userId ? null : currentUser?.following.includes(
-                  data?.user?.userId,
+              postDetail?.user?.userId ? null : currentUser?.following.includes(
+                  postDetail?.user?.userId,
                 ) ? (
                 <TooltipProvider>
                   <Tooltip>
@@ -115,38 +96,35 @@ const Content = () => {
             </div>
             <p className="flex gap-1 font-semibold">
               <Link
-                to={`/profile/${data?.user.username}`}
+                to={`/profile/${postDetail?.user.username}`}
                 className="hover:underline"
               >
-                @{data?.user.username}
+                @{postDetail?.user.username}
               </Link>
               <span>
-                {data?.user.hasBadge && (
+                {postDetail?.user.hasBadge && (
                   <BadgeCheck fill="blue" stroke="black" />
                 )}
               </span>
               <span className="ml-3 text-gray-500">
-                {moment(data?.createdAt).fromNow()}
+                {moment(postDetail?.createdAt).fromNow()}
               </span>
             </p>
           </div>
-          <p className="mt-2 font-light">{data?.content}</p>
+          <p className="mt-2 font-light">{postDetail?.content}</p>
           <div className="mb-2 mt-7 flex items-center gap-3">
-            <Love post={data} urlLike={`/post/like/${postId}`} />
-            <Comment
-              handleChangePostComment={handleChangePostComment}
-              handleSubmitPostComment={handleSubmitPostComment}
-              textPostComment={textPostComment}
-            />
-            <Share post={data} />
+            <Love post={postDetail} urlLike={`/post/like/${postId}`} />
+            <Comment post={postDetail && postDetail} url={postId} />
+            <Share post={postDetail} />
           </div>
           <p className="text-sm text-gray-500">
-            {data?.likes.length} {data?.likes.length > 1 ? "likes" : "like"} -{" "}
-            {data?.comments.length}{" "}
-            {data?.comments.length > 1 ? "comments" : "comment"}
+            {postDetail?.likes.length}{" "}
+            {postDetail?.likes.length > 1 ? "likes" : "like"} -{" "}
+            {postDetail?.comments.length}{" "}
+            {postDetail?.comments.length > 1 ? "comments" : "comment"}
           </p>
         </div>
-        <MenuPost post={data} />
+        <MenuPost post={postDetail} />
       </div>
     </section>
   );

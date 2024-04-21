@@ -30,7 +30,7 @@ const Share: React.FC<{ post: Post }> = ({ post }) => {
 
   return (
     <div className="cursor-pointer rounded-full p-1 hover:scale-105">
-      <Send size={27} onClick={handelShareLink} />
+      <Send size={23} onClick={handelShareLink} />
     </div>
   );
 };

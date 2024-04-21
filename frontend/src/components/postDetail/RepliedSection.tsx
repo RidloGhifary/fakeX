@@ -74,8 +74,9 @@ const RepliedSection: React.FC<{ reply: Reply; commentId: string }> = ({
             alt={reply?.user.username}
             className="w-10 rounded-full border"
           />
-          {currentUser._id ===
-          data?.user?.userId ? null : currentUser?.following.includes(
+          {currentUser._id === data?.user?.userId ||
+          currentUser._id ===
+            reply?.user.userId ? null : currentUser?.following.includes(
               data?.user?.userId,
             ) ? (
             <TooltipProvider>
