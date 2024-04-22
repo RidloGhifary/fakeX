@@ -1,6 +1,6 @@
 import { useToast } from "@/components/ui/use-toast";
 import { Post } from "@/models/Post";
-import { Send } from "lucide-react";
+import { SendHorizonal } from "lucide-react";
 
 const Share: React.FC<{ post: Post }> = ({ post }) => {
   const { toast } = useToast();
@@ -30,7 +30,7 @@ const Share: React.FC<{ post: Post }> = ({ post }) => {
 
   return (
     <div className="cursor-pointer rounded-full p-1 hover:scale-105">
-      <Send size={23} onClick={handelShareLink} />
+      <SendHorizonal size={23} onClick={handelShareLink} />
     </div>
   );
 };
