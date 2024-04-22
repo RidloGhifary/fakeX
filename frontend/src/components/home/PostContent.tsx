@@ -19,12 +19,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ProfileHover from "./ProfileHover";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 interface PostContentProps {
   data: Post;
 }
 
 const PostContent: React.FC<PostContentProps> = ({ data }) => {
+  console.log("🚀 ~ data:", data);
   const queryClient = useQueryClient();
   const { currentUser } = UseAppContext();
   const { toast } = useToast();
@@ -33,7 +40,7 @@ const PostContent: React.FC<PostContentProps> = ({ data }) => {
     mutationKey: ["user"],
     mutationFn: async () => {
       const response = await makeRequest.post(
-        `/user/follow/${data?.user?.userId.toString()}`,
+        `/user/follow/${data?.user?._id.toString()}`,
       );
       return response;
     },
@@ -72,8 +79,8 @@ const PostContent: React.FC<PostContentProps> = ({ data }) => {
           />
 
           {currentUser._id ===
-          data?.user?.userId ? null : currentUser?.following.includes(
-              data?.user?.userId,
+          data?.user?._id ? null : currentUser?.following.includes(
+              data?.user?._id,
             ) ? (
             <TooltipProvider>
               <Tooltip>
@@ -106,12 +113,20 @@ const PostContent: React.FC<PostContentProps> = ({ data }) => {
       <div className="flex flex-1 gap-4">
         <div className="w-full">
           <p className="flex gap-1 font-semibold">
-            <Link
-              to={`/profile/${data?.user.username}`}
-              className="hover:underline"
-            >
-              @{data?.user.username}
-            </Link>
+            <HoverCard>
+              <HoverCardTrigger>
+                <Link
+                  to={`/profile/${data?.user.username}`}
+                  className="hover:underline"
+                >
+                  @{data?.user.username}
+                </Link>
+              </HoverCardTrigger>
+              <HoverCardContent className="border-white/50 bg-black text-white">
+                <ProfileHover user={data?.user} />
+              </HoverCardContent>
+            </HoverCard>
+
             <span>
               {data?.user.hasBadge && <BadgeCheck fill="blue" stroke="black" />}
             </span>

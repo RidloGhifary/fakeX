@@ -35,3 +35,8 @@ export const UseCommentPost = async (formData: {
   });
   return response;
 };
+
+export const UseDeletePost = async (postId: string) => {
+  const response = await makeRequest.post(`/post/delete/${postId}`);
+  return response;
+};

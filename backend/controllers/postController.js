@@ -4,13 +4,27 @@ const { validationResult } = require("express-validator");
 
 const GetAllPost = async (_, res) => {
   try {
-    const posts = await Post.aggregate([
-      {
-        $sort: { numLikes: -1, createdAt: 1 },
-      },
-    ]);
+    const posts = await Post.find({})
+      .sort({ numLikes: 1, createdAt: -1 })
+      .populate({
+        path: "user",
+        select: "userId username bio profile_picture followers hasBadge",
+        populate: {
+          path: "followers",
+          select: "userId username profile_picture hasBadge",
+        },
+      })
+      .populate({
+        path: "comments",
+        populate: {
+          path: "user",
+          select: "userId username profile_picture hasBadge",
+        },
+      });
+
     res.status(200).json(posts);
   } catch (err) {
+    console.log("🚀 ~ GetAllPost ~ err:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -58,14 +72,7 @@ const CreatePost = async (req, res) => {
     const user = await User.findById(req.id).select("-password");
 
     const newPost = new Post({
-      user: {
-        userId: user._id,
-        username: user.username,
-        bio: user.bio,
-        profile_picture: user.profile_picture,
-        hasBadge: user.hasBadge,
-        followers: user.followers,
-      },
+      user: user._id,
       content,
       likes: [],
       comments: [],
@@ -82,19 +89,21 @@ const CreatePost = async (req, res) => {
 };
 
 const DeletePost = async (req, res) => {
-  const { params: postId } = req;
+  const {
+    params: { postId },
+  } = req;
 
   try {
-    const currentPost = await Post.findById(postId);
+    const currentPost = await Post.findById({ _id: postId });
     if (!currentPost)
       return res.status(404).json({ message: "Cannot found post" });
 
-    if (req.id !== currentPost.userId.toString())
+    if (req.id !== currentPost.user._id.toString())
       return res
         .status(403)
-        .json({ message: "You are not authorized to edit this post" });
+        .json({ message: "You are not authorized to delete this post" });
 
-    await currentPost.remove();
+    await Post.deleteOne({ _id: postId });
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
@@ -171,12 +180,7 @@ const CommentPost = async (req, res) => {
       return res.status(404).json({ message: "Cannot find post" });
 
     currentPost.comments.push({
-      user: {
-        userId: req.id,
-        username: user.username,
-        profile_picture: user.profile_picture,
-        hasBadge: user.hasBadge,
-      },
+      user: user._id,
       content,
     });
     await currentPost.save();

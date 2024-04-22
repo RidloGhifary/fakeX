@@ -3,10 +3,9 @@ const mongoose = require("mongoose");
 const ReplySchema = new mongoose.Schema(
   {
     user: {
-      userId: mongoose.Schema.Types.ObjectId,
-      username: String,
-      profile_picture: String,
-      hasBadge: Boolean,
+      type: mongoose.Schema.Types.ObjectId,
+      require: true,
+      ref: "User",
     },
     content: {
       type: String,
@@ -25,10 +24,9 @@ const ReplySchema = new mongoose.Schema(
 const commentSchema = new mongoose.Schema(
   {
     user: {
-      userId: mongoose.Schema.Types.ObjectId,
-      username: String,
-      profile_picture: String,
-      hasBadge: Boolean,
+      type: mongoose.Schema.Types.ObjectId,
+      require: true,
+      ref: "User",
     },
     content: {
       type: String,
@@ -52,12 +50,9 @@ const commentSchema = new mongoose.Schema(
 const PostSchema = new mongoose.Schema(
   {
     user: {
-      userId: mongoose.Schema.Types.ObjectId,
-      username: String,
-      bio: String,
-      profile_picture: String,
-      hasBadge: Boolean,
-      followers: [String],
+      type: mongoose.Schema.Types.ObjectId,
+      require: true,
+      ref: "User",
     },
     content: {
       type: String,
