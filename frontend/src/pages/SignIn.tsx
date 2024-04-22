@@ -166,6 +166,7 @@ const SignIn = () => {
             </p>
           </div>
           <Button
+            disabled={isPending}
             className="flex w-full items-center justify-center gap-1 bg-white text-black hover:bg-white hover:text-black"
             onClick={() => alert("This feature is not available yet")}
           >
