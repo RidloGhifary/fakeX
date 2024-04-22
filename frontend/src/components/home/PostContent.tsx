@@ -26,11 +26,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 
-interface PostContentProps {
-  data: Post;
-}
-
-const PostContent: React.FC<PostContentProps> = ({ data }) => {
+const PostContent: React.FC<{ data: Post }> = ({ data }) => {
   const queryClient = useQueryClient();
   const { currentUser } = UseAppContext();
   const { toast } = useToast();

@@ -2,8 +2,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "../ui/separator";
 import PostContent from "./PostContent";
 import Logo from "../../assets/fakeX.png";
+import React from "react";
+import { Post } from "@/models/Post";
 
-const SwitchContent = () => {
+const SwitchContent: React.FC<{ postDatas: Post[] }> = ({ postDatas }) => {
   return (
     <section className="block md:hidden">
       <div className="mx-0 w-full">
@@ -17,10 +19,10 @@ const SwitchContent = () => {
           </TabsList>
           <TabsContent value="forYou">
             {Array.from(
-              [1, 2, 3, 4, 5, 6].map((_, i) => (
+              postDatas?.map((data, i) => (
                 <div key={i}>
                   <Separator className="my-6 border-[.2px] border-gray-800" />
-                  <PostContent />
+                  <PostContent data={data} />
                 </div>
               )),
             )}
