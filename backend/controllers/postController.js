@@ -5,7 +5,8 @@ const { validationResult } = require("express-validator");
 const GetAllPost = async (_, res) => {
   try {
     const posts = await Post.find({})
-      .sort({ numLikes: 1, createdAt: -1 })
+      .sort({ createdAt: -1 })
+      .sort({ likes: 1 })
       .populate({
         path: "user",
         select: "userId username bio profile_picture followers hasBadge",
