@@ -10,11 +10,13 @@ import { AlignRight } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "./ui/use-toast";
+import { UseAppContext } from "@/context/AppContext";
 
 const LeftSideMenu = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { currentUser } = UseAppContext();
 
   const { mutate, isPending } = useMutation({
     mutationFn: UseLogOut,
@@ -45,12 +47,34 @@ const LeftSideMenu = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem className="cursor-pointer">
-            <Link to="/profile/@rdllghifary_">Profile</Link>
+            <Link to={`/profile/@${currentUser?.username}`}>Profile</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer">Liked</DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => {
+              toast({
+                variant: "destructive",
+                title: "Failed.",
+                description: "This feature is not available yet.",
+              });
+            }}
+          >
+            Liked
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer">Saved</DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => {
+              toast({
+                variant: "destructive",
+                title: "Failed.",
+                description: "This feature is not available yet.",
+              });
+            }}
+          >
+            Saved
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer" onClick={handleLogOut}>
             {isPending ? "Loading..." : "Log out"}
