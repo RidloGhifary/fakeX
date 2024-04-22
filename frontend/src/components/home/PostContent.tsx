@@ -31,7 +31,6 @@ interface PostContentProps {
 }
 
 const PostContent: React.FC<PostContentProps> = ({ data }) => {
-  console.log("🚀 ~ data:", data);
   const queryClient = useQueryClient();
   const { currentUser } = UseAppContext();
   const { toast } = useToast();
