@@ -51,11 +51,25 @@ const GetPostByFollowing = async (req, res) => {
 const GetDetailPost = async (req, res) => {
   const { postId } = req.params;
   try {
-    const post = await Post.findById(postId).populate({
-      path: "comments",
-      options: { sort: { createdAt: "asc" } },
-    });
+    const post = await Post.findById({ _id: postId })
+      .populate({
+        path: "user",
+        select: "userId username bio profile_picture followers hasBadge",
+        populate: {
+          path: "followers",
+          select: "userId username profile_picture hasBadge",
+        },
+      })
+      .populate({
+        path: "comments",
+        populate: {
+          path: "user",
+          select: "userId username profile_picture hasBadge",
+        },
+      });
+
     if (!post) return res.status(404).json({ message: "Cannot found post" });
+
     res.status(200).json(post);
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });

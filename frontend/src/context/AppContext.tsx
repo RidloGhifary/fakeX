@@ -14,8 +14,6 @@ interface AppContextType {
   currentUser: User;
   postContentIsLoading: boolean;
   postContentDatas: Post[];
-  postDetail: Post;
-  postDetailIsLoading: boolean;
 }
 
 interface AppContextProviderProps {
@@ -27,8 +25,6 @@ const AppContext = createContext<AppContextType>({
   postContentIsLoading: false,
   currentUser: {} as User,
   postContentDatas: [] as Post[],
-  postDetail: {} as Post,
-  postDetailIsLoading: true,
 });
 
 export const AppContextProvider: React.FC<AppContextProviderProps> = ({
@@ -60,14 +56,6 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     queryFn: async () => await UseGetSuggestContent(),
   });
 
-  const { data: postDetail, isLoading: postDetailIsLoading } = useQuery({
-    queryKey: ["post-detail"],
-    queryFn: async ({ queryKey }) => {
-      const postId = queryKey[1];
-      const response = await makeRequest.get(`/post/${postId}`);
-      return response.data;
-    },
-  });
   return (
     <AppContext.Provider
       value={{
@@ -75,8 +63,6 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         currentUser,
         postContentDatas,
         postContentIsLoading,
-        postDetail,
-        postDetailIsLoading,
       }}
     >
       {children}

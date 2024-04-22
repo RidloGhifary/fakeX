@@ -1,14 +1,15 @@
 import { useToast } from "@/components/ui/use-toast";
 import { UseAppContext } from "@/context/AppContext";
-import { CommentUser, Reply } from "@/models/Comment";
+import { Reply } from "@/models/Comment";
 import { Post } from "@/models/Post";
+import { UserSum } from "@/models/User";
 import { makeRequest } from "@/utils/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
 import React from "react";
 
 interface CommentProps {
-  user: CommentUser;
+  user: UserSum;
   content: string;
   edited: boolean;
   likes: string[];
@@ -20,7 +21,7 @@ interface CommentProps {
 
 const Love: React.FC<{
   post?: Post;
-  urlLike?: string;
+  urlLike: string;
   comment?: CommentProps;
   reply?: Reply;
 }> = ({ post, urlLike, comment, reply }) => {

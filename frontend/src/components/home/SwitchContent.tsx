@@ -18,14 +18,12 @@ const SwitchContent: React.FC<{ postDatas: Post[] }> = ({ postDatas }) => {
             <TabsTrigger value="follow">Follow</TabsTrigger>
           </TabsList>
           <TabsContent value="forYou">
-            {Array.from(
-              postDatas?.map((data, i) => (
-                <div key={i}>
-                  <Separator className="my-6 border-[.2px] border-gray-800" />
-                  <PostContent data={data} />
-                </div>
-              )),
-            )}
+            {postDatas?.map((data, i) => (
+              <div key={i}>
+                <Separator className="my-6 border-[.2px] border-gray-800" />
+                <PostContent data={data} />
+              </div>
+            ))}
           </TabsContent>
           <TabsContent value="follow">Ups it is empty.</TabsContent>
         </Tabs>

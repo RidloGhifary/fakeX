@@ -18,7 +18,7 @@ import { useToast } from "../ui/use-toast";
 import RepliedSection from "./RepliedSection";
 import { Reply } from "@/models/Comment";
 
-const PostComment = () => {
+const CommentSection = () => {
   const queryClient = useQueryClient();
   const { postId } = useParams();
   const { currentUser, postDetail } = UseAppContext();
@@ -162,4 +162,4 @@ const PostComment = () => {
   );
 };
 
-export default PostComment;
+export default CommentSection;

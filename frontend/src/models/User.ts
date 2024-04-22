@@ -22,3 +22,11 @@ export interface Followers {
   profile_picture: string;
   hasBadge: boolean;
 }
+
+export interface UserSum {
+  _id: string;
+  username: string;
+  profile_picture: string;
+  hasBadge: boolean;
+  followers: Followers[];
+}

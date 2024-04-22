@@ -1,3 +1,4 @@
+import React from "react";
 import User from "../../assets/user.png";
 import { BadgeCheck, Check, Plus } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
@@ -16,10 +17,14 @@ import {
 } from "@/components/ui/tooltip";
 import { UseAppContext } from "@/context/AppContext";
 import { useToast } from "../ui/use-toast";
+import { Post } from "@/models/Post";
 
-const Content = () => {
+const Content: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
+  data,
+  dataIsLoading,
+}) => {
   const queryClient = useQueryClient();
-  const { currentUser, postDetail } = UseAppContext();
+  const { currentUser } = UseAppContext();
   const { postId } = useParams();
   const { toast } = useToast();
 
@@ -27,7 +32,7 @@ const Content = () => {
     mutationKey: ["follow-user"],
     mutationFn: async () => {
       const response = await makeRequest.post(
-        `/user/follow/${postDetail?.user?.userId.toString()}`,
+        `/user/follow/${data?.user?._id.toString()}`,
       );
       return response;
     },
@@ -55,6 +60,8 @@ const Content = () => {
     }
   };
 
+  if (dataIsLoading) return <p>Loading...</p>;
+
   return (
     <section className="flex justify-start gap-4">
       <div className="flex flex-1 gap-4">
@@ -62,14 +69,14 @@ const Content = () => {
           <div className="flex items-center gap-4">
             <div className="relative">
               <img
-                src={postDetail?.user.profile_picture || User}
-                alt={postDetail?.user.username}
+                src={data?.user.profile_picture || User}
+                alt={data?.user.username}
                 className="w-10 rounded-full border"
               />
 
               {currentUser._id ===
-              postDetail?.user?.userId ? null : currentUser?.following.includes(
-                  postDetail?.user?.userId,
+              data?.user?._id ? null : currentUser?.following.includes(
+                  data?.user?._id,
                 ) ? (
                 <TooltipProvider>
                   <Tooltip>
@@ -96,35 +103,46 @@ const Content = () => {
             </div>
             <p className="flex gap-1 font-semibold">
               <Link
-                to={`/profile/${postDetail?.user.username}`}
+                to={`/profile/${data?.user.username}`}
                 className="hover:underline"
               >
-                @{postDetail?.user.username}
+                @{data?.user.username}
               </Link>
               <span>
-                {postDetail?.user.hasBadge && (
+                {data?.user.hasBadge && (
                   <BadgeCheck fill="blue" stroke="black" />
                 )}
               </span>
               <span className="ml-3 text-gray-500">
-                {moment(postDetail?.createdAt).fromNow()}
+                {moment(data?.createdAt).fromNow()}
               </span>
             </p>
           </div>
-          <p className="mt-2 font-light">{postDetail?.content}</p>
+          <p className="mt-2 font-light">{data?.content}</p>
           <div className="mb-2 mt-7 flex items-center gap-3">
-            <Love post={postDetail} urlLike={`/post/like/${postId}`} />
-            <Comment post={postDetail && postDetail} url={postId} />
-            <Share post={postDetail} />
+            <Love post={data} urlLike={`/post/like/${postId}`} />
+            <Comment post={data} url={postId} />
+            <Share post={data} />
           </div>
           <p className="text-sm text-gray-500">
-            {postDetail?.likes.length}{" "}
-            {postDetail?.likes.length > 1 ? "likes" : "like"} -{" "}
-            {postDetail?.comments.length}{" "}
-            {postDetail?.comments.length > 1 ? "comments" : "comment"}
+            {data?.likes.length !== 0 && (
+              <span>
+                {data?.likes.length +
+                  " " +
+                  `${data?.likes.length > 1 ? "likes" : "like"}`}
+              </span>
+            )}
+            {data?.likes.length !== 0 && data?.comments.length !== 0 && " - "}
+            {data?.comments.length !== 0 && (
+              <span>
+                {data?.comments.length +
+                  " " +
+                  `${data?.comments.length > 1 ? "comments" : "comment"}`}
+              </span>
+            )}
           </p>
         </div>
-        <MenuPost post={postDetail} />
+        <MenuPost post={data} />
       </div>
     </section>
   );

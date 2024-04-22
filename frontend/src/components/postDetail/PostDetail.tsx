@@ -1,12 +1,24 @@
-// import Content from "./Content";
+import { useParams } from "react-router-dom";
+import Content from "./Content";
+import { makeRequest } from "@/utils/axios";
+import { useQuery } from "@tanstack/react-query";
 // import PostComment from "./PostComment";
 
 const Post = () => {
+  const { postId } = useParams();
+
+  const { data: postDetail, isLoading: postDetailIsLoading } = useQuery({
+    queryKey: ["post-detail"],
+    queryFn: async () => {
+      const response = await makeRequest.get(`/post/${postId}`);
+      return response.data;
+    },
+  });
+
   return (
     <div className="mx-auto max-w-[600px] px-3 pb-20 pt-4 md:px-0 md:py-20 md:pb-0">
-      <p>This is detail page, coming soon</p>
-      {/* <Content />
-      <PostComment /> */}
+      <Content data={postDetail} dataIsLoading={postDetailIsLoading} />
+      {/* <PostComment /> */}
     </div>
   );
 };
