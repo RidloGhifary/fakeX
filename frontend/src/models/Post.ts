@@ -1,3 +1,5 @@
+import { Followers } from "./User";
+
 export interface Post {
   _id: string;
   user: {
@@ -6,7 +8,7 @@ export interface Post {
     bio: string;
     profile_picture: string;
     hasBadge: boolean;
-    followers: string[];
+    followers: Followers[];
   };
   content: string;
   likes: string[];

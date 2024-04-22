@@ -9,9 +9,16 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   __v: number;
-  followers: string[];
+  followers: Followers[];
   following: string[];
   hasBadge: boolean;
   lastUsernameChange: string;
   verificationBadgeRequested: boolean;
+}
+
+export interface Followers {
+  _id: string;
+  username: string;
+  profile_picture: string;
+  hasBadge: boolean;
 }

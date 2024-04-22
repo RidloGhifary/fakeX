@@ -1,20 +1,21 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "../ui/button";
-import User from "../../assets/user.png";
+import UserImg from "../../assets/user.png";
 import { BadgeCheck } from "lucide-react";
 import { UseAppContext } from "@/context/AppContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "../ui/use-toast";
 import { UseFollowUser } from "@/api/UserApi";
+import { Followers } from "@/models/User";
 
 interface ProfileHoverProps {
   _id: string;
   username: string;
   bio: string;
   profile_picture: string;
+  followers: Followers[];
   hasBadge: boolean;
-  followers: string[];
 }
 
 const ProfileHover: React.FC<{ user: ProfileHoverProps }> = ({ user }) => {
@@ -52,7 +53,7 @@ const ProfileHover: React.FC<{ user: ProfileHoverProps }> = ({ user }) => {
   return (
     <div className="flex justify-between space-x-4">
       <Avatar className="flex-none">
-        <AvatarImage src={user?.profile_picture || User} />
+        <AvatarImage src={user?.profile_picture || UserImg} />
         <AvatarFallback>VC</AvatarFallback>
       </Avatar>
       <div className="flex-1 space-y-1">

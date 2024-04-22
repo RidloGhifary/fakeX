@@ -1,12 +1,10 @@
-export interface CommentUser {
-  userId: string;
-  username: string;
-  profile_picture: string;
-  hasBadge: boolean;
-}
-
 export interface Reply {
-  user: CommentUser;
+  user: {
+    userId: string;
+    username: string;
+    profile_picture: string;
+    hasBadge: boolean;
+  };
   content: string;
   likes: string[];
   _id: string;
@@ -15,7 +13,12 @@ export interface Reply {
 }
 
 export interface Comment {
-  user: CommentUser;
+  user: {
+    userId: string;
+    username: string;
+    profile_picture: string;
+    hasBadge: boolean;
+  };
   content: string;
   edited: boolean;
   likes: string[];

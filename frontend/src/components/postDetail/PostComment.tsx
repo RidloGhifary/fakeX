@@ -28,7 +28,7 @@ const PostComment = () => {
     mutationKey: ["user"],
     mutationFn: async () => {
       const response = await makeRequest.post(
-        `/user/follow/${postDetail?.user?.userId.toString()}`,
+        `/user/follow/${postDetail?.user?._id.toString()}`,
       );
       return response;
     },
@@ -70,10 +70,10 @@ const PostComment = () => {
                   alt={comment?.user.username}
                   className="w-10 rounded-full border"
                 />
-                {currentUser._id === postDetail?.user?.userId ||
+                {currentUser._id === postDetail?.user?._id ||
                 currentUser._id ===
-                  comment?.user.userId ? null : currentUser?.following.includes(
-                    postDetail?.user?.userId,
+                  comment?.user._id ? null : currentUser?.following.includes(
+                    postDetail?.user?._id,
                   ) ? (
                   <TooltipProvider>
                     <Tooltip>
