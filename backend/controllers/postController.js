@@ -122,11 +122,11 @@ const EditPost = async (req, res) => {
   } = req;
 
   try {
-    const currentPost = await Post.findById(postId);
+    const currentPost = await Post.findById({ _id: postId });
     if (!currentPost)
       return res.status(404).json({ message: "Cannot found post" });
 
-    if (req.id !== currentPost.userId.toString())
+    if (req.id !== currentPost.user._id.toString())
       return res
         .status(403)
         .json({ message: "You are not authorized to edit this post" });

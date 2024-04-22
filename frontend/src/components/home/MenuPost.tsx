@@ -13,7 +13,6 @@ import { useToast } from "../ui/use-toast";
 import { UseAppContext } from "@/context/AppContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UseDeletePost } from "@/api/PostApi";
-
 const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
   const { toast } = useToast();
   const { currentUser } = UseAppContext();
@@ -78,6 +77,14 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
     }
   };
 
+  const handleEditPost = () => {
+    toast({
+      variant: "destructive",
+      title: "Failed.",
+      description: "This feature is not available yet.",
+    });
+  };
+
   return (
     <div>
       <DropdownMenu>
@@ -85,16 +92,22 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
           <Ellipsis className="text-xl" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <Link to={`/profile/@${post?.user?.username}`}>
-            <DropdownMenuItem className="cursor-pointer">
-              Profile
-            </DropdownMenuItem>
-          </Link>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer" onClick={handleSavePost}>
-            Save
-          </DropdownMenuItem>
-
+          {currentUser?._id !== post?.user?._id && (
+            <>
+              <Link to={`/profile/@${post?.user?.username}`}>
+                <DropdownMenuItem className="cursor-pointer">
+                  Profile
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={handleSavePost}
+              >
+                Save
+              </DropdownMenuItem>
+            </>
+          )}
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="cursor-pointer"
@@ -104,6 +117,14 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
           </DropdownMenuItem>
           {currentUser?._id === post?.user?._id && (
             <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={handleEditPost}
+              >
+                Edit
+              </DropdownMenuItem>
+
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={handleDeletePost}
