@@ -59,6 +59,7 @@ const SignIn = () => {
     mutationKey: ["validate"],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["validate"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       navigate("/");
     },
   });

@@ -41,7 +41,7 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
   const { toast } = useToast();
-  const { currentUser, isLoggedIn } = UseAppContext();
+  const { currentUser } = UseAppContext();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -67,7 +67,6 @@ const SignUp = () => {
     try {
       await mutate(data);
       if (currentUser) {
-        console.log("Navigating to /verify-otp");
         navigate(`/verify-otp/${currentUser._id}`);
       }
     } catch (err) {
