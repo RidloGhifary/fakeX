@@ -9,6 +9,7 @@ const ProfilePicture = () => {
       src={currentUser?.profile_picture || User}
       alt={currentUser?.username || "user-photo"}
       className="h-10 w-10 rounded-full border object-cover"
+      loading="lazy"
     />
   );
 };

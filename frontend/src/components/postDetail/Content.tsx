@@ -72,6 +72,7 @@ const Content: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
                 src={data?.user.profile_picture || User}
                 alt={data?.user.username}
                 className="h-10 w-10 rounded-full border object-cover"
+                loading="lazy"
               />
 
               {currentUser._id ===
