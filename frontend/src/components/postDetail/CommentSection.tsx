@@ -17,18 +17,22 @@ import { UseAppContext } from "@/context/AppContext";
 import { useToast } from "../ui/use-toast";
 import RepliedSection from "./RepliedSection";
 import { Reply } from "@/models/Comment";
+import { Post } from "@/models/Post";
 
-const CommentSection = () => {
+const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
+  data,
+  dataIsLoading,
+}) => {
   const queryClient = useQueryClient();
   const { postId } = useParams();
-  const { currentUser, postDetail } = UseAppContext();
+  const { currentUser } = UseAppContext();
   const { toast } = useToast();
 
   const { mutate } = useMutation({
     mutationKey: ["user"],
     mutationFn: async () => {
       const response = await makeRequest.post(
-        `/user/follow/${postDetail?.user?._id.toString()}`,
+        `/user/follow/${data?.user?._id.toString()}`,
       );
       return response;
     },
@@ -56,11 +60,13 @@ const CommentSection = () => {
     }
   };
 
+  if (dataIsLoading) return <p>Loading...</p>;
+
   return (
     <div className="pb-44 pt-5">
       <Separator className="mb-5 border-[.2px] border-gray-800" />
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      {postDetail?.comments?.map((comment: any, i: number) => (
+      {data?.comments?.map((comment: any, i: number) => (
         <div key={i}>
           <section className="flex justify-start gap-4">
             <div className="flex flex-none flex-col items-center ">
@@ -70,10 +76,10 @@ const CommentSection = () => {
                   alt={comment?.user.username}
                   className="w-10 rounded-full border"
                 />
-                {currentUser._id === postDetail?.user?._id ||
+                {currentUser._id === data?.user?._id ||
                 currentUser._id ===
                   comment?.user._id ? null : currentUser?.following.includes(
-                    postDetail?.user?._id,
+                    data?.user?._id,
                   ) ? (
                   <TooltipProvider>
                     <Tooltip>
@@ -129,22 +135,25 @@ const CommentSection = () => {
                     comment={comment}
                     urlLike={`/post/comment/${comment?._id}/like/${postId}`}
                   />
-                  <Comment post={postDetail} />
+                  <Comment post={data} />
                   <p className="text-sm text-gray-500">
-                    {comment?.likes.length > 0 && comment?.likes.length}{" "}
-                    {comment?.likes.length > 1
-                      ? "likes"
-                      : comment?.likes.length === 0
-                        ? null
-                        : "like"}
-                    {" - "}
-                    {comment?.replies.length > 0 &&
-                      comment?.replies.length}{" "}
-                    {comment?.replies.length > 1
-                      ? "replies"
-                      : comment?.replies.length === 0
-                        ? null
-                        : "reply"}
+                    {comment?.likes.length !== 0 && (
+                      <span>
+                        {comment?.likes.length +
+                          " " +
+                          `${comment?.likes.length > 1 ? "likes" : "like"}`}
+                      </span>
+                    )}
+                    {comment?.likes.length !== 0 &&
+                      comment?.replies.length !== 0 &&
+                      " - "}
+                    {comment?.replies.length !== 0 && (
+                      <span>
+                        {comment?.replies.length +
+                          " " +
+                          `${comment?.replies.length > 1 ? "comments" : "comment"}`}
+                      </span>
+                    )}
                   </p>
                 </div>
               </div>
