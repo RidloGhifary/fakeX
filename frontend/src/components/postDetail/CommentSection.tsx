@@ -86,7 +86,7 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
                   <img
                     src={commentData?.user.profile_picture || User}
                     alt={commentData?.user.username}
-                    className="w-10 rounded-full border"
+                    className="h-10 w-10 rounded-full border object-cover"
                   />
                   {currentUser._id === data?.user?._id ||
                   currentUser._id ===

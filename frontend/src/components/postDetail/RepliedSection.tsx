@@ -72,7 +72,7 @@ const RepliedSection: React.FC<{ reply: Reply; commentId: string }> = ({
           <img
             src={reply?.user.profile_picture || User}
             alt={reply?.user.username}
-            className="w-10 rounded-full border"
+            className="h-10 w-10 rounded-full border object-cover"
           />
           {currentUser._id === data?.user?._id ||
           currentUser._id ===
