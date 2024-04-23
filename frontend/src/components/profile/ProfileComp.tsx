@@ -1,8 +1,9 @@
+import React, { useState } from "react";
 import { UseAppContext } from "@/context/AppContext";
 import User from "../../assets/user.png";
 import { Separator } from "../ui/separator";
 import UserContent from "./UserContent";
-import { BadgeCheck, PencilLine } from "lucide-react";
+import { BadgeCheck, PencilLine, RotateCw } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "@/utils/axios";
@@ -17,8 +18,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { app } from "@/utils/firebase";
 
 const ProfileComp = () => {
+  const [uploadedImage, setUploadedImage] = useState<string>("");
+  const [uploadImageLoading, setUploadImageLoading] = useState<boolean>(false);
+
   const queryClient = useQueryClient();
   const { currentUser } = UseAppContext();
   const { username } = useParams();
@@ -85,6 +96,56 @@ const ProfileComp = () => {
           description: "Failed copied URL.",
         });
       });
+  };
+
+  const storeImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const storage = getStorage(app);
+    const metadata = {
+      contentType: "image/jpeg",
+    };
+
+    return new Promise((resolve, reject) => {
+      setUploadImageLoading(false);
+      if (file) {
+        const fileName = new Date().getTime() + file?.name;
+        const storageRef = ref(storage, "images/" + fileName);
+        const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setUploadImageLoading(true);
+            console.log("Upload is " + progress + "% done");
+          },
+          (error) => {
+            reject(error);
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: "There was a problem while uploading image",
+            });
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(
+              (downloadURL: string) => {
+                setUploadImageLoading(false);
+                resolve(downloadURL);
+                setUploadedImage(downloadURL);
+              },
+            );
+          },
+        );
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "There was a problem while uploading image",
+        });
+      }
+    });
   };
 
   if (isPending) return <p>Loading...</p>;
@@ -175,20 +236,28 @@ const ProfileComp = () => {
                       name="profile_picture"
                       id="profile_picture"
                       className="hidden"
+                      disabled={uploadImageLoading}
                       accept="image/jpeg, image/png"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        storeImage(e)
+                      }
                     />
                     <label
                       htmlFor="profile_picture"
                       className="group relative cursor-pointer"
                     >
                       <img
-                        src={user?.profile_picture || User}
+                        src={uploadedImage || user?.profile_picture || User}
                         alt="user-photo"
                         className="h-[120px] w-[120px] rounded-full object-cover"
                         loading="lazy"
                       />
                       <div className="absolute left-[50%] top-0 flex h-full w-full translate-x-[-50%] items-center justify-center rounded-full group-hover:bg-black/30">
-                        <PencilLine className="text-white/50 group-hover:text-white" />
+                        {uploadImageLoading ? (
+                          <RotateCw className="mr-2 h-4 w-4 animate-spin text-white" />
+                        ) : (
+                          <PencilLine className="text-white/50 group-hover:text-white" />
+                        )}
                       </div>
                     </label>
                   </div>
@@ -210,7 +279,10 @@ const ProfileComp = () => {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button className="bg-white text-black transition hover:scale-105 hover:bg-white hover:text-black">
+                  <Button
+                    disabled={uploadImageLoading}
+                    className="bg-white text-black transition hover:scale-105 hover:bg-white hover:text-black"
+                  >
                     Save changes
                   </Button>
                 </DialogFooter>
