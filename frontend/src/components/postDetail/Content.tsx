@@ -103,7 +103,7 @@ const Content: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
             </div>
             <p className="flex gap-1 font-semibold">
               <Link
-                to={`/profile/${data?.user.username}`}
+                to={`/profile/@${data?.user.username}`}
                 className="hover:underline"
               >
                 @{data?.user.username}

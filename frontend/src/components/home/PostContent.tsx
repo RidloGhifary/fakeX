@@ -111,7 +111,7 @@ const PostContent: React.FC<{ data: Post }> = ({ data }) => {
             <HoverCard>
               <HoverCardTrigger>
                 <Link
-                  to={`/profile/${data?.user.username}`}
+                  to={`/profile/@${data?.user.username}`}
                   className="hover:underline"
                 >
                   @{data?.user.username}

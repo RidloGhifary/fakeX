@@ -22,6 +22,20 @@ const CurrentUser = async (req, res) => {
   }
 };
 
+const GetParticularUser = async (req, res) => {
+  const {
+    params: { username },
+  } = req;
+
+  try {
+    const user = await User.findOne({ username }).select("-password");
+    if (!user) return res.status(404).json({ message: "Cannot find user" });
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const UpdateAccount = async (req, res) => {
   const {
     params: { userId },
@@ -303,6 +317,7 @@ async function uploadImage(imageFile) {
 module.exports = {
   UpdateAccount,
   CurrentUser,
+  GetParticularUser,
   FollowingUser,
   FollowersList,
   VerificationRequest,

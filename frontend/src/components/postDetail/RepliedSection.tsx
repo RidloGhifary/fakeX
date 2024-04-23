@@ -107,7 +107,7 @@ const RepliedSection: React.FC<{ reply: Reply; commentId: string }> = ({
         <div className="w-full space-y-2">
           <p className="flex items-center gap-1 font-semibold">
             <Link
-              to={`/profile/${reply?.user.username}`}
+              to={`/profile/@${reply?.user.username}`}
               className="hover:underline"
             >
               @{reply?.user.username}
