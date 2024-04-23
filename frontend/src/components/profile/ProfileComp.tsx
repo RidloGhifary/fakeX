@@ -25,6 +25,17 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "@/utils/firebase";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { UseUpdateProfile } from "@/api/UserApi";
 
 const ProfileComp = () => {
   const [uploadedImage, setUploadedImage] = useState<string>("");
@@ -61,7 +72,7 @@ const ProfileComp = () => {
       toast({
         variant: "destructive",
         title: "Follow: failed!",
-        description: "An error occurred during follow.",
+        description: "An error occurred during following.",
       });
     },
   });
@@ -147,6 +158,57 @@ const ProfileComp = () => {
       }
     });
   };
+
+  const FormSchema = z.object({
+    username: z.string().min(1, {
+      message: "Username must be at least 1 characters.",
+    }),
+    bio: z
+      .string()
+      .min(1, {
+        message: "Bio must be at least 1 characters.",
+      })
+      .max(50, {
+        message: "Bio must be no more than 50 characters.",
+      }),
+  });
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      username: user?.username,
+      bio: user?.bio,
+    },
+  });
+
+  const { mutate: updateProfileMutate, isPending: updateProfilePending } =
+    useMutation({
+      mutationKey: ["update-profile"],
+      mutationFn: UseUpdateProfile,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["user"] });
+        toast({
+          title: "Update: Success!",
+          description: "Successfully updating your profile.",
+        });
+      },
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Update: failed!",
+          description: "An error occurred during updating.",
+        });
+      },
+    });
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    updateProfileMutate({
+      username: data.username,
+      bio: data.bio,
+      profile_picture: uploadedImage || user.profile_picture,
+      userId: user?._id,
+    });
+  }
 
   if (isPending) return <p>Loading...</p>;
 
@@ -261,31 +323,65 @@ const ProfileComp = () => {
                       </div>
                     </label>
                   </div>
-                  <div className="grid items-center gap-4">
-                    <Input
-                      id="username"
-                      value={user?.username || ""}
-                      className="col-span-3 border-white/50 bg-transparent"
-                    />
-                  </div>
-                  <div className="grid items-center gap-4">
-                    <Input
-                      id="username"
-                      value={user?.bio || ""}
-                      min={1}
-                      max={50}
-                      className="col-span-3 border-white/50 bg-transparent"
-                    />
-                  </div>
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="w-full space-y-6"
+                    >
+                      <FormField
+                        control={form.control}
+                        name="username"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div className="grid items-center gap-4">
+                                <Input
+                                  disabled={
+                                    updateProfilePending || uploadImageLoading
+                                  }
+                                  className="col-span-3 border-white/50 bg-transparent"
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="bio"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div className="grid items-center gap-4">
+                                <Input
+                                  disabled={
+                                    updateProfilePending || uploadImageLoading
+                                  }
+                                  min={1}
+                                  max={50}
+                                  className="col-span-3 border-white/50 bg-transparent"
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <DialogFooter>
+                        <Button
+                          disabled={uploadImageLoading || updateProfilePending}
+                          className="bg-white text-black transition hover:scale-105 hover:bg-white hover:text-black"
+                          type="submit"
+                        >
+                          Submit
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </Form>
                 </div>
-                <DialogFooter>
-                  <Button
-                    disabled={uploadImageLoading}
-                    className="bg-white text-black transition hover:scale-105 hover:bg-white hover:text-black"
-                  >
-                    Save changes
-                  </Button>
-                </DialogFooter>
               </DialogContent>
             </Dialog>
           )}

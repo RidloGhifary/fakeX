@@ -4,14 +4,6 @@ const transporter = require("../utils/nodemailer.js");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 
-const storage = multer.memoryStorage();
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-  },
-});
-
 const CurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.id).select("-password");
@@ -74,15 +66,13 @@ const UpdateAccount = async (req, res) => {
         message: "You can change your username only once every 30 days",
       });
 
-    const imageUrl = profile_picture && (await uploadImage(profile_picture));
-
     const updateAccount = await User.findOneAndUpdate(
       { _id: userId },
       {
         $set: {
           username: username,
           bio: bio,
-          profile_picture: imageUrl,
+          profile_picture: profile_picture,
           lastUsernameChange:
             username !== currentUser.username
               ? Date.now()
@@ -97,7 +87,6 @@ const UpdateAccount = async (req, res) => {
 
     res.status(200).json(others);
   } catch (err) {
-    console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -304,18 +293,6 @@ const GetTheBadge = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
-async function uploadImage(imageFile) {
-  console.log(imageFile);
-  try {
-    const b64 = Buffer.from(imageFile.buffer).toString("base64");
-    const dataURI = "data:" + imageFile.mimetype + ";base64," + b64;
-    const res = await cloudinary.uploader.upload(dataURI);
-    return res.url;
-  } catch (error) {
-    throw new Error("Error uploading image to Cloudinary: " + error.message);
-  }
-}
 
 module.exports = {
   UpdateAccount,
