@@ -5,12 +5,18 @@ import { Separator } from "../ui/separator";
 import UserContent from "./UserContent";
 import { BadgeCheck } from "lucide-react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "@/utils/axios";
+import { useToast } from "../ui/use-toast";
 
 const ProfileComp = () => {
+  const queryClient = useQueryClient();
   const { currentUser } = UseAppContext();
   const { username } = useParams();
+  const { toast } = useToast();
+
+  const domain = window.location.hostname;
+  const port = window.location.port ? `:${window.location.port}` : "";
 
   const { data: user, isPending } = useQuery({
     queryKey: ["user", username],
@@ -19,6 +25,58 @@ const ProfileComp = () => {
       return response.data;
     },
   });
+
+  const { mutate } = useMutation({
+    mutationKey: ["user"],
+    mutationFn: async () => {
+      const response = await makeRequest.post(
+        `/user/follow/${user?._id.toString()}`,
+      );
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Follow: failed!",
+        description: "An error occurred during follow.",
+      });
+    },
+  });
+
+  const handleFollow = () => {
+    try {
+      mutate();
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Follow: failed!",
+        description: "An error occurred during follow.",
+      });
+    }
+  };
+
+  const handelShareLink = () => {
+    const profileUrl = `http://${domain}${port}/profile/@${user?.username}`;
+
+    navigator.clipboard
+      .writeText(`${profileUrl}`)
+      .then(() => {
+        toast({
+          title: "Success copied.",
+          description: "URL has been copied.",
+        });
+      })
+      .catch(() => {
+        toast({
+          variant: "destructive",
+          title: "Failed.",
+          description: "Failed copied URL.",
+        });
+      });
+  };
 
   if (isPending) return <p>Loading...</p>;
 
@@ -45,16 +103,27 @@ const ProfileComp = () => {
 
         <div className="my-7 flex items-center gap-4">
           <div className="relative flex items-center">
-            <img
-              src={User}
-              alt="user-photo"
-              className="h-[20px] w-[20px] rounded-full border object-cover"
-            />
-            <img
-              src={User}
-              alt="user-photo"
-              className="absolute left-[50%] w-[20px]"
-            />
+            {user?.followers.length === 0 ? null : user?.followers.length ===
+              1 ? (
+              <img
+                src={User}
+                alt="user-photo"
+                className="h-[20px] w-[20px] rounded-full object-cover"
+              />
+            ) : (
+              <>
+                <img
+                  src={User}
+                  alt="user-photo"
+                  className="h-[20px] w-[20px] rounded-full object-cover"
+                />
+                <img
+                  src={User}
+                  alt="user-photo"
+                  className="absolute left-[50%] h-[20px] w-[20px] rounded-full object-cover"
+                />
+              </>
+            )}
           </div>
           <p className="text-sm font-medium text-white/50">
             {user?.followers.length +
@@ -64,8 +133,13 @@ const ProfileComp = () => {
 
         <div className="flex items-center justify-center gap-4">
           {currentUser._id !== user?._id && (
-            <Button className="w-[50%] bg-white/10 transition hover:scale-105 hover:bg-white/10">
-              Follow
+            <Button
+              className="w-[50%] bg-white/10 transition hover:scale-105 hover:bg-white/10"
+              onClick={handleFollow}
+            >
+              {currentUser.following.includes(user?._id)
+                ? "UnFollow"
+                : "Follow"}
             </Button>
           )}
           {currentUser._id === user?._id && (
@@ -73,7 +147,10 @@ const ProfileComp = () => {
               Edit profile
             </Button>
           )}
-          <Button className="w-[50%] bg-white/10 transition hover:scale-105 hover:bg-white/10">
+          <Button
+            className="w-[50%] bg-white/10 transition hover:scale-105 hover:bg-white/10"
+            onClick={handelShareLink}
+          >
             Share profile
           </Button>
         </div>
