@@ -45,8 +45,7 @@ const Comment: React.FC<{ post: Post; url?: string }> = ({ post, url }) => {
       setTextPostComment("");
       navigate(`/@${post?.user.username}/post/${post?._id}`);
     },
-    onError: (err) => {
-      console.log(err);
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Create: failed!",

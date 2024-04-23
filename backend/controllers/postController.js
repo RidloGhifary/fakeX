@@ -298,18 +298,14 @@ const ReplyComment = async (req, res) => {
       return res.status(404).json({ message: "Comment not found" });
 
     hasComment.replies.push({
-      user: {
-        userId: req.id,
-        username: user.username,
-        profile_picture: user.profile_picture,
-        hasBadge: user.hasBadge,
-      },
+      user: user._id,
       content,
     });
     await currentPost.save();
 
     res.status(200).json({ message: "Reply added successfully" });
   } catch (err) {
+    console.log("🚀 ~ ReplyComment ~ err:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };

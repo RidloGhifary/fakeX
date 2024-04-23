@@ -44,7 +44,8 @@ const Love: React.FC<{
         queryKey: ["post-detail"],
       });
     },
-    onError: () => {
+    onError: (err) => {
+      console.log("🚀 ~ err:", err);
       toast({
         variant: "destructive",
         title: "Like post: failed!",

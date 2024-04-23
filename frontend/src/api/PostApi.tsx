@@ -30,6 +30,7 @@ export const UseCommentPost = async (formData: {
   url: string;
 }) => {
   const { content, url } = formData;
+  console.log("🚀 ~ content:", content);
   const response = await makeRequest.post(`/post/comment/${url}`, {
     content: content,
   });

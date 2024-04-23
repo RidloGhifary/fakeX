@@ -1,6 +1,6 @@
 export interface Reply {
   user: {
-    userId: string;
+    _id: string;
     username: string;
     profile_picture: string;
     hasBadge: boolean;
@@ -14,7 +14,7 @@ export interface Reply {
 
 export interface Comment {
   user: {
-    userId: string;
+    _id: string;
     username: string;
     profile_picture: string;
     hasBadge: boolean;
