@@ -1,13 +1,22 @@
 import { UseAppContext } from "@/context/AppContext";
 import User from "../../assets/user.png";
-import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import UserContent from "./UserContent";
-import { BadgeCheck } from "lucide-react";
+import { BadgeCheck, PencilLine } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "@/utils/axios";
 import { useToast } from "../ui/use-toast";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 const ProfileComp = () => {
   const queryClient = useQueryClient();
@@ -95,6 +104,7 @@ const ProfileComp = () => {
           src={user?.profile_picture || User}
           alt="user-photo"
           className="h-[120px] w-[120px] rounded-full object-cover"
+          loading="lazy"
         />
       </section>
       <section className="font-light">
@@ -109,6 +119,7 @@ const ProfileComp = () => {
                 src={User}
                 alt="user-photo"
                 className="h-[20px] w-[20px] rounded-full object-cover"
+                loading="lazy"
               />
             ) : (
               <>
@@ -116,11 +127,13 @@ const ProfileComp = () => {
                   src={User}
                   alt="user-photo"
                   className="h-[20px] w-[20px] rounded-full object-cover"
+                  loading="lazy"
                 />
                 <img
                   src={User}
                   alt="user-photo"
                   className="absolute left-[50%] h-[20px] w-[20px] rounded-full object-cover"
+                  loading="lazy"
                 />
               </>
             )}
@@ -143,9 +156,66 @@ const ProfileComp = () => {
             </Button>
           )}
           {currentUser._id === user?._id && (
-            <Button className="w-[50%] bg-white/10 transition hover:scale-105 hover:bg-white/10">
-              Edit profile
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="w-[50%] bg-white/10 transition hover:scale-105 hover:bg-white/10">
+                  Edit profile
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="border-white/50 bg-black text-white sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle className="text-center">
+                    Edit profile
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="mx-auto">
+                    <input
+                      type="file"
+                      name="profile_picture"
+                      id="profile_picture"
+                      className="hidden"
+                      accept="image/jpeg, image/png"
+                    />
+                    <label
+                      htmlFor="profile_picture"
+                      className="group relative cursor-pointer"
+                    >
+                      <img
+                        src={user?.profile_picture || User}
+                        alt="user-photo"
+                        className="h-[120px] w-[120px] rounded-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute left-[50%] top-0 flex h-full w-full translate-x-[-50%] items-center justify-center rounded-full group-hover:bg-black/30">
+                        <PencilLine className="text-white/50 group-hover:text-white" />
+                      </div>
+                    </label>
+                  </div>
+                  <div className="grid items-center gap-4">
+                    <Input
+                      id="username"
+                      value={user?.username || ""}
+                      className="col-span-3 border-white/50 bg-transparent"
+                    />
+                  </div>
+                  <div className="grid items-center gap-4">
+                    <Input
+                      id="username"
+                      value={user?.bio || ""}
+                      min={1}
+                      max={50}
+                      className="col-span-3 border-white/50 bg-transparent"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button className="bg-white text-black transition hover:scale-105 hover:bg-white hover:text-black">
+                    Save changes
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           )}
           <Button
             className="w-[50%] bg-white/10 transition hover:scale-105 hover:bg-white/10"
