@@ -42,8 +42,6 @@ const UpdateAccount = async (req, res) => {
     body: { profile_picture, username, bio },
   } = req;
 
-  console.log(req.body);
-
   try {
     if (req.id !== userId)
       return res.status(401).send({ message: "Unauthorized" });
@@ -54,6 +52,11 @@ const UpdateAccount = async (req, res) => {
           "Username can only contain letters, numbers, and underscore (_) characters and cannot contain spaces",
       });
     }
+
+    if (bio.length > 100)
+      return res
+        .status(400)
+        .json({ message: "Bio character cannot more than 100" });
 
     const currentUser = await User.findById(req.id);
     if (!currentUser)
