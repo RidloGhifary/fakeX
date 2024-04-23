@@ -66,6 +66,13 @@ const GetDetailPost = async (req, res) => {
           path: "user",
           select: "userId username profile_picture hasBadge",
         },
+      })
+      .populate({
+        path: "comments.replies",
+        populate: {
+          path: "user",
+          select: "userId username profile_picture hasBadge",
+        },
       });
 
     if (!post) return res.status(404).json({ message: "Cannot found post" });

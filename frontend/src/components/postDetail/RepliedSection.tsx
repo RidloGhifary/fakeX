@@ -74,10 +74,10 @@ const RepliedSection: React.FC<{ reply: Reply; commentId: string }> = ({
             alt={reply?.user.username}
             className="w-10 rounded-full border"
           />
-          {currentUser._id === data?.user?.userId ||
+          {currentUser._id === data?.user?._id ||
           currentUser._id ===
-            reply?.user.userId ? null : currentUser?.following.includes(
-              data?.user?.userId,
+            reply?.user._id ? null : currentUser?.following.includes(
+              data?.user?._id,
             ) ? (
             <TooltipProvider>
               <Tooltip>
@@ -102,12 +102,6 @@ const RepliedSection: React.FC<{ reply: Reply; commentId: string }> = ({
             </TooltipProvider>
           )}
         </div>
-        {/* {reply?.replies.length > 0 && (
-          <Separator
-            orientation="vertical"
-            className="h-[74%] border-[.2px] border-gray-800"
-          />
-        )} */}
       </div>
       <div className="flex flex-1 gap-4">
         <div className="w-full space-y-2">
