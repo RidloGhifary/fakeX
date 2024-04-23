@@ -53,7 +53,7 @@ const UpdateAccount = async (req, res) => {
       });
     }
 
-    if (bio.length > 100)
+    if (bio.length > 50)
       return res
         .status(400)
         .json({ message: "Bio character cannot more than 100" });
