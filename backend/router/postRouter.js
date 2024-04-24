@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get("/", postController.GetAllPost);
 router.get("/byfollowing", verifyToken, postController.GetPostByFollowing);
+router.get("/:username", verifyToken, postController.GetPostByUserCreator);
 router.get("/:postId", postController.GetDetailPost);
 router.post(
   "/create",
