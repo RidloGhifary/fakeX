@@ -28,6 +28,7 @@ export default function App() {
 
             <Route element={<PrivateRoute />}>
               <Route path="/" element={<Home />} />
+              <Route path="/byfollowing" element={<Home />} />
               <Route path="/profile/:username" element={<Profile />} />
               <Route path="/:username/post/:postId" element={<PostDetail />} />
             </Route>

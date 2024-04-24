@@ -42,6 +42,9 @@ const Comment: React.FC<{ post: Post; url?: string }> = ({ post, url }) => {
       queryClient.invalidateQueries({
         queryKey: ["post"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["post-byfollowing"],
+      });
       setTextPostComment("");
       navigate(`/@${post?.user.username}/post/${post?._id}`);
     },

@@ -14,6 +14,8 @@ interface AppContextType {
   currentUser: User;
   postContentIsLoading: boolean;
   postContentDatas: Post[];
+  postContentDatasByFollowing: Post[];
+  postContentDatasByFollowingLoading: boolean;
 }
 
 interface AppContextProviderProps {
@@ -25,6 +27,8 @@ const AppContext = createContext<AppContextType>({
   postContentIsLoading: false,
   currentUser: {} as User,
   postContentDatas: [] as Post[],
+  postContentDatasByFollowing: [] as Post[],
+  postContentDatasByFollowingLoading: true,
 });
 
 export const AppContextProvider: React.FC<AppContextProviderProps> = ({
@@ -56,6 +60,19 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     queryFn: async () => await UseGetSuggestContent(),
   });
 
+  const {
+    data: postContentDatasByFollowing,
+    isLoading: postContentDatasByFollowingLoading,
+  } = useQuery({
+    queryKey: ["post-byfollowing"],
+    queryFn: async () => {
+      const response = await makeRequest.get(
+        `${BASE_URL}/api/post/byfollowing`,
+      );
+      return response.data;
+    },
+  });
+
   return (
     <AppContext.Provider
       value={{
@@ -63,6 +80,8 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         currentUser,
         postContentDatas,
         postContentIsLoading,
+        postContentDatasByFollowing,
+        postContentDatasByFollowingLoading,
       }}
     >
       {children}

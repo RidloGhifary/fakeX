@@ -55,6 +55,9 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
     mutationFn: UseDeletePost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post"] });
+      queryClient.invalidateQueries({
+        queryKey: ["post-byfollowing"],
+      });
       toast({
         title: "Success.",
         description: "Success to delete post.",

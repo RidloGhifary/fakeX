@@ -39,12 +39,25 @@ const GetPostByFollowing = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
 
     const followingIds = currentUser.following;
-    const posts = await Post.aggregate([
-      { $match: { user: { $in: followingIds } } },
-      { $sort: { createdAt: -1 } },
-    ]);
+    const posts = await Post.find({ user: { $in: followingIds } })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "user",
+        select: "userId username bio profile_picture followers hasBadge",
+        populate: {
+          path: "followers",
+          select: "userId username profile_picture hasBadge",
+        },
+      })
+      .populate({
+        path: "comments",
+        populate: {
+          path: "user",
+          select: "userId username profile_picture hasBadge",
+        },
+      });
 
-    res.status(200).json({ posts });
+    res.status(200).json(posts);
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }

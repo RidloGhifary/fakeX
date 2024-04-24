@@ -41,6 +41,9 @@ const Love: React.FC<{
         queryKey: ["post"],
       });
       queryClient.invalidateQueries({
+        queryKey: ["post-byfollowing"],
+      });
+      queryClient.invalidateQueries({
         queryKey: ["post-detail"],
       });
     },

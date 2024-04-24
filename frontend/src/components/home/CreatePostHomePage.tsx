@@ -31,6 +31,9 @@ const CreatePostHomePage = () => {
     mutationFn: UseCreatePost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post"] });
+      queryClient.invalidateQueries({
+        queryKey: ["post-byfollowing"],
+      });
       toast({
         title: "Create: success!",
         description: "Successfully posting a new post.",
