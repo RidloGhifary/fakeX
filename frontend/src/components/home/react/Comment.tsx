@@ -84,7 +84,7 @@ const Comment: React.FC<{ post: Post; url?: string }> = ({ post, url }) => {
                   <img
                     src={(postData && postData?.user?.profile_picture) || User}
                     alt="user-photo"
-                    className="w-10 rounded-full border"
+                    className="h-10 w-10 rounded-full border object-cover"
                   />
                   <Separator
                     orientation="vertical"

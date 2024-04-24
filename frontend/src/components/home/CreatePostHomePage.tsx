@@ -60,7 +60,7 @@ const CreatePostHomePage = () => {
 
   return (
     <section className="hidden w-full md:block">
-      <div className="flex gap-1">
+      <div className="flex items-center gap-1">
         <ProfilePicture />
         <Form {...form}>
           <form
