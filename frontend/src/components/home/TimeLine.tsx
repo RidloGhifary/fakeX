@@ -36,7 +36,10 @@ const TimeLine = () => {
   return (
     <section className="mx-auto max-w-[600px] px-3 pb-20 pt-4 md:px-0 md:py-20 md:pb-0">
       <CreatePostHomePage />
-      <SwitchContent postDatas={postContentDatas} />
+      <SwitchContent
+        postDatas={postContentDatas}
+        postContentDatasByFollowing={postContentDatasByFollowing}
+      />
 
       <div className="mb-56 hidden md:block">
         {postContentIsLoading || postContentDatasByFollowingLoading ? (

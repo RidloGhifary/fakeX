@@ -5,7 +5,10 @@ import Logo from "../../assets/fakeX.png";
 import React from "react";
 import { Post } from "@/models/Post";
 
-const SwitchContent: React.FC<{ postDatas: Post[] }> = ({ postDatas }) => {
+const SwitchContent: React.FC<{
+  postDatas: Post[];
+  postContentDatasByFollowing: Post[];
+}> = ({ postDatas, postContentDatasByFollowing }) => {
   return (
     <section className="block md:hidden">
       <div className="mx-0 w-full">
@@ -25,7 +28,14 @@ const SwitchContent: React.FC<{ postDatas: Post[] }> = ({ postDatas }) => {
               </div>
             ))}
           </TabsContent>
-          <TabsContent value="follow">Ups it is empty.</TabsContent>
+          <TabsContent value="follow">
+            {postContentDatasByFollowing?.map((data, i) => (
+              <div key={i}>
+                <Separator className="my-6 border-[.2px] border-gray-800" />
+                <PostContent data={data} />
+              </div>
+            ))}
+          </TabsContent>
         </Tabs>
       </div>
     </section>
