@@ -25,6 +25,7 @@ export interface Followers {
 
 export interface UserSum {
   _id: string;
+  bio?: string;
   username: string;
   profile_picture: string;
   hasBadge: boolean;

@@ -36,6 +36,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { UseUpdateProfile } from "@/api/UserApi";
+import { UserPost } from "@/models/Post";
 
 const ProfileComp = () => {
   const [uploadedImage, setUploadedImage] = useState<string>("");
@@ -53,6 +54,14 @@ const ProfileComp = () => {
     queryKey: ["user", username],
     queryFn: async () => {
       const response = await makeRequest.get(`/user/${username?.slice(1)}`);
+      return response.data;
+    },
+  });
+
+  const { data: userPosts, isPending: userPostsPending } = useQuery({
+    queryKey: ["user-post"],
+    queryFn: async () => {
+      const response = await makeRequest.get(`/post/${username?.slice(1)}`);
       return response.data;
     },
   });
@@ -210,7 +219,7 @@ const ProfileComp = () => {
     });
   }
 
-  if (isPending) return <p>Loading...</p>;
+  if (isPending || userPostsPending) return <p>Loading...</p>;
 
   return (
     <section className="mx-auto max-w-[600px] px-3 pb-20 pt-4 md:px-0 md:py-20 md:pb-0">
@@ -232,7 +241,7 @@ const ProfileComp = () => {
       </section>
       <section className="font-light">
         <p className="font-medium text-white/50">Ridlo achmad ghifary</p>
-        <p>{user?.bio}</p>
+        <p className="w-[50%]">{user?.bio}</p>
 
         <div className="my-7 flex items-center gap-4">
           <div className="relative flex items-center">
@@ -396,14 +405,15 @@ const ProfileComp = () => {
 
       <section className="py-7">
         <h1 className="text-center text-xl uppercase">your post</h1>
-        {Array.from(
-          [1, 2].map((_, i) => (
-            <div key={i} className="">
-              <Separator className="my-6 border-[.2px] border-gray-800" />
-              <UserContent />
-            </div>
-          )),
-        )}
+        {userPosts?.map((userPost: UserPost, i: number) => (
+          <div key={i}>
+            <Separator className="my-6 border-[.2px] border-gray-800" />
+            <UserContent
+              userPost={userPost}
+              userPostLoading={userPostsPending}
+            />
+          </div>
+        ))}
       </section>
     </section>
   );
