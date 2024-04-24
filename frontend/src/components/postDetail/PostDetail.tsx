@@ -8,13 +8,14 @@ const Post = () => {
   const { postId } = useParams();
 
   const { data: postDetail, isLoading: postDetailIsLoading } = useQuery({
-    queryKey: ["post-detail"],
+    queryKey: ["post-detail", postId],
     queryFn: async () => {
-      const response = await makeRequest.get(`/post/${postId}`);
+      const response = await makeRequest.get(`/post/byId/${postId}`);
       return response.data;
     },
   });
 
+  if (postDetailIsLoading) return <p>Loading...</p>;
   return (
     <div className="mx-auto max-w-[600px] px-3 pb-20 pt-4 md:px-0 md:py-20 md:pb-0">
       <Content data={postDetail} dataIsLoading={postDetailIsLoading} />
