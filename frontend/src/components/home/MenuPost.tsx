@@ -15,7 +15,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UseDeletePost } from "@/api/PostApi";
 
 const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
-  console.log("🚀 ~ post:", post);
   const { toast } = useToast();
   const { currentUser } = UseAppContext();
   const queryClient = useQueryClient();

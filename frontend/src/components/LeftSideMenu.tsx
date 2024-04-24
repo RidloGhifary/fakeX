@@ -8,15 +8,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AlignRight } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "./ui/use-toast";
 import { UseAppContext } from "@/context/AppContext";
+import React from "react";
 
 const LeftSideMenu = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { currentUser } = UseAppContext();
+  const { pathname } = useLocation();
+  const profileUrl = pathname.split("/")[1];
 
   const { mutate, isPending } = useMutation({
     mutationFn: UseLogOut,
@@ -46,10 +49,14 @@ const LeftSideMenu = () => {
           <AlignRight className="text-gray-500" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem className="cursor-pointer">
-            <Link to={`/profile/@${currentUser?.username}`}>Profile</Link>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          {!profileUrl && (
+            <React.Fragment>
+              <DropdownMenuItem className="cursor-pointer">
+                <Link to={`/profile/@${currentUser?.username}`}>Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </React.Fragment>
+          )}
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={() => {
