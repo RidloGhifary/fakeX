@@ -13,6 +13,7 @@ import { useToast } from "../ui/use-toast";
 import { UseAppContext } from "@/context/AppContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UseDeletePost } from "@/api/PostApi";
+import { UseSavePost } from "@/api/SavedPostApi";
 
 const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
   const { toast } = useToast();
@@ -42,12 +43,27 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
       });
   };
 
+  const { mutate: savePostMutate, isPending: savePostLoading } = useMutation({
+    mutationKey: ["save-post"],
+    mutationFn: UseSavePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["save-post"] });
+      toast({
+        title: "Saving: Success.",
+        description: "Successfully saving post.",
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Saving: Failed.",
+        description: "An error occurred during saving post.",
+      });
+    },
+  });
+
   const handleSavePost = () => {
-    toast({
-      variant: "destructive",
-      title: "Coming soon.",
-      description: "This feature is not available yet.",
-    });
+    savePostMutate({ postId: post?._id, userId: currentUser._id });
   };
 
   const { mutate, isPending } = useMutation({
@@ -107,12 +123,13 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={handleSavePost}
+                disabled={savePostLoading}
               >
-                Save
+                {savePostLoading ? "Loading" : "Save"}
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
             </>
           )}
-          <DropdownMenuSeparator />
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={handelShareLink}
