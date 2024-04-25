@@ -8,7 +8,7 @@ const GetSavedPost = async (req, res) => {
   try {
     const savedPost = await SavedPost.find({ user: userId }).populate({
       path: "post",
-      select: "content likes comments createdAt",
+      select: "content likes comments createdAt updatedAt",
       populate: {
         path: "user",
         select: "username hasBadge followers profile_picture bio",
@@ -27,11 +27,6 @@ const SavePost = async (req, res) => {
   } = req;
 
   try {
-    if (userId === req.id)
-      return res
-        .status(400)
-        .json({ message: "You are not allowed to save your own post" });
-
     const existingPostSaved = await SavedPost.findOne({
       user: userId,
       post: postId,
