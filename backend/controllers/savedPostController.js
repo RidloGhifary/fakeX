@@ -27,6 +27,11 @@ const SavePost = async (req, res) => {
   } = req;
 
   try {
+    if (userId === req.id)
+      return res
+        .status(400)
+        .json({ message: "You are not allowed to save your own post" });
+
     const existingPostSaved = await SavedPost.findOne({
       user: userId,
       post: postId,
