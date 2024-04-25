@@ -4,6 +4,7 @@ const savedPostController = require("../controllers/savedPostController.js");
 
 const router = express.Router();
 
-router.post("/:postId/:userId", verifyToken, savedPostController.SavedPost);
+router.get("/:userId", verifyToken, savedPostController.GetSavedPost);
+router.post("/:postId/:userId", verifyToken, savedPostController.SavePost);
 
 module.exports = router;
