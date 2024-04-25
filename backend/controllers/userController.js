@@ -2,7 +2,6 @@ const User = require("../models/User.js");
 const UserVerificationBadge = require("../models/UserVerificationBadge.js");
 const transporter = require("../utils/nodemailer.js");
 const bcrypt = require("bcrypt");
-const multer = require("multer");
 
 const CurrentUser = async (req, res) => {
   try {
