@@ -16,6 +16,7 @@ import { UseDeletePost } from "@/api/PostApi";
 import { UseSavePost } from "@/api/SavedPostApi";
 
 const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
+  console.log("🚀 ~ post:", post);
   const { toast } = useToast();
   const { currentUser } = UseAppContext();
   const queryClient = useQueryClient();

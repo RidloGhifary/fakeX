@@ -7,18 +7,9 @@ import { UseAppContext } from "@/context/AppContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "../ui/use-toast";
 import { UseFollowUser } from "@/api/UserApi";
-import { Followers } from "@/models/User";
+import { UserSum } from "@/models/User";
 
-interface ProfileHoverProps {
-  _id: string;
-  username: string;
-  bio: string;
-  profile_picture: string;
-  followers: Followers[];
-  hasBadge: boolean;
-}
-
-const ProfileHover: React.FC<{ user: ProfileHoverProps }> = ({ user }) => {
+const ProfileHover: React.FC<{ user: UserSum }> = ({ user }) => {
   const queryClient = useQueryClient();
   const { currentUser } = UseAppContext();
   const { toast } = useToast();
