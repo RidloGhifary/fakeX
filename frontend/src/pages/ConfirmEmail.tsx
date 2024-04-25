@@ -9,11 +9,14 @@ import {
   FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ArrowLeftToLine } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { makeRequest } from "@/utils/axios";
 
 const FormSchema = z.object({
   email: z.string().email("Email is incorrect"),
@@ -27,32 +30,53 @@ const ConfirmEmail = () => {
     },
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["confirm-email"],
+    mutationFn: async (data) => {
+      const response = await makeRequest.post(
+        "/credentials/forgot-password",
+        data,
+      );
+      return response;
+    },
+    onSuccess: () => {
+      alert("Success");
+    },
+    onError: (err) => {
+      console.log("🚀 ~ ConfirmEmail ~ err:", err);
+    },
+  });
+
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
+    mutate(data);
   };
 
   return (
-    <section className="h-dvh flex items-center justify-center w-full relative p-10 lg:p-3">
-      <div className="absolute top-10 left-10 lg:left-0">
+    <section className="relative flex h-dvh w-full items-center justify-center p-10 lg:p-3">
+      <div className="absolute left-10 top-10 lg:left-0">
         <Link to="/sign-in" className="flex items-center gap-2 hover:underline">
           <ArrowLeftToLine />
           Back to sign in
         </Link>
       </div>
-      <section className="w-full grid lg:grid-cols-2 items-center gap-40">
-        <img src={Logo} alt="logo" className="w-[200px] lg:w-[300px] mx-auto" />
+      <section className="grid w-full items-center gap-40 lg:grid-cols-2">
+        <img src={Logo} alt="logo" className="mx-auto w-[200px] lg:w-[300px]" />
         <div className="-mt-20 lg:mt-0">
           <Form {...form}>
             <form
+              aria-disabled={isPending}
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-3 text-black">
+              className="space-y-3 text-black"
+            >
               <FormField
+                disabled={isPending}
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel className="text-white">User email :</FormLabel>
                     <FormControl>
-                      <Input placeholder="Email" {...field} />
+                      <Input placeholder="example@gmail.com" {...field} />
                     </FormControl>
                     <FormDescription>
                       Reset password link will be send to your email
@@ -62,8 +86,10 @@ const ConfirmEmail = () => {
                 )}
               />
               <Button
+                disabled={isPending}
                 type="submit"
-                className="w-full bg-white text-black hover:bg-white hover:text-black">
+                className="w-full bg-white text-black hover:bg-white hover:text-black"
+              >
                 Submit
               </Button>
             </form>

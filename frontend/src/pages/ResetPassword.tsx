@@ -12,6 +12,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useMutation } from "@tanstack/react-query";
+import { makeRequest } from "@/utils/axios";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const FormSchema = z.object({
   newPassword: z.string().min(8, {
@@ -23,6 +26,9 @@ const FormSchema = z.object({
 });
 
 const ResetPassword = () => {
+  const { search } = useLocation();
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -31,20 +37,39 @@ const ResetPassword = () => {
     },
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["reset-password"],
+    mutationFn: async (data) => {
+      const response = await makeRequest.post(
+        `/credentials/reset-password${search}`,
+        { newPassword: data },
+      );
+      return response;
+    },
+    onSuccess: () => {
+      navigate("/sign-in");
+    },
+    onError: (err) => {
+      console.log("🚀 ~ ResetPassword ~ err:", err);
+    },
+  });
+
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
+    mutate(data.newPassword);
   };
 
   return (
-    <section className="h-dvh flex items-center justify-center w-full">
-      <section className="w-full grid grid-cols-2 items-center gap-40">
-        <img src={Logo} alt="logo" className="w-[200px] lg:w-[300px] mx-auto" />
+    <section className="flex h-dvh w-full items-center justify-center">
+      <section className="grid w-full grid-cols-2 items-center gap-40">
+        <img src={Logo} alt="logo" className="mx-auto w-[200px] lg:w-[300px]" />
         <div className="">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-3 text-black">
+              className="space-y-3 text-black"
+            >
               <FormField
+                disabled={isPending}
                 control={form.control}
                 name="newPassword"
                 render={({ field }) => (
@@ -65,6 +90,7 @@ const ResetPassword = () => {
                 )}
               />
               <FormField
+                disabled={isPending}
                 control={form.control}
                 name="confirmPassword"
                 render={({ field }) => (
@@ -75,6 +101,13 @@ const ResetPassword = () => {
                         placeholder="Confirm password"
                         className="text-black"
                         {...field}
+                        {...form.register("confirmPassword", {
+                          validate: (value) => {
+                            if (!value) return "This field is required";
+                            else if (form.watch("newPassword") !== value)
+                              return "Your password do not match";
+                          },
+                        })}
                       />
                     </FormControl>
                     <FormDescription>Confirm your new password</FormDescription>
@@ -83,8 +116,10 @@ const ResetPassword = () => {
                 )}
               />
               <Button
+                disabled={isPending}
                 type="submit"
-                className="w-full bg-white text-black hover:bg-white hover:text-black">
+                className="w-full bg-white text-black hover:bg-white hover:text-black"
+              >
                 Submit
               </Button>
             </form>

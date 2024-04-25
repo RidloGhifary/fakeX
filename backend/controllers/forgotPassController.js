@@ -36,7 +36,7 @@ const ForgotPassword = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const token = generateToken(user._id);
@@ -70,7 +70,6 @@ const ResetPassword = async (req, res) => {
 
     res.status(200).json({ message: "Password reset successful" });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
