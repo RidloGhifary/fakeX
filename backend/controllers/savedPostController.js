@@ -8,7 +8,7 @@ const GetSavedPost = async (req, res) => {
   try {
     const savedPost = await SavedPost.find({ user: userId }).populate({
       path: "post",
-      select: "user content likes comments createdAt",
+      select: "content likes comments createdAt",
       populate: {
         path: "user",
         select: "username hasBadge followers profile_picture bio",
@@ -27,14 +27,23 @@ const SavePost = async (req, res) => {
   } = req;
 
   try {
-    const savedPost = new SavedPost({
+    const existingPostSaved = await SavedPost.findOne({
       user: userId,
       post: postId,
     });
 
-    await savedPost.save();
+    if (existingPostSaved) {
+      await existingPostSaved.deleteOne();
+      res.status(200).send({ message: "Post has been unsaved" });
+    } else {
+      const savedPost = new SavedPost({
+        user: userId,
+        post: postId,
+      });
 
-    res.status(201).send({ message: "Saved successful" });
+      await savedPost.save();
+      res.status(201).send({ message: "Saved successful" });
+    }
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }
