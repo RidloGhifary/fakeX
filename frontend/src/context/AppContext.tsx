@@ -6,6 +6,8 @@ import { makeRequest } from "@/utils/axios";
 import { User } from "@/models/User";
 import { Post } from "@/models/Post";
 import { UseGetSuggestContent } from "@/api/PostApi";
+import { UseGetUserPostSaved } from "@/api/SavedPostApi";
+import { PostSaved } from "@/models/PostSaved";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -16,6 +18,8 @@ interface AppContextType {
   postContentDatas: Post[];
   postContentDatasByFollowing: Post[];
   postContentDatasByFollowingLoading: boolean;
+  savePostDatas: PostSaved;
+  savePostDatasLoading: boolean;
 }
 
 interface AppContextProviderProps {
@@ -29,6 +33,8 @@ const AppContext = createContext<AppContextType>({
   postContentDatas: [] as Post[],
   postContentDatasByFollowing: [] as Post[],
   postContentDatasByFollowingLoading: true,
+  savePostDatas: [] as PostSaved[],
+  savePostDatasLoading: true,
 });
 
 export const AppContextProvider: React.FC<AppContextProviderProps> = ({
@@ -73,6 +79,11 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     },
   });
 
+  const { data: savePostDatas, isLoading: savePostDatasLoading } = useQuery({
+    queryKey: ["save-post", currentUser?._id],
+    queryFn: () => UseGetUserPostSaved(currentUser?._id),
+  });
+
   return (
     <AppContext.Provider
       value={{
@@ -82,6 +93,8 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         postContentIsLoading,
         postContentDatasByFollowing,
         postContentDatasByFollowingLoading,
+        savePostDatas,
+        savePostDatasLoading,
       }}
     >
       {children}

@@ -70,17 +70,8 @@ const LeftSideMenuMobile = () => {
             Liked
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => {
-              toast({
-                variant: "destructive",
-                title: "Failed.",
-                description: "This feature is not available yet.",
-              });
-            }}
-          >
-            Saved
+          <DropdownMenuItem className="cursor-pointer">
+            <Link to={`@${currentUser.username}/post-saved`}>Saved</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer" onClick={handleLogOut}>

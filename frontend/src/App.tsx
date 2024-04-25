@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import PostDetail from "./pages/PostDetail";
 import PrivateRoute from "./components/PrivateRoute";
+import PostSaved from "./pages/PostSaved";
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
 
             <Route element={<PrivateRoute />}>
               <Route path="/" element={<Home />} />
+              <Route path="/:username/post-saved" element={<PostSaved />} />
               <Route path="/byfollowing" element={<Home />} />
               <Route path="/profile/:username" element={<Profile />} />
               <Route path="/:username/post/:postId" element={<PostDetail />} />
