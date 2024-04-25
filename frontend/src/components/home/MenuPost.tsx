@@ -14,12 +14,16 @@ import { UseAppContext } from "@/context/AppContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UseDeletePost } from "@/api/PostApi";
 import { UseSavePost } from "@/api/SavedPostApi";
+import { PostSavedProps } from "@/models/PostSaved";
 
 const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
-  console.log("🚀 ~ post:", post);
   const { toast } = useToast();
-  const { currentUser } = UseAppContext();
+  const { currentUser, savePostDatas } = UseAppContext();
   const queryClient = useQueryClient();
+
+  const existingPostIndexInSavedPost = savePostDatas?.findIndex(
+    (savedPost: PostSavedProps) => savedPost?.post?._id === post?._id,
+  );
 
   const domain = window.location.hostname;
   const port = window.location.port ? `:${window.location.port}` : "";
@@ -51,7 +55,7 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
       queryClient.invalidateQueries({ queryKey: ["save-post"] });
       toast({
         title: "Saving: Success.",
-        description: "Successfully saving post.",
+        description: `Successfully ${existingPostIndexInSavedPost !== -1 ? "Removing" : "Saving"} post.`,
       });
     },
     onError: () => {
@@ -128,7 +132,11 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
             onClick={handleSavePost}
             disabled={savePostLoading}
           >
-            {savePostLoading ? "Loading" : "Save"}
+            {savePostLoading
+              ? "Loading"
+              : existingPostIndexInSavedPost !== -1
+                ? "Remove"
+                : "Save"}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem

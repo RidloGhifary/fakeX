@@ -14,6 +14,7 @@ const Post = () => {
       return response.data;
     },
   });
+  console.log("🚀 ~ Post ~ postDetail:", postDetail);
 
   if (postDetailIsLoading) return <p>Loading...</p>;
   return (

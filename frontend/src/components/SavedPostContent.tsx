@@ -35,7 +35,7 @@ const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
     mutationKey: ["user"],
     mutationFn: async () => {
       const response = await makeRequest.post(
-        `/user/follow/${data?.user?._id.toString()}`,
+        `/user/follow/${data?.post?.user?._id.toString()}`,
       );
       return response;
     },
@@ -65,7 +65,7 @@ const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
 
   return (
     <section className="flex justify-start gap-4">
-      <div className="flex flex-none flex-col items-center gap-4">
+      <div className="flex flex-none flex-col items-center">
         <div className="relative">
           <img
             src={data?.post?.user.profile_picture || UserImage}
@@ -113,9 +113,9 @@ const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
               <HoverCardTrigger>
                 <Link
                   to={`/profile/@${data?.post?.user.username}`}
-                  className="hover:underline"
+                  className="text-lg hover:underline"
                 >
-                  @{data?.user.username}
+                  @{data?.post?.user.username}
                 </Link>
               </HoverCardTrigger>
               <HoverCardContent className="border-white/50 bg-black text-white">
@@ -131,12 +131,12 @@ const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
             </span>
           </p>
           <Link
-            to={`/@${data?.user?.username}/post/${data?._id}`}
+            to={`/@${data?.post?.user?.username}/post/${data?.post?._id}`}
             className="mt-2 line-clamp-4 font-light"
           >
             {data?.post?.content}
           </Link>
-          <div className="mb-2 mt-10 flex items-center gap-3">
+          <div className="mb-1 mt-10 flex items-center gap-3">
             <Love post={data?.post} urlLike={`/post/like/${data?.post?._id}`} />
             <Comment post={data?.post} url={`${data?.post?._id}`} />
             <Share post={data?.post} />
