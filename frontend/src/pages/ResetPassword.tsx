@@ -39,7 +39,7 @@ const ResetPassword = () => {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["reset-password"],
-    mutationFn: async (data) => {
+    mutationFn: async (data: string) => {
       const response = await makeRequest.post(
         `/credentials/reset-password${search}`,
         { newPassword: data },

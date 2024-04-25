@@ -17,12 +17,15 @@ import { ArrowLeftToLine } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { makeRequest } from "@/utils/axios";
+import { useToast } from "@/components/ui/use-toast";
 
 const FormSchema = z.object({
   email: z.string().email("Email is incorrect"),
 });
 
 const ConfirmEmail = () => {
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -32,7 +35,7 @@ const ConfirmEmail = () => {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["confirm-email"],
-    mutationFn: async (data) => {
+    mutationFn: async (data: { email: string }) => {
       const response = await makeRequest.post(
         "/credentials/forgot-password",
         data,
@@ -40,10 +43,17 @@ const ConfirmEmail = () => {
       return response;
     },
     onSuccess: () => {
-      alert("Success");
+      toast({
+        title: "Sending: Success!!",
+        description: "Reset password link has been sent to you email",
+      });
     },
-    onError: (err) => {
-      console.log("🚀 ~ ConfirmEmail ~ err:", err);
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Sending: Failed!!",
+        description: "An Error occurred during sending to your email",
+      });
     },
   });
 
