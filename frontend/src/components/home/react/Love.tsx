@@ -46,6 +46,9 @@ const Love: React.FC<{
       queryClient.invalidateQueries({
         queryKey: ["post-detail"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["save-post"],
+      });
     },
     onError: (err) => {
       console.log("🚀 ~ err:", err);
@@ -80,7 +83,7 @@ const Love: React.FC<{
             : "none"
         }
         stroke={
-          post?.likes.includes(currentUser?._id) ||
+          post?.likes?.includes(currentUser?._id) ||
           comment?.likes?.includes(currentUser?._id) ||
           reply?.likes?.includes(currentUser?._id)
             ? "red"

@@ -120,16 +120,16 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={handleSavePost}
-                disabled={savePostLoading}
-              >
-                {savePostLoading ? "Loading" : "Save"}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
             </>
           )}
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={handleSavePost}
+            disabled={savePostLoading}
+          >
+            {savePostLoading ? "Loading" : "Save"}
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={handelShareLink}

@@ -6,14 +6,24 @@ const GetSavedPost = async (req, res) => {
   } = req;
 
   try {
-    const savedPost = await SavedPost.find({ user: userId }).populate({
-      path: "post",
-      select: "content likes comments createdAt updatedAt",
-      populate: {
+    const savedPost = await SavedPost.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "post",
+        select: "user content likes comments createdAt updatedAt",
+        populate: {
+          path: "user",
+          select: "username hasBadge followers profile_picture bio",
+        },
+      })
+      .populate({
         path: "user",
-        select: "username hasBadge followers profile_picture bio",
-      },
-    });
+        select: "username profile_picture bio followers hasBadge",
+        populate: {
+          path: "followers",
+          select: "username profile_picture hasBadge",
+        },
+      });
 
     res.status(200).json(savedPost);
   } catch (err) {

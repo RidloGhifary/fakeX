@@ -51,9 +51,11 @@ const LeftSideMenu = () => {
         <DropdownMenuContent>
           {!profileUrl && (
             <React.Fragment>
-              <DropdownMenuItem className="cursor-pointer">
-                <Link to={`/profile/@${currentUser?.username}`}>Profile</Link>
-              </DropdownMenuItem>
+              <Link to={`/profile/@${currentUser?.username}`}>
+                <DropdownMenuItem className="cursor-pointer">
+                  Profile
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuSeparator />
             </React.Fragment>
           )}
@@ -70,9 +72,11 @@ const LeftSideMenu = () => {
             Liked
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer">
-            <Link to={`@${currentUser.username}/post-saved`}>Saved</Link>
-          </DropdownMenuItem>
+          <Link to={`/@${currentUser.username}/post-saved`}>
+            <DropdownMenuItem className="cursor-pointer">
+              Saved
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer" onClick={handleLogOut}>
             {isPending ? "Loading..." : "Log out"}

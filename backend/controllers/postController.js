@@ -9,17 +9,17 @@ const GetAllPost = async (_, res) => {
       .sort({ likes: 1 })
       .populate({
         path: "user",
-        select: "userId username bio profile_picture followers hasBadge",
+        select: "username bio profile_picture followers hasBadge",
         populate: {
           path: "followers",
-          select: "userId username profile_picture hasBadge",
+          select: "username profile_picture hasBadge",
         },
       })
       .populate({
         path: "comments",
         populate: {
           path: "user",
-          select: "userId username profile_picture hasBadge",
+          select: "username profile_picture hasBadge",
         },
       });
 

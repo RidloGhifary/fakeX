@@ -1,8 +1,9 @@
 import { Post } from "./Post";
+import { UserSum } from "./User";
 
-export interface PostSaved {
+export interface PostSavedProps {
   _id: string;
-  user: string;
+  user: UserSum;
   post: Post;
   createdAt: string;
   updatedAt: string;
