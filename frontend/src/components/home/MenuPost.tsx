@@ -6,7 +6,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Post } from "@/models/Post";
-import { Ellipsis, RefreshCcw } from "lucide-react";
+import {
+  Bookmark,
+  Ellipsis,
+  Pencil,
+  RefreshCcw,
+  SendHorizonal,
+  Trash,
+  User,
+} from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "../ui/use-toast";
@@ -120,7 +128,8 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
           {currentUser?._id !== post?.user?._id && (
             <>
               <Link to={`/profile/@${post?.user?.username}`}>
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem className="flex cursor-pointer gap-1">
+                  <User />
                   Profile
                 </DropdownMenuItem>
               </Link>
@@ -128,37 +137,47 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
             </>
           )}
           <DropdownMenuItem
-            className="cursor-pointer"
+            className="flex cursor-pointer gap-1"
             onClick={handleSavePost}
             disabled={savePostLoading}
           >
-            {savePostLoading
-              ? "Loading"
-              : existingPostIndexInSavedPost !== -1
-                ? "Remove"
-                : "Save"}
+            {savePostLoading ? (
+              "Loading"
+            ) : existingPostIndexInSavedPost !== -1 ? (
+              <>
+                <Bookmark size={23} fill="black" />
+                Remove
+              </>
+            ) : (
+              <>
+                <Bookmark size={23} />
+                Save
+              </>
+            )}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="cursor-pointer"
+            className="flex cursor-pointer gap-1"
             onClick={handelShareLink}
           >
+            <SendHorizonal size={23} />
             Share
           </DropdownMenuItem>
           {currentUser?._id === post?.user?._id && (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                className="cursor-pointer"
+                className="flex cursor-pointer gap-1"
                 onClick={handleEditPost}
               >
+                <Pencil size={23} />
                 Edit
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={handleDeletePost}
-                className="cursor-pointer bg-rose-300 text-rose-900"
+                className="flex cursor-pointer gap-1 bg-rose-300 text-rose-900"
               >
                 {isPending ? (
                   <>
@@ -166,7 +185,10 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
                     Pending
                   </>
                 ) : (
-                  "Delete"
+                  <>
+                    <Trash size={23} />
+                    Delete
+                  </>
                 )}
               </DropdownMenuItem>
             </>
