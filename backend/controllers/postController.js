@@ -540,11 +540,13 @@ const EditReplyComment = async (req, res) => {
 
 const SearchContent = async (req, res) => {
   const {
-    body: { content },
+    query: { content },
   } = req;
 
   try {
-    const post = await Post.find({ $text: { $search: content } })
+    const post = await Post.find({
+      content: { $regex: content, $options: "i" },
+    })
       .sort({
         createdAt: -1,
       })

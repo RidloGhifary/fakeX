@@ -1,24 +1,27 @@
-import { UseSearchPost } from "@/api/PostApi";
+import { useQuery } from "@tanstack/react-query";
 import PostContent from "@/components/home/PostContent";
+import { Post } from "@/models/Post";
+import React from "react";
 import Navbar from "@/components/Navbar";
 import NavbarMobile from "@/components/NavbarMobile";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Post } from "@/models/Post";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React from "react";
 import { useForm } from "react-hook-form";
+// import { useLocation } from "react-router-dom";
 import { z } from "zod";
+import { UseSearchPost } from "@/api/PostApi";
 
 const FormSchema = z.object({
   search: z.string().min(1, {
-    message: "Search must be at least 2 characters.",
+    message: "Search must be at least 1 characters.",
   }),
 });
 
 const Search = () => {
-  const queryClient = useQueryClient();
+  const [urlContent, setUrlContent] = React.useState<string>("");
+
+  // const location = useLocation();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -27,24 +30,18 @@ const Search = () => {
     },
   });
 
-  const {
-    mutate: searchMutate,
-    data,
-    isPending,
-  } = useMutation({
-    mutationKey: ["search-post"],
-    mutationFn: (data: { search: string }) => UseSearchPost(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["post"] });
-    },
-    onError: (err) => {
-      console.log("🚀 ~ Search ~ err:", err);
-    },
-  });
-
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    searchMutate(data);
+    // const searchParams = new URLSearchParams();
+    // searchParams.set("content", data.search);
+    // const newUrl = `${location.pathname}?${searchParams.toString()}`;
+    // window.history.replaceState(null, "", newUrl);
+    setUrlContent(data.search);
   }
+
+  const { data, isPending } = useQuery({
+    queryKey: ["search-post", urlContent],
+    queryFn: () => UseSearchPost(urlContent),
+  });
 
   return (
     <React.Fragment>
@@ -54,7 +51,6 @@ const Search = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
-              disabled={isPending}
               control={form.control}
               name="search"
               render={({ field }) => (
@@ -72,10 +68,10 @@ const Search = () => {
           </form>
         </Form>
         {isPending && <p className="text-center">Loading...</p>}
-        {data?.data && data?.data.length === 0 ? (
+        {data && data?.length === 0 ? (
           <p className="text-center">Ups sorry we cannot find anything</p>
         ) : (
-          data?.data?.map((result: Post) => <PostContent data={result} />)
+          data?.map((result: Post) => <PostContent data={result} />)
         )}
       </div>
     </React.Fragment>
