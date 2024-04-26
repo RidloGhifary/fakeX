@@ -106,5 +106,6 @@ router.post(
   ],
   postController.EditReplyComment
 );
+router.post("/search", verifyToken, postController.SearchContent);
 
 module.exports = router;

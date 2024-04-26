@@ -538,6 +538,40 @@ const EditReplyComment = async (req, res) => {
   }
 };
 
+const SearchContent = async (req, res) => {
+  const {
+    body: { content },
+  } = req;
+  try {
+    const post = await Post.find({ $text: { $search: content } })
+      .sort({
+        createdAt: -1,
+      })
+      .populate({
+        path: "user",
+        select: "username bio profile_picture followers hasBadge",
+        populate: {
+          path: "followers",
+          select: "username profile_picture hasBadge",
+        },
+      })
+      .populate({
+        path: "comments",
+        populate: {
+          path: "user",
+          select: "username profile_picture hasBadge",
+        },
+      });
+
+    if (!post) return res.status(404).json({ message: "Result is empty" });
+
+    res.status(200).json(post);
+  } catch (err) {
+    console.log("🚀 ~ SearchContent ~ err:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   GetAllPost,
   GetPostByFollowing,
@@ -556,4 +590,5 @@ module.exports = {
   LikeReplyComment,
   DeleteReplyComment,
   EditReplyComment,
+  SearchContent,
 };
