@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import PostDetail from "./pages/PostDetail";
 import PrivateRoute from "./components/PrivateRoute";
 import PostSaved from "./pages/PostSaved";
+import Search from "./pages/Search";
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
 
             <Route element={<PrivateRoute />}>
               <Route path="/" element={<Home />} />
+              <Route path="/search" element={<Search />} />
               <Route path="/:username/post-saved" element={<PostSaved />} />
               <Route path="/byfollowing" element={<Home />} />
               <Route path="/profile/:username" element={<Profile />} />
