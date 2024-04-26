@@ -542,6 +542,7 @@ const SearchContent = async (req, res) => {
   const {
     body: { content },
   } = req;
+
   try {
     const post = await Post.find({ $text: { $search: content } })
       .sort({
