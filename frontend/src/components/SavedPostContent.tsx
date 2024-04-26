@@ -108,7 +108,7 @@ const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
       </div>
       <div className="flex flex-1 gap-4">
         <div className="w-full">
-          <p className="flex gap-1 font-semibold">
+          <p className="flex items-center gap-1 font-semibold">
             <HoverCard>
               <HoverCardTrigger>
                 <Link
@@ -124,7 +124,9 @@ const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
             </HoverCard>
 
             <span>
-              {data?.user.hasBadge && <BadgeCheck fill="blue" stroke="black" />}
+              {data?.post?.user.hasBadge && (
+                <BadgeCheck fill="blue" stroke="black" />
+              )}
             </span>
             <span className="ml-3 text-sm text-gray-500">
               {moment(data?.post?.createdAt).fromNow()}
