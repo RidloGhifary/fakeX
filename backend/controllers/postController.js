@@ -88,6 +88,7 @@ const GetDetailPost = async (req, res) => {
   const { postId } = req.params;
   try {
     const post = await Post.findById({ _id: postId })
+      .sort({ createdAt: -1 })
       .populate({
         path: "user",
         select: "userId username bio profile_picture followers hasBadge",
@@ -112,6 +113,11 @@ const GetDetailPost = async (req, res) => {
       });
 
     if (!post) return res.status(404).json({ message: "Cannot found post" });
+
+    post.comments.sort((a, b) => b.createdAt - a.createdAt);
+    post.comments.forEach((comment) => {
+      comment.replies.sort((a, b) => b.createdAt - a.createdAt);
+    });
 
     res.status(200).json(post);
   } catch (err) {

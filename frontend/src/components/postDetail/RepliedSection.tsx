@@ -123,19 +123,14 @@ const RepliedSection: React.FC<{ reply: Reply; commentId: string }> = ({
             </span>
           </p>
           <p className="font-light">{reply?.content}</p>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
             <Love
               reply={reply}
               urlLike={`/post/comment/${commentId}/like-reply/${postId}/${reply?._id}`}
             />
-            <p className="text-sm text-gray-500">
-              {reply?.likes.length > 0 && reply?.likes.length}{" "}
-              {reply?.likes.length > 1
-                ? "likes"
-                : reply?.likes.length === 0
-                  ? null
-                  : "like"}
-            </p>
+            <span className="text-sm text-gray-500">
+              {reply?.likes?.length}
+            </span>
           </div>
         </div>
       </div>

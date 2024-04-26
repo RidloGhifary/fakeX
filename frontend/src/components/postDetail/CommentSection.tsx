@@ -81,7 +81,7 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
         return (
           <div key={commentData?._id}>
             <section className="flex justify-start gap-4">
-              <div className="flex flex-none flex-col items-center ">
+              <div className="flex flex-none flex-col items-center gap-3">
                 <div className="relative">
                   <img
                     src={commentData?.user.profile_picture || User}
@@ -121,7 +121,7 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
                 {commentData?.replies.length > 0 && (
                   <Separator
                     orientation="vertical"
-                    className="h-[70%] border-[.2px] border-gray-800"
+                    className="h-[50%] border-[.2px] border-gray-800"
                   />
                 )}
               </div>
@@ -145,39 +145,30 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
                   </p>
                   <p className="font-light">{commentData?.content}</p>
                   <div className="flex items-center gap-3">
-                    <Love
-                      comment={commentData}
-                      urlLike={`/post/comment/${commentData?._id}/like/${postId}`}
-                    />
-                    <Comment
-                      post={data}
-                      url={`${commentData?._id}/reply/${data?._id}`}
-                    />
-                    <p className="text-sm text-gray-500">
-                      {commentData?.likes.length !== 0 && (
-                        <span>
-                          {commentData?.likes.length +
-                            " " +
-                            `${commentData?.likes.length > 1 ? "likes" : "like"}`}
-                        </span>
-                      )}
-                      {commentData?.likes.length !== 0 &&
-                        commentData?.replies.length !== 0 &&
-                        " - "}
-                      {commentData?.replies.length !== 0 && (
-                        <span>
-                          {commentData?.replies.length +
-                            " " +
-                            `${commentData?.replies.length > 1 ? "comments" : "comment"}`}
-                        </span>
-                      )}
-                    </p>
+                    <div className="flex items-center gap-1">
+                      <Love
+                        comment={commentData}
+                        urlLike={`/post/comment/${commentData?._id}/like/${postId}`}
+                      />
+                      <span className="text-sm text-gray-500">
+                        {commentData?.likes?.length}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Comment
+                        post={data}
+                        url={`${commentData?._id}/reply/${data?._id}`}
+                      />
+                      <span className="text-sm text-gray-500">
+                        {commentData?.replies?.length}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </section>
             {commentData?.replies.map((reply: Reply) => (
-              <div key={reply._id}>
+              <div key={reply._id} className="mt-4">
                 <RepliedSection reply={reply} commentId={commentData?._id} />
               </div>
             ))}
