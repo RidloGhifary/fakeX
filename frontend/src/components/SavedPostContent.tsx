@@ -65,7 +65,7 @@ const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
 
   return (
     <section className="flex justify-start gap-4">
-      <div className="flex flex-none flex-col items-center">
+      <div className="flex flex-none flex-col items-center gap-4">
         <div className="relative">
           <img
             src={data?.post?.user.profile_picture || UserImage}
@@ -103,7 +103,7 @@ const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
         </div>
         <Separator
           orientation="vertical"
-          className="h-[74%] border-[.2px] border-gray-800"
+          className="h-[50%] border-[.2px] border-gray-800"
         />
       </div>
       <div className="flex flex-1 gap-4">
@@ -139,21 +139,23 @@ const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
             {data?.post?.content}
           </Link>
           <div className="mb-1 mt-10 flex items-center gap-3">
-            <Love post={data?.post} urlLike={`/post/like/${data?.post?._id}`} />
-            <Comment post={data?.post} url={`${data?.post?._id}`} />
+            <div className="flex items-center gap-1">
+              <Love
+                post={data?.post}
+                urlLike={`/post/like/${data?.post?._id}`}
+              />
+              <span className="text-sm text-gray-500">
+                {data?.post?.likes?.length}
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Comment post={data?.post} url={`${data?.post?._id}`} />
+              <span className="text-sm text-gray-500">
+                {data?.post?.comments?.length}
+              </span>
+            </div>
             <Share post={data?.post} />
           </div>
-          <p className="text-sm text-gray-500">
-            {data?.post?.likes?.length}{" "}
-            {data?.post?.likes?.length > 1 ? "likes" : "like"} -{" "}
-            <Link
-              to={`/@${data?.user?.username}/post/${data?._id}`}
-              className="hover:underline"
-            >
-              {data?.post?.comments?.length}{" "}
-              {data?.post?.comments?.length > 1 ? "comments" : "comment"}
-            </Link>
-          </p>
         </div>
         <MenuPost post={data?.post} />
       </div>
