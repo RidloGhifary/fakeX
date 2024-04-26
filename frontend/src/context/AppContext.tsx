@@ -49,7 +49,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
 
       return response;
     },
-    _optimisticResults: "optimistic",
+    retry: "false",
   });
 
   const { data: currentUser } = useQuery({

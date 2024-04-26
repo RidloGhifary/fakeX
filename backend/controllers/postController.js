@@ -540,12 +540,12 @@ const EditReplyComment = async (req, res) => {
 
 const SearchContent = async (req, res) => {
   const {
-    query: { content },
+    query: { q },
   } = req;
 
   try {
     const post = await Post.find({
-      content: { $regex: content, $options: "i" },
+      content: { $regex: q, $options: "i" },
     })
       .sort({
         createdAt: -1,
@@ -566,7 +566,8 @@ const SearchContent = async (req, res) => {
         },
       });
 
-    if (!post) return res.status(404).json({ message: "Result is empty" });
+    if (!post || post.length === 0)
+      return res.status(404).json({ message: "Result is empty" });
 
     res.status(200).json(post);
   } catch (err) {

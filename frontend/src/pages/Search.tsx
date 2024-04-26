@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-// import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { z } from "zod";
 import { UseSearchPost } from "@/api/PostApi";
 
@@ -19,28 +19,29 @@ const FormSchema = z.object({
 });
 
 const Search = () => {
-  const [urlContent, setUrlContent] = React.useState<string>("");
+  const [urlQuery, setUrlQuery] = React.useState<string>("");
 
-  // const location = useLocation();
+  const location = useLocation();
+
+  const urlParams = new URLSearchParams(window.location.search);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      search: "",
+      search: urlQuery || "",
     },
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    // const searchParams = new URLSearchParams();
-    // searchParams.set("content", data.search);
-    // const newUrl = `${location.pathname}?${searchParams.toString()}`;
-    // window.history.replaceState(null, "", newUrl);
-    setUrlContent(data.search);
+    urlParams.set("q", data.search);
+    const newUrl = `${location.pathname}?${urlParams.toString()}`;
+    window.history.replaceState(null, "", newUrl);
+    setUrlQuery(newUrl.split("=")[1]);
   }
 
   const { data, isPending } = useQuery({
-    queryKey: ["search-post", urlContent],
-    queryFn: () => UseSearchPost(urlContent),
+    queryKey: ["search-post", urlQuery],
+    queryFn: () => UseSearchPost(urlQuery),
   });
 
   return (
@@ -68,7 +69,7 @@ const Search = () => {
           </form>
         </Form>
         {isPending && <p className="text-center">Loading...</p>}
-        {data && data?.length === 0 ? (
+        {urlQuery === "" ? (
           <p className="text-center">Ups sorry we cannot find anything</p>
         ) : (
           data?.map((result: Post) => <PostContent data={result} />)

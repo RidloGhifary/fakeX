@@ -43,9 +43,6 @@ export const UseDeletePost = async (postId: string) => {
 };
 
 export const UseSearchPost = async (formData: string) => {
-  const response = await makeRequest.get(
-    `/post/search/content?content=${formData}`,
-  );
-  console.log("🚀 ~ UseSearchPost ~ response:", response);
+  const response = await makeRequest.get(`/post/search/content?q=${formData}`);
   return response.data;
 };

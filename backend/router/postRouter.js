@@ -9,19 +9,7 @@ router.get("/", postController.GetAllPost);
 router.get("/byfollowing", verifyToken, postController.GetPostByFollowing);
 router.get("/:username", verifyToken, postController.GetPostByUserCreator);
 router.get("/byId/:postId", postController.GetDetailPost);
-router.get(
-  "/search/content",
-  [
-    body("content")
-      .trim()
-      .notEmpty()
-      .withMessage("Content is required")
-      .isLength({ max: 100, min: 1 })
-      .withMessage("Content cannot exceed 100 characters"),
-  ],
-  verifyToken,
-  postController.SearchContent
-);
+router.get("/search/content", verifyToken, postController.SearchContent);
 router.post(
   "/create",
   verifyToken,
