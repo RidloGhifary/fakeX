@@ -14,11 +14,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, RotateCw } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { UseAppContext } from "@/context/AppContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UseSignIn } from "@/api/AuthApi";
 import { AxiosError } from "axios";
@@ -40,7 +39,6 @@ const FormSchema = z.object({
 const SignIn = () => {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
-  const { isLoggedIn } = UseAppContext();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -75,8 +73,6 @@ const SignIn = () => {
       });
     }
   };
-
-  if (isLoggedIn) return <Navigate to="/" replace />;
 
   return (
     <section className="flex min-h-dvh w-full items-center justify-center p-10 lg:p-3">

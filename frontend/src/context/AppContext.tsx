@@ -7,7 +7,7 @@ import { User } from "@/models/User";
 import { Post } from "@/models/Post";
 import { UseGetSuggestContent } from "@/api/PostApi";
 import { UseGetUserPostSaved } from "@/api/SavedPostApi";
-import { PostSaved } from "@/models/PostSaved";
+import { PostSavedProps } from "@/models/PostSaved";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -18,7 +18,7 @@ interface AppContextType {
   postContentDatas: Post[];
   postContentDatasByFollowing: Post[];
   postContentDatasByFollowingLoading: boolean;
-  savePostDatas: PostSaved;
+  savePostDatas: PostSavedProps;
   savePostDatasLoading: boolean;
 }
 
@@ -33,7 +33,7 @@ const AppContext = createContext<AppContextType>({
   postContentDatas: [] as Post[],
   postContentDatasByFollowing: [] as Post[],
   postContentDatasByFollowingLoading: true,
-  savePostDatas: [] as PostSaved[],
+  savePostDatas: [] as PostSavedProps[],
   savePostDatasLoading: true,
 });
 

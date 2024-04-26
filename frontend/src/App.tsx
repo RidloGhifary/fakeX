@@ -15,14 +15,20 @@ import PostDetail from "./pages/PostDetail";
 import PrivateRoute from "./components/PrivateRoute";
 import PostSaved from "./pages/PostSaved";
 import Search from "./pages/Search";
+import { UseAppContext } from "./context/AppContext";
 
 export default function App() {
+  const { isLoggedIn } = UseAppContext();
+
   return (
     <main className=" min-h-dvh bg-black text-white">
       <div className="mx-auto max-w-[1100px]">
         <Router>
           <Routes>
-            <Route path="/sign-in" element={<SignIn />} />
+            <Route
+              path="/sign-in"
+              element={isLoggedIn ? <Navigate to="/" /> : <SignIn />}
+            />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/verify-otp/:userId" element={<VerifyOtp />} />
             <Route path="/reset-password" element={<ResetPassword />} />
