@@ -41,3 +41,15 @@ export const UseDeletePost = async (postId: string) => {
   const response = await makeRequest.post(`/post/delete/${postId}`);
   return response;
 };
+
+interface SearchPostProps {
+  search: string;
+}
+
+export const UseSearchPost = async (formData: SearchPostProps) => {
+  console.log("🚀 ~ UseSearchPost ~ formData:", formData);
+  const response = await makeRequest.post(`/post/search`, {
+    content: formData.search,
+  });
+  return response;
+};

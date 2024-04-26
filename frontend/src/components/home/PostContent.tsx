@@ -68,8 +68,8 @@ const PostContent: React.FC<{ data: Post }> = ({ data }) => {
       <div className="flex flex-none flex-col items-center gap-4">
         <div className="relative">
           <img
-            src={data?.user.profile_picture || User}
-            alt={data?.user.username}
+            src={data?.user?.profile_picture || User}
+            alt={data?.user?.username}
             className="h-10 w-10 rounded-full border object-cover"
             loading="lazy"
           />
@@ -112,10 +112,10 @@ const PostContent: React.FC<{ data: Post }> = ({ data }) => {
             <HoverCard>
               <HoverCardTrigger>
                 <Link
-                  to={`/profile/@${data?.user.username}`}
+                  to={`/profile/@${data?.user?.username}`}
                   className="hover:underline"
                 >
-                  @{data?.user.username}
+                  @{data?.user?.username}
                 </Link>
               </HoverCardTrigger>
               <HoverCardContent className="border-white/50 bg-black text-white">
@@ -124,7 +124,9 @@ const PostContent: React.FC<{ data: Post }> = ({ data }) => {
             </HoverCard>
 
             <span>
-              {data?.user.hasBadge && <BadgeCheck fill="blue" stroke="black" />}
+              {data?.user?.hasBadge && (
+                <BadgeCheck fill="blue" stroke="black" />
+              )}
             </span>
             <span className="ml-3 text-sm text-gray-500">
               {moment(data?.createdAt).fromNow()}
