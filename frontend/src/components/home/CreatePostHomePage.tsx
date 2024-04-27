@@ -7,7 +7,8 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UseCreatePost } from "@/api/PostApi";
 import { useToast } from "../ui/use-toast";
-import ProfilePicture from "../ProfilePicture";
+import { UseAppContext } from "@/context/AppContext";
+import UserPicture from "../../assets/user.png";
 
 const FormSchema = z.object({
   content: z.string().min(1, {
@@ -18,6 +19,8 @@ const FormSchema = z.object({
 const CreatePostHomePage = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  const { currentUser } = UseAppContext();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -63,8 +66,13 @@ const CreatePostHomePage = () => {
 
   return (
     <section className="hidden w-full md:block">
-      <div className="flex items-center gap-1">
-        <ProfilePicture />
+      <div className="flex items-center gap-1 pt-1">
+        <img
+          src={currentUser?.profile_picture || UserPicture}
+          alt={currentUser?.username || "user-photo"}
+          className="h-10 w-11 rounded-full object-cover"
+          loading="lazy"
+        />
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
