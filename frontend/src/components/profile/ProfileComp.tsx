@@ -254,37 +254,11 @@ const ProfileComp = () => {
         />
       </section>
       <section className="font-light">
-        <p className="font-medium text-white/50">Ridlo achmad ghifary</p>
+        <p className="font-medium text-white/50">{user?.displayName}</p>
         <p className="w-[50%]">{user?.bio}</p>
 
         <div className="my-7 flex items-center gap-4">
-          <div className="relative flex items-center">
-            {user?.followers.length === 0 ? null : user?.followers.length ===
-              1 ? (
-              <img
-                src={User}
-                alt="user-photo"
-                className="h-[20px] w-[20px] rounded-full object-cover"
-                loading="lazy"
-              />
-            ) : (
-              <>
-                <img
-                  src={User}
-                  alt="user-photo"
-                  className="h-[20px] w-[20px] rounded-full object-cover"
-                  loading="lazy"
-                />
-                <img
-                  src={User}
-                  alt="user-photo"
-                  className="absolute left-[50%] h-[20px] w-[20px] rounded-full object-cover"
-                  loading="lazy"
-                />
-              </>
-            )}
-          </div>
-          <p className="text-sm font-medium text-white/50">
+          <p className="text-sm font-medium">
             {user?.followers.length +
               `${user?.followers.length > 1 ? " followers" : " follower"}`}
           </p>
