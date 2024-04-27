@@ -90,6 +90,9 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
       queryClient.invalidateQueries({
         queryKey: ["user-post"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["save-post"],
+      });
       toast({
         title: "Success.",
         description: "Success to delete post.",
