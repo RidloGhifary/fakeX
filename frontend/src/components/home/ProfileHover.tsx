@@ -44,7 +44,10 @@ const ProfileHover: React.FC<{ user: UserSum }> = ({ user }) => {
   return (
     <div className="flex justify-between space-x-4">
       <Avatar className="flex-none">
-        <AvatarImage src={user?.profile_picture || UserImg} />
+        <AvatarImage
+          src={user?.profile_picture || UserImg}
+          className="object-cover"
+        />
         <AvatarFallback>VC</AvatarFallback>
       </Avatar>
       <div className="flex-1 space-y-1">
