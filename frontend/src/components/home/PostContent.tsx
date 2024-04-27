@@ -41,6 +41,7 @@ const PostContent: React.FC<{ data: Post }> = ({ data }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["post-byfollowing"] });
     },
     onError: () => {
       toast({
