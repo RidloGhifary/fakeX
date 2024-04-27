@@ -173,6 +173,9 @@ const ProfileComp = () => {
     username: z.string().min(1, {
       message: "Username must be at least 1 characters.",
     }),
+    displayName: z.string().min(1, {
+      message: "Display name must be at least 1 characters.",
+    }),
     bio: z
       .string()
       .min(1, {
@@ -186,8 +189,9 @@ const ProfileComp = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: user?.username,
-      bio: user?.bio,
+      username: user?.username || "",
+      displayName: user?.displayName || "",
+      bio: user?.bio || "",
     },
   });
 
@@ -215,7 +219,8 @@ const ProfileComp = () => {
           description: "Successfully updating your profile.",
         });
       },
-      onError: () => {
+      onError: (err) => {
+        console.log("🚀 ~ ProfileComp ~ err:", err);
         toast({
           variant: "destructive",
           title: "Update: failed!",
@@ -226,8 +231,9 @@ const ProfileComp = () => {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     updateProfileMutate({
-      username: data.username,
-      bio: data.bio,
+      username: data.username || user?.username,
+      displayName: data.displayName || user?.displayName,
+      bio: data.bio || user?.bio,
       profile_picture: uploadedImage || user.profile_picture,
       userId: user?._id,
     });
@@ -288,7 +294,7 @@ const ProfileComp = () => {
                     Edit profile
                   </DialogTitle>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
+                <div className="grid gap-5 py-4">
                   <div className="mx-auto">
                     <input
                       type="file"
@@ -323,7 +329,7 @@ const ProfileComp = () => {
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
-                      className="w-full space-y-6"
+                      className="w-full space-y-3"
                     >
                       <FormField
                         control={form.control}
@@ -333,14 +339,39 @@ const ProfileComp = () => {
                             <FormControl>
                               <div className="grid items-center gap-4">
                                 <Input
+                                  placeholder="User username"
                                   min={1}
                                   max={50}
                                   disabled={
                                     updateProfilePending || uploadImageLoading
                                   }
-                                  className="col-span-3 border-white/50 bg-transparent"
                                   {...field}
                                   defaultValue={user?.username}
+                                  className="col-span-3 border-white/50 bg-transparent"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="displayName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div className="grid items-center gap-4">
+                                <Input
+                                  placeholder="User display name"
+                                  min={1}
+                                  max={50}
+                                  disabled={
+                                    updateProfilePending || uploadImageLoading
+                                  }
+                                  {...field}
+                                  defaultValue={user?.displayName}
+                                  className="col-span-3 border-white/50 bg-transparent"
                                 />
                               </div>
                             </FormControl>
@@ -356,14 +387,15 @@ const ProfileComp = () => {
                             <FormControl>
                               <div className="grid items-center gap-4">
                                 <Input
+                                  placeholder="User bio"
                                   disabled={
                                     updateProfilePending || uploadImageLoading
                                   }
                                   min={1}
                                   max={50}
-                                  className="col-span-3 border-white/50 bg-transparent"
                                   defaultValue={user?.bio}
                                   {...field}
+                                  className="col-span-3 border-white/50 bg-transparent"
                                 />
                               </div>
                             </FormControl>

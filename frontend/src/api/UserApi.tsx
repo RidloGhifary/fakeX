@@ -8,13 +8,16 @@ export const UseFollowUser = async (userId: string) => {
 interface UpdateProps {
   userId: string;
   username: string;
+  displayName: string;
   bio: string;
   profile_picture: string;
 }
 
 export const UseUpdateProfile = async (formData: UpdateProps) => {
+  console.log("🚀 ~ UseUpdateProfile ~ formData:", formData);
   const response = await makeRequest.patch(`/user/update/${formData.userId}`, {
     username: formData.username,
+    displayName: formData.displayName,
     bio: formData.bio,
     profile_picture: formData.profile_picture,
   });
