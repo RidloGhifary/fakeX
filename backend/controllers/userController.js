@@ -30,7 +30,7 @@ const GetParticularUser = async (req, res) => {
 const UpdateAccount = async (req, res) => {
   const {
     params: { userId },
-    body: { profile_picture, username, bio },
+    body: { profile_picture, username, bio, displayName },
   } = req;
 
   try {
@@ -44,7 +44,13 @@ const UpdateAccount = async (req, res) => {
       });
     }
 
-    if (bio.length > 50)
+    if (!/^[a-zA-Z0-9 ]+$/.test(displayName)) {
+      return res.status(400).json({
+        message: "Display name can only contain letters, numbers, and spaces",
+      });
+    }
+
+    if (bio && bio?.length > 50)
       return res
         .status(400)
         .json({ message: "Bio character cannot more than 100" });
@@ -70,6 +76,7 @@ const UpdateAccount = async (req, res) => {
       {
         $set: {
           username: username,
+          displayName: displayName,
           bio: bio,
           profile_picture: profile_picture,
           lastUsernameChange:
@@ -86,6 +93,7 @@ const UpdateAccount = async (req, res) => {
 
     res.status(200).json(others);
   } catch (err) {
+    console.log("🚀 ~ UpdateAccount ~ err:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
