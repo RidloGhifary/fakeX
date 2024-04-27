@@ -3,7 +3,7 @@ import { UseAppContext } from "@/context/AppContext";
 import User from "../../assets/user.png";
 // import { Separator } from "../ui/separator";
 import UserContent from "./UserContent";
-import { BadgeCheck, PencilLine, RotateCw } from "lucide-react";
+import { BadgeCheck, Info, PencilLine, RotateCw } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "@/utils/axios";
@@ -33,11 +33,17 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { UseUpdateProfile } from "@/api/UserApi";
 import { UserPost } from "@/models/Post";
 import LazyLoadedComponent from "../LazyLoadedComponent";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 const ProfileComp = () => {
   const [uploadedImage, setUploadedImage] = useState<string>("");
@@ -336,6 +342,22 @@ const ProfileComp = () => {
                         name="username"
                         render={({ field }) => (
                           <FormItem>
+                            <FormLabel className="flex items-center gap-1 text-gray-500 transition hover:text-white">
+                              <span>Username</span>
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Info size={18} className="cursor-pointer" />
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-80">
+                                  <p>
+                                    Username can only contain letters, numbers,
+                                    and underscore (_) characters and cannot
+                                    contain spaces or it will cause an
+                                    <b> error</b>
+                                  </p>
+                                </HoverCardContent>
+                              </HoverCard>
+                            </FormLabel>
                             <FormControl>
                               <div className="grid items-center gap-4">
                                 <Input
@@ -360,6 +382,21 @@ const ProfileComp = () => {
                         name="displayName"
                         render={({ field }) => (
                           <FormItem>
+                            <FormLabel className="flex items-center gap-1 text-gray-500 transition hover:text-white">
+                              <span>Display name</span>
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Info size={18} className="cursor-pointer" />
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-80">
+                                  <p>
+                                    Display name can only contain letters,
+                                    numbers, and spaces or it will cause an
+                                    <b> error</b>
+                                  </p>
+                                </HoverCardContent>
+                              </HoverCard>
+                            </FormLabel>
                             <FormControl>
                               <div className="grid items-center gap-4">
                                 <Input
@@ -384,6 +421,21 @@ const ProfileComp = () => {
                         name="bio"
                         render={({ field }) => (
                           <FormItem>
+                            <FormLabel className="flex items-center gap-1 text-gray-500 transition hover:text-white">
+                              <span>User bio</span>
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Info size={18} className="cursor-pointer" />
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-80">
+                                  <p>
+                                    Bio cannot more than 100 character or it
+                                    will cause an
+                                    <b> error</b>
+                                  </p>
+                                </HoverCardContent>
+                              </HoverCard>
+                            </FormLabel>
                             <FormControl>
                               <div className="grid items-center gap-4">
                                 <Input
@@ -392,7 +444,7 @@ const ProfileComp = () => {
                                     updateProfilePending || uploadImageLoading
                                   }
                                   min={1}
-                                  max={50}
+                                  max={100}
                                   defaultValue={user?.bio}
                                   {...field}
                                   className="col-span-3 border-white/50 bg-transparent"
