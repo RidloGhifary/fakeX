@@ -52,6 +52,9 @@ const Love: React.FC<{
       queryClient.invalidateQueries({
         queryKey: ["search-post"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["user-post"],
+      });
     },
     onError: (err) => {
       console.log("🚀 ~ err:", err);

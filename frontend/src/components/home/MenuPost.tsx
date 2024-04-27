@@ -87,6 +87,9 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
       queryClient.invalidateQueries({
         queryKey: ["post-byfollowing"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["user-post"],
+      });
       toast({
         title: "Success.",
         description: "Success to delete post.",

@@ -48,9 +48,12 @@ const Comment: React.FC<{ post: Post; url?: string }> = ({ post, url }) => {
       queryClient.invalidateQueries({
         queryKey: ["save-post"],
       });
-        queryClient.invalidateQueries({
-          queryKey: ["search-post"],
-        });
+      queryClient.invalidateQueries({
+        queryKey: ["search-post"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["user-post"],
+      });
       setTextPostComment("");
       navigate(`/@${post?.user.username}/post/${post?._id}`);
     },

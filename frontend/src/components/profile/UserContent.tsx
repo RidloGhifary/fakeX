@@ -1,11 +1,14 @@
 import UserImage from "../../assets/user.png";
-import { BadgeCheck, Heart, MessageCircle, Send } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Separator } from "../ui/separator";
 import React from "react";
 import moment from "moment";
 import { UserPost } from "@/models/Post";
 import MenuPost from "../home/MenuPost";
+import Love from "../home/react/Love";
+import Comment from "../home/react/Comment";
+import Share from "../home/react/Share";
 
 interface UserContentProps {
   userPost: UserPost;
@@ -55,13 +58,13 @@ const UserContent: React.FC<UserContentProps> = ({
           </Link>
           <div className="mb-2 mt-10 flex items-center gap-3">
             <div className="cursor-pointer rounded-full p-1 hover:bg-white/15">
-              <Heart />
+              <Love post={userPost} urlLike={`/post/like/${userPost?._id}`} />
             </div>
             <div className="cursor-pointer rounded-full p-1 hover:bg-white/15">
-              <MessageCircle />
+              <Comment post={userPost} url={userPost?._id} />
             </div>
             <div className="cursor-pointer rounded-full p-1 hover:bg-white/15">
-              <Send />
+              <Share post={userPost} />
             </div>
           </div>
           <p className="text-sm text-gray-500">

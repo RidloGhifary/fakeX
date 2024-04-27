@@ -51,7 +51,7 @@ const ProfileHover: React.FC<{ user: UserSum }> = ({ user }) => {
         <div className="flex gap-1">
           <h4 className="text-base font-semibold">@{user?.username}</h4>
           <span>
-            {user.hasBadge && <BadgeCheck fill="blue" stroke="black" />}
+            {user?.hasBadge && <BadgeCheck fill="blue" stroke="black" />}
           </span>
         </div>
         <p className="line-clamp-3 pb-2 text-sm font-light">
