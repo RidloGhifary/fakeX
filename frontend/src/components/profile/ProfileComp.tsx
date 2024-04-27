@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/form";
 import { UseUpdateProfile } from "@/api/UserApi";
 import { UserPost } from "@/models/Post";
+import LazyLoadedComponent from "../LazyLoadedComponent";
 
 const ProfileComp = () => {
   const [uploadedImage, setUploadedImage] = useState<string>("");
@@ -196,6 +197,19 @@ const ProfileComp = () => {
       mutationFn: UseUpdateProfile,
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["user"] });
+        queryClient.invalidateQueries({ queryKey: ["post"] });
+        queryClient.invalidateQueries({
+          queryKey: ["post-byfollowing"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["post-detail"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["save-post"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["search-post"],
+        });
         toast({
           title: "Update: Success!",
           description: "Successfully updating your profile.",
@@ -345,11 +359,14 @@ const ProfileComp = () => {
                             <FormControl>
                               <div className="grid items-center gap-4">
                                 <Input
+                                  min={1}
+                                  max={50}
                                   disabled={
                                     updateProfilePending || uploadImageLoading
                                   }
                                   className="col-span-3 border-white/50 bg-transparent"
                                   {...field}
+                                  defaultValue={user?.username}
                                 />
                               </div>
                             </FormControl>
@@ -371,6 +388,7 @@ const ProfileComp = () => {
                                   min={1}
                                   max={50}
                                   className="col-span-3 border-white/50 bg-transparent"
+                                  defaultValue={user?.bio}
                                   {...field}
                                 />
                               </div>
@@ -406,13 +424,13 @@ const ProfileComp = () => {
       <section className="py-7">
         <h1 className="text-center text-xl uppercase">your post</h1>
         {userPosts?.map((userPost: UserPost, i: number) => (
-          <div key={i}>
+          <LazyLoadedComponent key={i}>
             <Separator className="my-6 border-[.2px] border-gray-800" />
             <UserContent
               userPost={userPost}
               userPostLoading={userPostsPending}
             />
-          </div>
+          </LazyLoadedComponent>
         ))}
       </section>
     </section>

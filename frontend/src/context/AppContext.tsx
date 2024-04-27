@@ -18,7 +18,7 @@ interface AppContextType {
   postContentDatas: Post[];
   postContentDatasByFollowing: Post[];
   postContentDatasByFollowingLoading: boolean;
-  savePostDatas: PostSavedProps;
+  savePostDatas: PostSavedProps[];
   savePostDatasLoading: boolean;
 }
 
@@ -49,7 +49,6 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
 
       return response;
     },
-    retry: "false",
   });
 
   const { data: currentUser } = useQuery({

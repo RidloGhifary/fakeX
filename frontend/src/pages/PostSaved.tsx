@@ -5,6 +5,7 @@ import { UseAppContext } from "@/context/AppContext";
 import SavedPostContent from "@/components/SavedPostContent";
 import { PostSavedProps } from "@/models/PostSaved";
 import { Separator } from "@/components/ui/separator";
+import LazyLoadedComponent from "@/components/LazyLoadedComponent";
 
 const PostSaved = () => {
   const { savePostDatas, savePostDatasLoading } = UseAppContext();
@@ -19,9 +20,9 @@ const PostSaved = () => {
         <Separator className="my-6 border-[.2px] border-gray-800" />
         {savePostDatas &&
           savePostDatas?.map((savePostData: PostSavedProps, i: number) => (
-            <div key={i}>
+            <LazyLoadedComponent key={i}>
               <SavedPostContent data={savePostData} />
-            </div>
+            </LazyLoadedComponent>
           ))}
         <Separator className="my-6 border-[.2px] border-gray-800" />
       </div>

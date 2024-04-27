@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 import { z } from "zod";
 import { UseSearchPost } from "@/api/PostApi";
+import LazyLoadedComponent from "@/components/LazyLoadedComponent";
 
 const FormSchema = z.object({
   search: z.string().min(1, {
@@ -72,7 +73,11 @@ const Search = () => {
         {urlQuery === "" ? (
           <p className="text-center">Ups sorry we cannot find anything</p>
         ) : (
-          data?.map((result: Post) => <PostContent data={result} />)
+          data?.map((result: Post) => (
+            <LazyLoadedComponent key={result?._id}>
+              <PostContent data={result} />
+            </LazyLoadedComponent>
+          ))
         )}
       </div>
     </React.Fragment>

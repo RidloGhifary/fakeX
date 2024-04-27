@@ -7,6 +7,7 @@ import { UseAppContext } from "@/context/AppContext";
 import PostContent from "./PostContent";
 import { Separator } from "../ui/separator";
 import { useLocation, useNavigate } from "react-router-dom";
+import LazyLoadedComponent from "../LazyLoadedComponent";
 
 const TimeLine = () => {
   const [postOrder, setPostOrder] = React.useState<boolean>(false);
@@ -46,17 +47,17 @@ const TimeLine = () => {
           <p>Loading...</p>
         ) : pathname === "/" ? (
           postContentDatas?.map((post: Post, i: number) => (
-            <div key={i}>
+            <LazyLoadedComponent key={i}>
               <Separator className="my-6 border-[.2px] border-gray-800" />
               <PostContent data={post} />
-            </div>
+            </LazyLoadedComponent>
           ))
         ) : (
           postContentDatasByFollowing?.map((post: Post, i: number) => (
-            <div key={i}>
+            <LazyLoadedComponent key={i}>
               <Separator className="my-6 border-[.2px] border-gray-800" />
               <PostContent data={post} />
-            </div>
+            </LazyLoadedComponent>
           ))
         )}
       </div>
