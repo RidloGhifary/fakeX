@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UseAppContext } from "@/context/AppContext";
 import User from "../../assets/user.png";
-import { Separator } from "../ui/separator";
+// import { Separator } from "../ui/separator";
 import UserContent from "./UserContent";
 import { BadgeCheck, PencilLine, RotateCw } from "lucide-react";
 import { useParams } from "react-router-dom";
@@ -425,7 +425,7 @@ const ProfileComp = () => {
         <h1 className="text-center text-xl uppercase">your post</h1>
         {userPosts?.map((userPost: UserPost, i: number) => (
           <LazyLoadedComponent key={i}>
-            <Separator className="my-6 border-[.2px] border-gray-800" />
+            {/* <Separator className="my-6 border-[.2px] border-gray-800" /> */}
             <UserContent
               userPost={userPost}
               userPostLoading={userPostsPending}
