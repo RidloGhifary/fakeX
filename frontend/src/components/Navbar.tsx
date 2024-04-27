@@ -38,6 +38,7 @@ const Navbar = () => {
     mutationFn: UseCreatePost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post"] });
+      queryClient.invalidateQueries({ queryKey: ["user-post"] });
       toast({
         title: "Create: success!",
         description: "Successfully posting a new post.",
