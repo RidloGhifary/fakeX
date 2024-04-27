@@ -69,21 +69,6 @@ const PostSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-PostSchema.pre("deleteOne", function (next) {
-  const postId = this.getQuery()["_id"];
-  mongoose
-    .model("SavedPost")
-    .deleteOne({ person: postId }, function (err, result) {
-      if (err) {
-        console.log(`[error] ${err}`);
-        next(err);
-      } else {
-        console.log("success");
-        next();
-      }
-    });
-});
-
 const Post = mongoose.model("Post", PostSchema);
 
 module.exports = Post;

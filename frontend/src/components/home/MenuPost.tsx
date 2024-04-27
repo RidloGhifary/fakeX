@@ -79,7 +79,7 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
     savePostMutate({ postId: post?._id, userId: currentUser._id });
   };
 
-  const { mutate, isPending } = useMutation({
+  const { mutate: deletePostMutate, isPending } = useMutation({
     mutationKey: ["delete-post"],
     mutationFn: UseDeletePost,
     onSuccess: () => {
@@ -107,12 +107,12 @@ const MenuPost: React.FC<{ post: Post }> = ({ post }) => {
     },
   });
 
-  const handleDeletePost = async () => {
+  const handleDeletePost = () => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this post?",
     );
     if (confirmed) {
-      await mutate(post?._id);
+      deletePostMutate(post?._id);
     }
   };
 
