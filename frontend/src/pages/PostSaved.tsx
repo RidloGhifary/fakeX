@@ -18,13 +18,14 @@ const PostSaved = () => {
       <div className="mx-auto max-w-[600px] px-3 pb-56 pt-4 md:px-0 md:py-20">
         <h1 className="text-center text-white">Saved Content</h1>
         <Separator className="my-6 border-[.2px] border-gray-800" />
-        {savePostDatas &&
-          savePostDatas?.map((savePostData: PostSavedProps, i: number) => (
-            <LazyLoadedComponent key={i}>
-              <SavedPostContent data={savePostData} />
-            </LazyLoadedComponent>
-          ))}
-        <Separator className="my-6 border-[.2px] border-gray-800" />
+        {savePostDatas?.map((savePostData: PostSavedProps, i: number) => (
+          <LazyLoadedComponent key={i}>
+            <SavedPostContent data={savePostData} />
+          </LazyLoadedComponent>
+        ))}
+        {!savePostDatas && (
+          <Separator className="my-6 border-[.2px] border-gray-800" />
+        )}
       </div>
     </React.Fragment>
   );
