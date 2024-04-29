@@ -49,6 +49,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
 
       return response;
     },
+    retry: false,
   });
 
   const { data: currentUser } = useQuery({
