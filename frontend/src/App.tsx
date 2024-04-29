@@ -1,21 +1,24 @@
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import ResetPassword from "./pages/ResetPassword";
-import ConfirmEmail from "./pages/ConfirmEmail";
+import { lazy } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   Navigate,
 } from "react-router-dom";
-import VerifyOtp from "./pages/VerifyOtp";
-import Home from "./pages/Home";
-import Profile from "./pages/Profile";
-import PostDetail from "./pages/PostDetail";
-import PrivateRoute from "./components/PrivateRoute";
-import PostSaved from "./pages/PostSaved";
-import Search from "./pages/Search";
 import { UseAppContext } from "./context/AppContext";
+
+const SignIn = lazy(() => import("./pages/SignIn"));
+const SignUp = lazy(() => import("./pages/SignUp"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const ConfirmEmail = lazy(() => import("./pages/ConfirmEmail"));
+const VerifyOtp = lazy(() => import("./pages/VerifyOtp"));
+
+const Home = lazy(() => import("./pages/Home"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Search = lazy(() => import("./pages/Search"));
+const PostSaved = lazy(() => import("./pages/PostSaved"));
+const PostDetail = lazy(() => import("./pages/PostDetail"));
+const PrivateRoute = lazy(() => import("./components/PrivateRoute"));
 
 export default function App() {
   const { isLoggedIn } = UseAppContext();

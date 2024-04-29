@@ -2,8 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import PostContent from "@/components/home/PostContent";
 import { Post } from "@/models/Post";
 import React from "react";
-import Navbar from "@/components/Navbar";
-import NavbarMobile from "@/components/NavbarMobile";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -47,8 +45,6 @@ const Search = () => {
 
   return (
     <React.Fragment>
-      <Navbar />
-      <NavbarMobile />
       <div className="mx-auto max-w-[600px] space-y-8 px-3 pb-56 pt-4 md:px-0 md:py-20">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
