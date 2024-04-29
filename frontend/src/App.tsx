@@ -21,7 +21,7 @@ const PostDetail = lazy(() => import("./pages/PostDetail"));
 const PrivateRoute = lazy(() => import("./components/PrivateRoute"));
 
 export default function App() {
-  const { isLoggedIn } = UseAppContext();
+  const { isLoggedIn, currentUser } = UseAppContext();
 
   return (
     <main className=" min-h-dvh bg-black text-white">
@@ -32,7 +32,16 @@ export default function App() {
               path="/sign-in"
               element={isLoggedIn ? <Navigate to="/" /> : <SignIn />}
             />
-            <Route path="/sign-up" element={<SignUp />} />
+            <Route
+              path="/sign-up"
+              element={
+                isLoggedIn && currentUser.verified ? (
+                  <Navigate to="/" />
+                ) : (
+                  <SignUp />
+                )
+              }
+            />
             <Route path="/verify-otp/:userId" element={<VerifyOtp />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/forgot-password" element={<ConfirmEmail />} />
