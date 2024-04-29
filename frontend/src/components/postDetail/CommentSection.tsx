@@ -18,10 +18,14 @@ import { useToast } from "../ui/use-toast";
 import RepliedSection from "./RepliedSection";
 import { Reply } from "@/models/Comment";
 import { Post } from "@/models/Post";
-import { UserSum } from "@/models/User";
 
 interface CommentProps {
-  user: UserSum;
+  user: {
+    _id: string;
+    username: string;
+    profile_picture: string;
+    hasBadge: boolean;
+  };
   content: string;
   edited: boolean;
   likes: string[];
@@ -156,7 +160,7 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
                     </div>
                     <div className="flex items-center gap-1">
                       <Comment
-                        post={data}
+                        post={commentData}
                         url={`${commentData?._id}/reply/${data?._id}`}
                       />
                       <span className="text-sm text-gray-500">

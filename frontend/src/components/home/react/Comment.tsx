@@ -18,7 +18,6 @@ import { Post } from "@/models/Post";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UseCommentPost } from "@/api/PostApi";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
 
 const Comment: React.FC<{ post: Post; url?: string }> = ({ post, url }) => {
   const [textPostComment, setTextPostComment] = React.useState<string>("");
@@ -26,7 +25,6 @@ const Comment: React.FC<{ post: Post; url?: string }> = ({ post, url }) => {
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   const handleChangePostComment = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setTextPostComment(event.target.value);
@@ -55,7 +53,6 @@ const Comment: React.FC<{ post: Post; url?: string }> = ({ post, url }) => {
         queryKey: ["user-post"],
       });
       setTextPostComment("");
-      navigate(`/@${post?.user.username}/post/${post?._id}`);
     },
     onError: () => {
       toast({

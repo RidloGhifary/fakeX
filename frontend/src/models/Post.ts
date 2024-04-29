@@ -1,3 +1,4 @@
+import { Comment } from "./Comment";
 import { UserSum } from "./User";
 
 export interface Post {
@@ -11,14 +12,14 @@ export interface Post {
   __v: number;
 }
 
-export interface Comment {
-  _id: string;
-  userId: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
+// export interface Comment {
+//   _id: string;
+//   userId: string;
+//   content: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   __v: number;
+// }
 
 export interface UserPost {
   _id: string;
