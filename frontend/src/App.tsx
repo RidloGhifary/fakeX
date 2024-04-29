@@ -35,7 +35,7 @@ export default function App() {
             <Route
               path="/sign-up"
               element={
-                isLoggedIn && currentUser.verified ? (
+                isLoggedIn && currentUser?.verified ? (
                   <Navigate to="/" />
                 ) : (
                   <SignUp />
