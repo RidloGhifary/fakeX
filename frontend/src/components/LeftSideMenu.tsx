@@ -30,14 +30,14 @@ const LeftSideMenu = () => {
     },
   });
 
-  const handleLogOut = async () => {
+  const handleLogOut = () => {
     try {
-      await mutate();
+      mutate();
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Sign in: failed!",
-        description: "An error occurred during sign-in.",
+        title: "Sign out: failed!",
+        description: "An error occurred during sign-out.",
       });
     }
   };
