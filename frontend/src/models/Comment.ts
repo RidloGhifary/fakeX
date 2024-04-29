@@ -10,6 +10,7 @@ export interface Reply {
   _id: string;
   createdAt: string;
   updatedAt: string;
+  __v: number;
 }
 
 export interface Comment {
@@ -26,4 +27,5 @@ export interface Comment {
   replies: Reply[];
   createdAt: string;
   updatedAt: string;
+  __v: number;
 }

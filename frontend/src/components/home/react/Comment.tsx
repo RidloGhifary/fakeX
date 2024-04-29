@@ -19,7 +19,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UseCommentPost } from "@/api/PostApi";
 import { useToast } from "@/components/ui/use-toast";
 
-const Comment: React.FC<{ post: Post; url?: string }> = ({ post, url }) => {
+const Comment: React.FC<{ post: Post; url?: string | undefined }> = ({
+  post,
+  url,
+}) => {
   const [textPostComment, setTextPostComment] = React.useState<string>("");
   const [postData, setPostData] = React.useState({} as Post | undefined);
 

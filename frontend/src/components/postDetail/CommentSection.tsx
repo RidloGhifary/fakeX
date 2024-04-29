@@ -33,6 +33,7 @@ interface CommentProps {
   replies: Reply[];
   createdAt: string;
   updatedAt: string;
+  __v: number;
 }
 
 const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({

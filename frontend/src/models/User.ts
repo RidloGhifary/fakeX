@@ -30,5 +30,5 @@ export interface UserSum {
   username: string;
   profile_picture: string;
   hasBadge: boolean;
-  followers: Followers[];
+  followers?: Followers[];
 }
