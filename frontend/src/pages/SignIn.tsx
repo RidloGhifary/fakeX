@@ -60,18 +60,17 @@ const SignIn = () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       navigate("/");
     },
-  });
-
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    try {
-      await mutate(data);
-    } catch (err) {
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Sign in: failed!",
         description: "An error occurred during sign-in.",
       });
-    }
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    mutate(data);
   };
 
   return (
