@@ -25,6 +25,7 @@ import { useToast } from "./ui/use-toast";
 import { UseCreatePost } from "@/api/PostApi";
 import { UseAppContext } from "@/context/AppContext";
 import ProfilePicture from "./ProfilePicture";
+import BackButton from "./BackButton";
 
 const Navbar = () => {
   const [textPostContent, setTextPostContent] = React.useState<string>("");
@@ -77,6 +78,16 @@ const Navbar = () => {
           <img src={Logo} alt="logo" className="w-[80px] " />
         </Link>
         <div className="flex w-full flex-[3] items-center justify-center gap-16 rounded-md py-2 md:w-[50%]">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <BackButton />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Back</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <div>
             <TooltipProvider>
               <Tooltip>
