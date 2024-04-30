@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { UseAppContext } from "@/context/AppContext";
 import User from "../../assets/user.png";
-// import { Separator } from "../ui/separator";
-import UserContent from "./UserContent";
+import { Separator } from "../ui/separator";
 import { BadgeCheck, Info, PencilLine, RotateCw } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -44,6 +43,11 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+
+const UserContent = React.lazy(() => import("./UserContent"));
+const PostContentSkeleton = React.lazy(
+  () => import("../skeleton/PostContentSkeleton"),
+);
 
 const ProfileComp = () => {
   const [uploadedImage, setUploadedImage] = useState<string>("");
@@ -481,15 +485,17 @@ const ProfileComp = () => {
 
       <section className="py-7">
         <h1 className="text-center text-xl uppercase">your post</h1>
-        {userPosts?.map((userPost: UserPost, i: number) => (
-          <LazyLoadedComponent key={i}>
-            {/* <Separator className="my-6 border-[.2px] border-gray-800" /> */}
-            <UserContent
-              userPost={userPost}
-              userPostLoading={userPostsPending}
-            />
-          </LazyLoadedComponent>
-        ))}
+        <React.Suspense fallback={<PostContentSkeleton />}>
+          {userPosts?.map((userPost: UserPost, i: number) => (
+            <LazyLoadedComponent key={i}>
+              <Separator className="my-6 border-[.2px] border-gray-800" />
+              <UserContent
+                userPost={userPost}
+                userPostLoading={userPostsPending}
+              />
+            </LazyLoadedComponent>
+          ))}
+        </React.Suspense>
       </section>
     </section>
   );
