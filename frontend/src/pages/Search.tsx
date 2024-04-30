@@ -66,6 +66,9 @@ const Search = () => {
           </form>
         </Form>
         {isPending && <p className="text-center">Loading...</p>}
+        {urlQuery !== "" && !data && (
+          <p className="text-center">Ups sorry we cannot find anything</p>
+        )}
         {urlQuery === "" ? (
           <p className="text-center">Ups sorry we cannot find anything</p>
         ) : (
