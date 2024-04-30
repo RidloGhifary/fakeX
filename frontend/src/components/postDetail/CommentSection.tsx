@@ -116,8 +116,8 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
         queryKey: ["user-post"],
       });
     },
-    onError: (err) => {
-      console.log("🚀 ~ err:", err);
+    onError: () => {
+      // console.log("🚀 ~ err:", err);
       toast({
         variant: "destructive",
         title: "Delete: failed!",
