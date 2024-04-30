@@ -17,13 +17,20 @@ const Post = () => {
     },
   });
 
-  if (postDetailIsLoading) return <p>Loading...</p>;
+  if (postDetailIsLoading) return <p className="text-center">Loading...</p>;
   return (
     <div className="mx-auto max-w-[600px] px-3 pb-20 pt-4 md:px-0 md:py-20 md:pb-0">
-      <React.Suspense fallback={<p>Loading...</p>}>
-        <Content data={postDetail} dataIsLoading={postDetailIsLoading} />
-        <CommentSection data={postDetail} dataIsLoading={postDetailIsLoading} />
-      </React.Suspense>
+      {!postDetail ? (
+        <p className="text-center text-rose-500">Cannot find post</p>
+      ) : (
+        <React.Suspense fallback={<p className="text-center">Loading...</p>}>
+          <Content data={postDetail} dataIsLoading={postDetailIsLoading} />
+          <CommentSection
+            data={postDetail}
+            dataIsLoading={postDetailIsLoading}
+          />
+        </React.Suspense>
+      )}
     </div>
   );
 };
