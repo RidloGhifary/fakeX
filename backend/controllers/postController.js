@@ -481,7 +481,7 @@ const DeleteReplyComment = async (req, res) => {
       req.id.toString() !==
       currentPost.comments[commentIndex].replies[
         replyCommentIndex
-      ].userId.toString()
+      ].user.toString()
     ) {
       return res
         .status(403)

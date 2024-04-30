@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Separator } from "../ui/separator";
 import User from "../../assets/user.png";
 import { BadgeCheck, Check, Plus, Trash } from "lucide-react";
@@ -15,7 +16,6 @@ import {
 } from "@/components/ui/tooltip";
 import { UseAppContext } from "@/context/AppContext";
 import { useToast } from "../ui/use-toast";
-import RepliedSection from "./RepliedSection";
 import { Reply } from "@/models/Comment";
 import { Post } from "@/models/Post";
 import {
@@ -29,6 +29,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
+const RepliedSection = lazy(() => import("./RepliedSection"));
 
 interface CommentProps {
   user: {
@@ -252,12 +254,18 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
                 </AlertDialog>
               </div>
             </section>
-            {commentData?.replies.map((reply: Reply) => (
-              <div key={reply._id} className="mt-4">
-                <RepliedSection reply={reply} commentId={commentData?._id} />
-              </div>
-            ))}
-            <Separator className="my-5 border-[.2px] border-gray-800" />
+            <Suspense fallback={<p>Loading...</p>}>
+              {commentData?.replies.map((reply: Reply) => (
+                <div key={reply._id} className="mt-4">
+                  <RepliedSection
+                    postData={data}
+                    reply={reply}
+                    commentId={commentData?._id}
+                  />
+                </div>
+              ))}
+              <Separator className="my-5 border-[.2px] border-gray-800" />
+            </Suspense>
           </div>
         );
       })}

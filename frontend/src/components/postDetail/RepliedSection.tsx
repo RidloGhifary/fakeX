@@ -1,11 +1,11 @@
 import { Reply } from "@/models/Comment";
 import User from "../../assets/user.png";
 import React from "react";
-import { BadgeCheck, Check, Plus } from "lucide-react";
+import { BadgeCheck, Check, Plus, Trash } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import Love from "../home/react/Love";
 import { makeRequest } from "@/utils/axios";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 import {
   Tooltip,
@@ -15,29 +15,34 @@ import {
 } from "@/components/ui/tooltip";
 import { UseAppContext } from "@/context/AppContext";
 import { useToast } from "../ui/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Post } from "@/models/Post";
 
-const RepliedSection: React.FC<{ reply: Reply; commentId: string }> = ({
-  reply,
-  commentId,
-}) => {
+const RepliedSection: React.FC<{
+  reply: Reply;
+  commentId: string;
+  postData: Post;
+}> = ({ reply, commentId, postData }) => {
   const queryClient = useQueryClient();
   const { postId } = useParams();
   const { currentUser } = UseAppContext();
   const { toast } = useToast();
 
-  const { data } = useQuery({
-    queryKey: ["post-detail"],
-    queryFn: async () => {
-      const response = await makeRequest.get(`/post/${postId}`);
-      return response.data;
-    },
-  });
-
   const { mutate } = useMutation({
     mutationKey: ["user"],
     mutationFn: async () => {
       const response = await makeRequest.post(
-        `/user/follow/${data?.user?.userId.toString()}`,
+        `/user/follow/${postData?.user?._id.toString()}`,
       );
       return response;
     },
@@ -65,6 +70,48 @@ const RepliedSection: React.FC<{ reply: Reply; commentId: string }> = ({
     }
   };
 
+  const { mutate: deleteCommentMutate } = useMutation({
+    mutationKey: ["delete-comment"],
+    mutationFn: async () => {
+      const response = await makeRequest.post(
+        `/post/comment/${commentId}/delete-reply/${postId}/${reply?._id}`,
+      );
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["post-detail"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["post"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["post-byfollowing"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["save-post"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["search-post"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["user-post"],
+      });
+    },
+    onError: (err) => {
+      console.log("🚀 ~ err:", err);
+      toast({
+        variant: "destructive",
+        title: "Delete: failed!",
+        description: "An error occurred during deleting.",
+      });
+    },
+  });
+
+  const handleDeleteReplyComment = () => {
+    deleteCommentMutate();
+  };
+
   return (
     <section className="flex justify-start gap-4">
       <div className="flex flex-none flex-col items-center gap-4">
@@ -75,10 +122,10 @@ const RepliedSection: React.FC<{ reply: Reply; commentId: string }> = ({
             className="h-10 w-10 rounded-full object-cover"
             loading="lazy"
           />
-          {currentUser._id === data?.user?._id ||
+          {currentUser._id === postData?.user?._id ||
           currentUser._id ===
             reply?.user._id ? null : currentUser?.following.includes(
-              data?.user?._id,
+              postData?.user?._id,
             ) ? (
             <TooltipProvider>
               <Tooltip>
@@ -133,6 +180,29 @@ const RepliedSection: React.FC<{ reply: Reply; commentId: string }> = ({
             </span>
           </div>
         </div>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Trash
+              size={20}
+              className="cursor-pointer transition hover:scale-105"
+            />
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete and
+                remove your comment reply from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => handleDeleteReplyComment()}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </section>
   );
