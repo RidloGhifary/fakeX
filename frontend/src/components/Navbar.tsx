@@ -77,7 +77,7 @@ const Navbar = () => {
         <Link to="/" className="hidden flex-[2] md:block">
           <img src={Logo} alt="logo" className="w-[80px] " />
         </Link>
-        <div className="flex w-full flex-[3] items-center justify-center gap-16 rounded-md py-2 md:w-[50%]">
+        <div className="flex w-full flex-[3] items-center justify-center gap-12 rounded-md py-2 md:w-[50%] md:gap-16">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
