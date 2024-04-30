@@ -4,11 +4,12 @@ import SavedPostContent from "@/components/SavedPostContent";
 import { PostSavedProps } from "@/models/PostSaved";
 import { Separator } from "@/components/ui/separator";
 import LazyLoadedComponent from "@/components/LazyLoadedComponent";
+import PostContentSkeleton from "@/components/skeleton/PostContentSkeleton";
 
 const PostSaved = () => {
   const { savePostDatas, savePostDatasLoading } = UseAppContext();
 
-  if (savePostDatasLoading) return <p>Loading...</p>;
+  if (savePostDatasLoading) return <PostContentSkeleton />;
   return (
     <React.Fragment>
       <div className="mx-auto max-w-[600px] px-3 pb-56 pt-4 md:px-0 md:py-20">

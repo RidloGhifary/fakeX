@@ -5,6 +5,8 @@ import { UseAppContext } from "@/context/AppContext";
 import { Separator } from "../ui/separator";
 import { useLocation, useNavigate } from "react-router-dom";
 import LazyLoadedComponent from "../LazyLoadedComponent";
+import PostContentSkeleton from "../skeleton/PostContentSkeleton";
+import CreatePostHomePageSkeleton from "../skeleton/CreatePostHomePageSkeleton";
 
 const PostContent = React.lazy(() => import("./PostContent"));
 const SwitchContent = React.lazy(() => import("./SwitchContent"));
@@ -37,7 +39,7 @@ const TimeLine = () => {
 
   return (
     <section className="mx-auto max-w-[600px] px-3 pb-20 pt-4 md:px-0 md:py-20 md:pb-0">
-      <React.Suspense fallback={<p>Loading...</p>}>
+      <React.Suspense fallback={<CreatePostHomePageSkeleton />}>
         <CreatePostHomePage />
       </React.Suspense>
 
@@ -50,9 +52,9 @@ const TimeLine = () => {
 
       <div className="mb-56 hidden md:block">
         {postContentIsLoading || postContentDatasByFollowingLoading ? (
-          <p>Loading...</p>
+          <PostContentSkeleton />
         ) : pathname === "/" ? (
-          <React.Suspense fallback={<p>Loading...</p>}>
+          <React.Suspense fallback={<PostContentSkeleton />}>
             {postContentDatas?.map((post: Post, i: number) => (
               <LazyLoadedComponent key={i}>
                 <Separator className="my-6 border-[.2px] border-gray-800" />
@@ -61,7 +63,7 @@ const TimeLine = () => {
             ))}
           </React.Suspense>
         ) : (
-          <React.Suspense fallback={<p>Loading...</p>}>
+          <React.Suspense fallback={<PostContentSkeleton />}>
             {postContentDatasByFollowing?.map((post: Post, i: number) => (
               <LazyLoadedComponent key={i}>
                 <Separator className="my-6 border-[.2px] border-gray-800" />
