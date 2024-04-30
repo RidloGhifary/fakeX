@@ -1,6 +1,6 @@
 import { Separator } from "../ui/separator";
 import User from "../../assets/user.png";
-import { BadgeCheck, Check, Plus } from "lucide-react";
+import { BadgeCheck, Check, Plus, Trash } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import Love from "../home/react/Love";
 import Comment from "../home/react/Comment";
@@ -18,6 +18,17 @@ import { useToast } from "../ui/use-toast";
 import RepliedSection from "./RepliedSection";
 import { Reply } from "@/models/Comment";
 import { Post } from "@/models/Post";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface CommentProps {
   user: {
@@ -60,7 +71,7 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
       toast({
         variant: "destructive",
         title: "Follow: failed!",
-        description: "An error occurred during follow.",
+        description: "An error occurred during following.",
       });
     },
   });
@@ -75,6 +86,48 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
         description: "An error occurred during follow.",
       });
     }
+  };
+
+  const { mutate: deleteCommentMutate } = useMutation({
+    mutationKey: ["delete-comment"],
+    mutationFn: async (commentId: string) => {
+      const response = await makeRequest.post(
+        `/post/comment/${commentId}/delete/${data?._id}`,
+      );
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["post"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["post-byfollowing"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["post-detail"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["save-post"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["search-post"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["user-post"],
+      });
+    },
+    onError: (err) => {
+      console.log("🚀 ~ err:", err);
+      toast({
+        variant: "destructive",
+        title: "Delete: failed!",
+        description: "An error occurred during deleting.",
+      });
+    },
+  });
+
+  const handleDeleteComment = (commentId: string) => {
+    deleteCommentMutate(commentId);
   };
 
   if (dataIsLoading) return <p>Loading...</p>;
@@ -130,7 +183,7 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
                   />
                 )}
               </div>
-              <div className="flex flex-1 gap-4">
+              <div className="flex flex-1 items-start gap-4">
                 <div className="w-full space-y-2">
                   <p className="flex items-center gap-1 font-semibold">
                     <Link
@@ -170,6 +223,33 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
                     </div>
                   </div>
                 </div>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Trash
+                      size={20}
+                      className="cursor-pointer transition hover:scale-105"
+                    />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete and remove your comment from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handleDeleteComment(commentData?._id)}
+                      >
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </section>
             {commentData?.replies.map((reply: Reply) => (
