@@ -1,9 +1,18 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const { Server } = require("socket.io");
 
 require("dotenv").config();
 require("./db.js");
+
+const io = new Server({
+  cors: process.env.BASE_URL,
+});
+
+io.on("connection", (socket) => {
+  console.log(socket);
+});
 
 const authRouter = require("./router/authRouter.js");
 const userRouter = require("./router/userRouter.js");
@@ -30,4 +39,5 @@ app.use("/api/credentials", forgotPassRouter);
 app.use("/api/post", postRouter);
 app.use("/api/saved-post", savedPostRouter);
 
+io.listen(3000);
 app.listen(PORT, () => console.log(`Running in port : ${PORT}`));
