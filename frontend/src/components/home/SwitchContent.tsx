@@ -11,7 +11,7 @@ const SwitchContent: React.FC<{
   return (
     <section className="my-4 block md:hidden">
       <Tabs defaultValue="forYou" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 bg-gray-900 text-white">
+        <TabsList className="sticky top-1 z-50 grid w-full grid-cols-2 bg-gray-900 text-white">
           <TabsTrigger value="forYou">For you</TabsTrigger>
           <TabsTrigger value="follow">Follow</TabsTrigger>
         </TabsList>
