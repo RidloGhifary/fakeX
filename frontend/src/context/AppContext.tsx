@@ -1,13 +1,13 @@
 import React from "react";
 import { createContext, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { makeRequest } from "@/utils/axios";
 import { User } from "@/models/User";
 import { Post } from "@/models/Post";
 import { UseGetSuggestContent } from "@/api/PostApi";
 import { UseGetUserPostSaved } from "@/api/SavedPostApi";
 import { PostSavedProps } from "@/models/PostSaved";
+import { UseGetUser } from "@/api/UserApi";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -40,24 +40,9 @@ const AppContext = createContext<AppContextType>({
 export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   children,
 }) => {
-  const { isError } = useQuery({
-    queryKey: ["validate"],
-    queryFn: async () => {
-      const response = await axios.get(`${BASE_URL}/api/auth/validate-token`, {
-        withCredentials: true,
-      });
-
-      return response;
-    },
-  });
-
   const { data: currentUser } = useQuery({
-    queryKey: ["user", isError],
-    queryFn: async () => {
-      const response = await makeRequest.get(`${BASE_URL}/api/user`);
-
-      return response.data;
-    },
+    queryKey: ["user"],
+    queryFn: UseGetUser,
   });
 
   const { data: postContentDatas, isLoading: postContentIsLoading } = useQuery({
@@ -86,7 +71,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   return (
     <AppContext.Provider
       value={{
-        isLoggedIn: !isError,
+        isLoggedIn: Boolean(currentUser),
         currentUser,
         postContentDatas,
         postContentIsLoading,
