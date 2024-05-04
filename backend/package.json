@@ -13,7 +13,7 @@
     "socket.io": "^4.7.5"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node --watch server.js"
   },
   "name": "backend",
   "version": "1.0.0",
