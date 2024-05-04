@@ -1,4 +1,5 @@
 const Post = require("../models/Post.js");
+const SavedPost = require("../models/SavedPost.js");
 const User = require("../models/User.js");
 const { validationResult } = require("express-validator");
 
@@ -159,6 +160,8 @@ const DeletePost = async (req, res) => {
 
   try {
     const currentPost = await Post.findById({ _id: postId });
+    const savedPost = await SavedPost.findOne({ post: postId });
+
     if (!currentPost)
       return res.status(404).json({ message: "Cannot found post" });
 
@@ -168,6 +171,8 @@ const DeletePost = async (req, res) => {
         .json({ message: "You are not authorized to delete this post" });
 
     await Post.deleteOne({ _id: postId });
+    if (savedPost) await SavedPost.deleteOne({ _id: savedPost._id });
+
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
