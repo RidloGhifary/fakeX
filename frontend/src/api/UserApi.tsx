@@ -23,3 +23,8 @@ export const UseUpdateProfile = async (formData: UpdateProps) => {
   });
   return response.data;
 };
+
+export const UseGetUser = async () => {
+  const response = await makeRequest.get("/user");
+  return response.data;
+};
