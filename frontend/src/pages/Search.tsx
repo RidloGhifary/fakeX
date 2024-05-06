@@ -21,7 +21,6 @@ const Search = () => {
   const [urlQuery, setUrlQuery] = React.useState<string>("");
 
   const location = useLocation();
-
   const urlParams = new URLSearchParams(window.location.search);
 
   const form = useForm<z.infer<typeof FormSchema>>({

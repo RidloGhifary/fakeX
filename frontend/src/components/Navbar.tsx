@@ -58,17 +58,9 @@ const Navbar = () => {
     setTextPostContent(event.target.value);
   };
 
-  const handleSubmitPostContent = async () => {
-    try {
-      await mutate({ content: textPostContent as string });
-      setTextPostContent("");
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Create: failed!",
-        description: "An error occurred during posting.",
-      });
-    }
+  const handleSubmitPostContent = () => {
+    mutate({ content: textPostContent as string });
+    setTextPostContent("");
   };
 
   return (

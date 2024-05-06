@@ -4,7 +4,6 @@ import React from "react";
 import { BadgeCheck, Check, Plus, Trash } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import Love from "../home/react/Love";
-import { makeRequest } from "@/utils/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 import {
@@ -27,6 +26,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Post } from "@/models/Post";
+import { UseFollowUser } from "@/api/UserApi";
+import { DeleteReplyComment } from "@/api/PostApi";
 
 const RepliedSection: React.FC<{
   reply: Reply;
@@ -40,12 +41,7 @@ const RepliedSection: React.FC<{
 
   const { mutate } = useMutation({
     mutationKey: ["user"],
-    mutationFn: async () => {
-      const response = await makeRequest.post(
-        `/user/follow/${postData?.user?._id.toString()}`,
-      );
-      return response;
-    },
+    mutationFn: UseFollowUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
@@ -59,25 +55,12 @@ const RepliedSection: React.FC<{
   });
 
   const handleFollow = () => {
-    try {
-      mutate();
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Follow: failed!",
-        description: "An error occurred during follow.",
-      });
-    }
+    mutate(postData?.user?._id.toString());
   };
 
   const { mutate: deleteCommentMutate } = useMutation({
     mutationKey: ["delete-comment"],
-    mutationFn: async () => {
-      const response = await makeRequest.post(
-        `/post/comment/${commentId}/delete-reply/${postId}/${reply?._id}`,
-      );
-      return response;
-    },
+    mutationFn: DeleteReplyComment,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["post-detail"],
@@ -98,8 +81,7 @@ const RepliedSection: React.FC<{
         queryKey: ["user-post"],
       });
     },
-    onError: (err) => {
-      console.log("🚀 ~ err:", err);
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Delete: failed!",
@@ -109,7 +91,7 @@ const RepliedSection: React.FC<{
   });
 
   const handleDeleteReplyComment = () => {
-    deleteCommentMutate();
+    deleteCommentMutate({ commentId, postId, replyId: reply._id });
   };
 
   return (

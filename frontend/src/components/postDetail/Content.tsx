@@ -5,7 +5,6 @@ import { Link, useParams } from "react-router-dom";
 import Love from "../home/react/Love";
 import Comment from "../home/react/Comment";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "@/utils/axios";
 import moment from "moment";
 import Share from "../home/react/Share";
 import MenuPost from "../home/MenuPost";
@@ -18,6 +17,7 @@ import {
 import { UseAppContext } from "@/context/AppContext";
 import { useToast } from "../ui/use-toast";
 import { Post } from "@/models/Post";
+import { UseFollowUser } from "@/api/UserApi";
 
 const Content: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
   data,
@@ -30,12 +30,7 @@ const Content: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
 
   const { mutate } = useMutation({
     mutationKey: ["follow-user"],
-    mutationFn: async () => {
-      const response = await makeRequest.post(
-        `/user/follow/${data?.user?._id.toString()}`,
-      );
-      return response;
-    },
+    mutationFn: UseFollowUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
@@ -49,15 +44,7 @@ const Content: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
   });
 
   const handleFollow = () => {
-    try {
-      mutate();
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Follow: failed!",
-        description: "An error occurred during follow.",
-      });
-    }
+    mutate(data?.user?._id.toString());
   };
 
   if (dataIsLoading) return <p>Loading...</p>;
@@ -133,12 +120,12 @@ const Content: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
                   `${data?.likes.length > 1 ? "likes" : "like"}`}
               </span>
             )}
-            {data?.likes.length !== 0 && data?.comments.length !== 0 && " - "}
-            {data?.comments.length !== 0 && (
+            {data?.likes.length !== 0 && data?.comments?.length !== 0 && " - "}
+            {data?.comments?.length !== 0 && (
               <span>
-                {data?.comments.length +
+                {data?.comments?.length +
                   " " +
-                  `${data?.comments.length > 1 ? "comments" : "comment"}`}
+                  `${data?.comments?.length > 1 ? "comments" : "comment"}`}
               </span>
             )}
           </p>

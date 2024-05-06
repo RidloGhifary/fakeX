@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
-import { makeRequest } from "@/utils/axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import { UserResetPassword } from "@/api/UserApi";
+import { useToast } from "@/components/ui/use-toast";
 
 const FormSchema = z.object({
   newPassword: z.string().min(8, {
@@ -26,6 +27,7 @@ const FormSchema = z.object({
 });
 
 const ResetPassword = () => {
+  const { toast } = useToast();
   const { search } = useLocation();
   const navigate = useNavigate();
 
@@ -39,23 +41,22 @@ const ResetPassword = () => {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["reset-password"],
-    mutationFn: async (data: string) => {
-      const response = await makeRequest.post(
-        `/credentials/reset-password${search}`,
-        { newPassword: data },
-      );
-      return response;
-    },
+    mutationFn: (data: { data: string; search: string }) =>
+      UserResetPassword(data),
     onSuccess: () => {
       navigate("/sign-in");
     },
-    onError: (err) => {
-      console.log("🚀 ~ ResetPassword ~ err:", err);
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Reset password, Failed!",
+        description: "An error occurred during resetting password",
+      });
     },
   });
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    mutate(data.newPassword);
+    mutate({ data: data.newPassword as string, search });
   };
 
   return (

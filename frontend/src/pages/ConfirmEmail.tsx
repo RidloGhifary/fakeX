@@ -16,8 +16,8 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeftToLine } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { makeRequest } from "@/utils/axios";
 import { useToast } from "@/components/ui/use-toast";
+import { UserConfirmEmail } from "@/api/UserApi";
 
 const FormSchema = z.object({
   email: z.string().email("Email is incorrect"),
@@ -35,13 +35,7 @@ const ConfirmEmail = () => {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["confirm-email"],
-    mutationFn: async (data: { email: string }) => {
-      const response = await makeRequest.post(
-        "/credentials/forgot-password",
-        data,
-      );
-      return response;
-    },
+    mutationFn: (data: { email: string }) => UserConfirmEmail(data),
     onSuccess: () => {
       toast({
         title: "Sending: Success!!",

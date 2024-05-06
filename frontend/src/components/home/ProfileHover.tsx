@@ -29,16 +29,8 @@ const ProfileHover: React.FC<{ user: UserSum }> = ({ user }) => {
     },
   });
 
-  const handleFollow = async () => {
-    try {
-      await mutate(user?._id);
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Follow: failed!",
-        description: "An error occurred during follow.",
-      });
-    }
+  const handleFollow = () => {
+    mutate(user?._id);
   };
 
   return (
@@ -61,8 +53,8 @@ const ProfileHover: React.FC<{ user: UserSum }> = ({ user }) => {
           {user?.bio || "halo"}
         </p>
         <p className="text-xs text-gray-500">
-          {user?.followers.length}{" "}
-          {user?.followers.length > 1 ? "followers" : "follower"}
+          {user?.followers?.length}
+          {user?.followers?.length > 1 ? " followers" : " follower"}
         </p>
         {currentUser?._id !== user?._id && (
           <Button

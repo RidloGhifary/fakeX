@@ -43,6 +43,7 @@ const SignUp = () => {
   const { toast } = useToast();
   const { currentUser } = UseAppContext();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -53,29 +54,25 @@ const SignUp = () => {
     },
   });
 
-  const queryClient = useQueryClient();
-
   const { mutate, isPending, error, isError } = useMutation({
     mutationFn: UseSignUp,
-    mutationKey: ["user"],
+    mutationKey: ["sign-up"],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
-  });
-
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    try {
-      await mutate(data);
-      if (currentUser) {
-        navigate(`/verify-otp/${currentUser._id}`);
-      }
-    } catch (err) {
-      console.log(err);
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Sign in: failed!",
         description: "An error occurred during sign-up.",
       });
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    mutate(data);
+    if (currentUser) {
+      navigate(`/verify-otp/${currentUser._id}`);
     }
   };
 

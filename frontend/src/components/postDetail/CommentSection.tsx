@@ -5,7 +5,6 @@ import { BadgeCheck, Check, Plus, Trash } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import Love from "../home/react/Love";
 import Comment from "../home/react/Comment";
-import { makeRequest } from "@/utils/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 import {
@@ -29,6 +28,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { UseFollowUser } from "@/api/UserApi";
+import { DeleteComment } from "@/api/PostApi";
 
 const RepliedSection = lazy(() => import("./RepliedSection"));
 
@@ -60,12 +61,7 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
 
   const { mutate } = useMutation({
     mutationKey: ["user"],
-    mutationFn: async () => {
-      const response = await makeRequest.post(
-        `/user/follow/${data?.user?._id.toString()}`,
-      );
-      return response;
-    },
+    mutationFn: UseFollowUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
@@ -79,25 +75,12 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
   });
 
   const handleFollow = () => {
-    try {
-      mutate();
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Follow: failed!",
-        description: "An error occurred during follow.",
-      });
-    }
+    mutate(data?.user?._id.toString());
   };
 
   const { mutate: deleteCommentMutate } = useMutation({
     mutationKey: ["delete-comment"],
-    mutationFn: async (commentId: string) => {
-      const response = await makeRequest.post(
-        `/post/comment/${commentId}/delete/${data?._id}`,
-      );
-      return response;
-    },
+    mutationFn: DeleteComment,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["post"],
@@ -118,8 +101,8 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
         queryKey: ["user-post"],
       });
     },
-    onError: () => {
-      // console.log("🚀 ~ err:", err);
+    onError: (err) => {
+      console.log("🚀 ~ err:", err);
       toast({
         variant: "destructive",
         title: "Delete: failed!",
@@ -129,7 +112,7 @@ const CommentSection: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
   });
 
   const handleDeleteComment = (commentId: string) => {
-    deleteCommentMutate(commentId);
+    deleteCommentMutate({ commentId, postId: data?._id });
   };
 
   if (dataIsLoading) return <p>Loading...</p>;

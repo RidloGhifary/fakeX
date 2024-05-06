@@ -6,7 +6,7 @@ export interface Post {
   user: UserSum;
   content: string;
   likes: string[];
-  comments: Comment[];
+  comments?: Comment[];
   createdAt: string;
   updatedAt: string;
   __v: number;

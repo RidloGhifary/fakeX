@@ -1,15 +1,12 @@
 import React from "react";
 import { createContext, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { makeRequest } from "@/utils/axios";
 import { User } from "@/models/User";
 import { Post } from "@/models/Post";
-import { UseGetSuggestContent } from "@/api/PostApi";
+import { GetPostByFollowing, UseGetSuggestContent } from "@/api/PostApi";
 import { UseGetUserPostSaved } from "@/api/SavedPostApi";
 import { PostSavedProps } from "@/models/PostSaved";
 import { UseGetUser } from "@/api/UserApi";
-
-const BASE_URL = import.meta.env.VITE_API_URL;
 
 interface AppContextType {
   isLoggedIn: boolean;
@@ -47,7 +44,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
 
   const { data: postContentDatas, isLoading: postContentIsLoading } = useQuery({
     queryKey: ["post"],
-    queryFn: async () => await UseGetSuggestContent(),
+    queryFn: UseGetSuggestContent,
   });
 
   const {
@@ -55,12 +52,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     isLoading: postContentDatasByFollowingLoading,
   } = useQuery({
     queryKey: ["post-byfollowing"],
-    queryFn: async () => {
-      const response = await makeRequest.get(
-        `${BASE_URL}/api/post/byfollowing`,
-      );
-      return response.data;
-    },
+    queryFn: GetPostByFollowing,
   });
 
   const { data: savePostDatas, isLoading: savePostDatasLoading } = useQuery({

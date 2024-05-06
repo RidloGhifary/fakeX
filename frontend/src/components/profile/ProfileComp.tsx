@@ -35,7 +35,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { UseUpdateProfile } from "@/api/UserApi";
+import { UseFollowUser, UseUpdateProfile } from "@/api/UserApi";
 import { UserPost } from "@/models/Post";
 import LazyLoadedComponent from "../LazyLoadedComponent";
 import {
@@ -79,12 +79,7 @@ const ProfileComp = () => {
 
   const { mutate } = useMutation({
     mutationKey: ["user"],
-    mutationFn: async () => {
-      const response = await makeRequest.post(
-        `/user/follow/${user?._id.toString()}`,
-      );
-      return response;
-    },
+    mutationFn: UseFollowUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
@@ -98,15 +93,7 @@ const ProfileComp = () => {
   });
 
   const handleFollow = () => {
-    try {
-      mutate();
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Follow: failed!",
-        description: "An error occurred during follow.",
-      });
-    }
+    mutate(user?._id.toString());
   };
 
   const handelShareLink = () => {
@@ -229,8 +216,7 @@ const ProfileComp = () => {
           description: "Successfully updating your profile.",
         });
       },
-      onError: (err) => {
-        console.log("🚀 ~ ProfileComp ~ err:", err);
+      onError: () => {
         toast({
           variant: "destructive",
           title: "Update: failed!",
