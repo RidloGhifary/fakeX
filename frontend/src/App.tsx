@@ -42,8 +42,16 @@ export default function App() {
                 )
               }
             />
-            <Route path="/verify-otp/:userId" element={<VerifyOtp />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route
+              path="/verify-otp/:userId"
+              element={
+                isLoggedIn && currentUser?.verified ? (
+                  <Navigate to="/" />
+                ) : (
+                  <VerifyOtp />
+                )
+              }
+            />
             <Route path="/forgot-password" element={<ConfirmEmail />} />
 
             <Route element={<PrivateRoute />}>
@@ -53,6 +61,7 @@ export default function App() {
               <Route path="/byfollowing" element={<Home />} />
               <Route path="/profile/:username" element={<Profile />} />
               <Route path="/:username/post/:postId" element={<PostDetail />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" />} />
