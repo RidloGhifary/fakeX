@@ -1,8 +1,9 @@
+import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "../ui/separator";
-import PostContent from "./PostContent";
-import React from "react";
 import { Post } from "@/models/Post";
+
+const PostContent = React.lazy(() => import("./PostContent"));
 
 const SwitchContent: React.FC<{
   postDatas: Post[];
@@ -16,20 +17,24 @@ const SwitchContent: React.FC<{
           <TabsTrigger value="follow">Follow</TabsTrigger>
         </TabsList>
         <TabsContent value="forYou">
-          {postDatas?.map((data, i) => (
-            <div key={i}>
-              <Separator className="my-6 border-[.2px] border-gray-800" />
-              <PostContent data={data} />
-            </div>
-          ))}
+          <React.Suspense fallback={<p>Loading</p>}>
+            {postDatas?.map((data, i) => (
+              <div key={i}>
+                <Separator className="my-6 border-[.2px] border-gray-800" />
+                <PostContent data={data} />
+              </div>
+            ))}
+          </React.Suspense>
         </TabsContent>
         <TabsContent value="follow">
-          {postContentDatasByFollowing?.map((data, i) => (
-            <div key={i}>
-              <Separator className="my-6 border-[.2px] border-gray-800" />
-              <PostContent data={data} />
-            </div>
-          ))}
+          <React.Suspense fallback={<p>Loading</p>}>
+            {postContentDatasByFollowing?.map((data, i) => (
+              <div key={i}>
+                <Separator className="my-6 border-[.2px] border-gray-800" />
+                <PostContent data={data} />
+              </div>
+            ))}
+          </React.Suspense>
         </TabsContent>
       </Tabs>
     </section>
