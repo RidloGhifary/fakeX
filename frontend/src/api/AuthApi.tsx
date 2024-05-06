@@ -32,7 +32,7 @@ export const UseValidateToken = async () => {
 };
 
 interface VerifyOtpProps {
-  data: string;
+  data: { otp: string };
   userId: string;
 }
 

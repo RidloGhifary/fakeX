@@ -10,7 +10,6 @@ import MenuPost from "./MenuPost";
 import { Post } from "@/models/Post";
 import moment from "moment";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "@/utils/axios";
 import { UseAppContext } from "@/context/AppContext";
 import { useToast } from "../ui/use-toast";
 import {
@@ -25,6 +24,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { UseFollowUser } from "@/api/UserApi";
 
 const PostContent: React.FC<{ data: Post }> = ({ data }) => {
   const queryClient = useQueryClient();
@@ -33,12 +33,7 @@ const PostContent: React.FC<{ data: Post }> = ({ data }) => {
 
   const { mutate } = useMutation({
     mutationKey: ["user"],
-    mutationFn: async () => {
-      const response = await makeRequest.post(
-        `/user/follow/${data?.user?._id.toString()}`,
-      );
-      return response;
-    },
+    mutationFn: UseFollowUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["post-byfollowing"] });
@@ -53,15 +48,7 @@ const PostContent: React.FC<{ data: Post }> = ({ data }) => {
   });
 
   const handleFollow = () => {
-    try {
-      mutate();
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Follow: failed!",
-        description: "An error occurred during follow.",
-      });
-    }
+    mutate(data?.user?._id.toString());
   };
 
   return (

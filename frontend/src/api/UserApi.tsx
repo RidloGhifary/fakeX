@@ -28,3 +28,24 @@ export const UseGetUser = async () => {
   const response = await makeRequest.get("/user");
   return response.data;
 };
+
+export const UserConfirmEmail = async (formData: { email: string }) => {
+  const response = await makeRequest.post(
+    "/credentials/forgot-password",
+    formData,
+  );
+  return response;
+};
+
+interface UserResetPasswordProps {
+  search: string;
+  data: string;
+}
+
+export const UserResetPassword = async (formData: UserResetPasswordProps) => {
+  const response = await makeRequest.post(
+    `/credentials/reset-password${formData.search}`,
+    { newPassword: formData.data },
+  );
+  return response;
+};

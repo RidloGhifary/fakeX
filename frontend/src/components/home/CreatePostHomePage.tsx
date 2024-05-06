@@ -18,9 +18,8 @@ const FormSchema = z.object({
 
 const CreatePostHomePage = () => {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
-
   const { currentUser } = UseAppContext();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -52,16 +51,8 @@ const CreatePostHomePage = () => {
     },
   });
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
-    try {
-      await mutate(data);
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Create: failed!",
-        description: "An error occurred during posting.",
-      });
-    }
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    mutate(data);
   }
 
   return (

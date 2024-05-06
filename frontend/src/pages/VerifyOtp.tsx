@@ -29,9 +29,10 @@ const FormSchema = z.object({
 
 const VerifyOtp = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const params = useParams();
   const { userId } = params;
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -40,8 +41,6 @@ const VerifyOtp = () => {
     },
   });
 
-  const queryClient = useQueryClient();
-
   const { mutate, isPending } = useMutation({
     mutationKey: ["user"],
     mutationFn: UseVerifyOtp,
@@ -49,19 +48,17 @@ const VerifyOtp = () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       navigate("/sign-in");
     },
-  });
-
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    try {
-      userId && mutate({ data, userId });
-    } catch (err) {
-      console.log(err);
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Sign up: failed!",
         description: "An error occurred during sending OTP code.",
       });
-    }
+    },
+  });
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    userId && mutate({ data, userId });
   }
 
   return (

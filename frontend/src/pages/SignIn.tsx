@@ -41,6 +41,7 @@ const SignIn = () => {
 
   const { toast } = useToast();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -50,13 +51,10 @@ const SignIn = () => {
     },
   });
 
-  const queryClient = useQueryClient();
-
   const { mutate, isPending, error, isError } = useMutation({
     mutationFn: UseSignIn,
-    mutationKey: ["validate"],
+    mutationKey: ["sign-in"],
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["validate"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
       navigate("/");
     },

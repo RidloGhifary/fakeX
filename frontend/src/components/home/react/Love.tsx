@@ -1,9 +1,9 @@
+import { UseLikePost } from "@/api/PostApi";
 import { useToast } from "@/components/ui/use-toast";
 import { UseAppContext } from "@/context/AppContext";
 import { Reply } from "@/models/Comment";
 import { Post } from "@/models/Post";
 import { UserSum } from "@/models/User";
-import { makeRequest } from "@/utils/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
 import React from "react";
@@ -32,10 +32,7 @@ const Love: React.FC<{
 
   const { mutate } = useMutation({
     mutationKey: ["post"],
-    mutationFn: async () => {
-      const response = await makeRequest.post(urlLike as string);
-      return response;
-    },
+    mutationFn: UseLikePost,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["post"],
@@ -56,8 +53,7 @@ const Love: React.FC<{
         queryKey: ["user-post"],
       });
     },
-    onError: (err) => {
-      console.log("🚀 ~ err:", err);
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Like post: failed!",
@@ -67,15 +63,7 @@ const Love: React.FC<{
   });
 
   const handleLike = () => {
-    try {
-      mutate();
-    } catch {
-      toast({
-        variant: "destructive",
-        title: "Like post: failed!",
-        description: "An error occurred during like.",
-      });
-    }
+    mutate(urlLike);
   };
 
   return (

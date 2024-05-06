@@ -30,10 +30,14 @@ export const UseCommentPost = async (formData: {
   url: string;
 }) => {
   const { content, url } = formData;
-  console.log("🚀 ~ content:", content);
   const response = await makeRequest.post(`/post/comment/${url}`, {
     content: content,
   });
+  return response;
+};
+
+export const UseLikePost = async (urlLike: string) => {
+  const response = await makeRequest.post(urlLike as string);
   return response;
 };
 
@@ -45,4 +49,34 @@ export const UseDeletePost = async (postId: string) => {
 export const UseSearchPost = async (formData: string) => {
   const response = await makeRequest.get(`/post/search/content?q=${formData}`);
   return response.data;
+};
+
+export const GetPostByFollowing = async () => {
+  const response = await makeRequest.get(`/post/byfollowing`);
+  return response.data;
+};
+
+interface DeleteCommentProps {
+  commentId: string;
+  postId: string;
+}
+
+export const DeleteComment = async (formData: DeleteCommentProps) => {
+  const response = await makeRequest.post(
+    `/post/comment/${formData.commentId}/delete/${formData.postId}`,
+  );
+  return response;
+};
+
+interface DeleteReplyCommentProps {
+  commentId: string;
+  postId: string;
+  replyId: string;
+}
+
+export const DeleteReplyComment = async (formData: DeleteReplyCommentProps) => {
+  const response = await makeRequest.post(
+    `/post/comment/${formData.commentId}/delete-reply/${formData?.postId}/${formData.replyId}`,
+  );
+  return response;
 };
