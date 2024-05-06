@@ -1,3 +1,4 @@
+import React from "react";
 import { UseLogOut } from "@/api/AuthApi";
 import {
   DropdownMenu,
@@ -11,7 +12,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "./ui/use-toast";
 import { UseAppContext } from "@/context/AppContext";
-import React from "react";
 
 const LeftSideMenu = () => {
   const navigate = useNavigate();
@@ -23,23 +23,22 @@ const LeftSideMenu = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: UseLogOut,
-    mutationKey: ["validate"],
+    mutationKey: ["log-out"],
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["validate"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       navigate("/sign-in");
     },
-  });
-
-  const handleLogOut = () => {
-    try {
-      mutate();
-    } catch (error) {
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Sign out: failed!",
         description: "An error occurred during sign-out.",
       });
-    }
+    },
+  });
+
+  const handleLogOut = () => {
+    mutate();
   };
 
   return (
