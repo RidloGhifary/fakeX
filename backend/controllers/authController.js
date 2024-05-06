@@ -66,7 +66,6 @@ const SignUp = async (req, res) => {
 
     res.status(201).send({ message: "User created successful" });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
