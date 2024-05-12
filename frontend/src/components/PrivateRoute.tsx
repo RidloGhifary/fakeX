@@ -5,9 +5,9 @@ import NavbarMobile from "./NavbarMobile";
 import React, { Suspense } from "react";
 
 export default function PrivateRoute() {
-  const { isLoggedIn, currentUser } = UseAppContext();
+  const { isLoggedIn } = UseAppContext();
 
-  return isLoggedIn && currentUser ? (
+  return isLoggedIn ? (
     <React.Fragment>
       <Navbar />
       <NavbarMobile />
