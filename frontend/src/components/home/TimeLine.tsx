@@ -34,9 +34,6 @@ const TimeLine = () => {
     }
   };
 
-  if (postContentIsLoading || postContentDatasByFollowingLoading)
-    return <p>Loading...</p>;
-
   return (
     <section className="mx-auto max-w-[600px] px-3 pb-20 pt-4 md:px-0 md:py-20 md:pb-0">
       <React.Suspense fallback={<CreatePostHomePageSkeleton />}>
@@ -50,29 +47,31 @@ const TimeLine = () => {
         />
       </React.Suspense>
 
-      <div className="mb-56 hidden md:block">
-        {postContentIsLoading || postContentDatasByFollowingLoading ? (
-          <PostContentSkeleton />
-        ) : pathname === "/" ? (
-          <React.Suspense fallback={<PostContentSkeleton />}>
-            {postContentDatas?.map((post: Post, i: number) => (
+      <React.Suspense fallback={<PostContentSkeleton />}>
+        <div className="mb-56 hidden md:block">
+          {postContentIsLoading && <PostContentSkeleton />}
+          {pathname === "/" &&
+            postContentDatas?.map((post: Post, i: number) => (
               <LazyLoadedComponent key={i}>
                 <Separator className="my-6 border-[.2px] border-gray-800" />
                 <PostContent data={post} />
               </LazyLoadedComponent>
             ))}
-          </React.Suspense>
-        ) : (
-          <React.Suspense fallback={<PostContentSkeleton />}>
-            {postContentDatasByFollowing?.map((post: Post, i: number) => (
+        </div>
+      </React.Suspense>
+
+      <React.Suspense fallback={<PostContentSkeleton />}>
+        <div className="mb-56 hidden md:block">
+          {postContentDatasByFollowingLoading && <PostContentSkeleton />}
+          {pathname === "/byfollowing" &&
+            postContentDatasByFollowing?.map((post: Post, i: number) => (
               <LazyLoadedComponent key={i}>
                 <Separator className="my-6 border-[.2px] border-gray-800" />
                 <PostContent data={post} />
               </LazyLoadedComponent>
             ))}
-          </React.Suspense>
-        )}
-      </div>
+        </div>
+      </React.Suspense>
 
       <div className="sticky bottom-5 left-0 hidden w-fit cursor-pointer rounded-full border border-gray-500 bg-black p-3 transition hover:scale-110 md:block">
         <div

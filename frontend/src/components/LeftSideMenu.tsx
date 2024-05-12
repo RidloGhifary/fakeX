@@ -26,7 +26,9 @@ const LeftSideMenu = () => {
     mutationKey: ["log-out"],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      console.log("1");
       navigate("/sign-in");
+      console.log("2");
     },
     onError: () => {
       toast({

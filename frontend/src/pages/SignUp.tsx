@@ -76,10 +76,6 @@ const SignUp = () => {
     }
   };
 
-  if (currentUser) {
-    navigate(`/verify-otp/${currentUser._id}`);
-  }
-
   return (
     <section className="flex h-dvh w-full items-center justify-center p-10 lg:p-3">
       <section className="grid w-full items-center gap-40 lg:grid-cols-2">

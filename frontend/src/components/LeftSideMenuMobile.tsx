@@ -23,9 +23,9 @@ const LeftSideMenuMobile = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: UseLogOut,
-    mutationKey: ["validate"],
+    mutationKey: ["log-out"],
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["validate"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       navigate("/sign-in");
     },
   });
