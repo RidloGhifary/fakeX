@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import React, { lazy } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -6,6 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { UseAppContext } from "./context/AppContext";
+import LoadingPage from "./components/LoadingPage";
 
 const SignIn = lazy(() => import("./pages/SignIn"));
 const SignUp = lazy(() => import("./pages/SignUp"));
@@ -22,6 +23,17 @@ const PrivateRoute = lazy(() => import("./components/PrivateRoute"));
 
 export default function App() {
   const { isLoggedIn, currentUser } = UseAppContext();
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    if (!currentUser) {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
+  }, [currentUser]);
+
+  if (isLoading) return <LoadingPage />;
 
   return (
     <main className=" min-h-dvh bg-black text-white">
