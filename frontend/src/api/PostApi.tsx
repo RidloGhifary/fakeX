@@ -56,6 +56,11 @@ export const GetPostByFollowing = async () => {
   return response.data;
 };
 
+export const GetPostByUser = async (username: string) => {
+  const response = await makeRequest.get(`/post/${username}`);
+  return response.data;
+};
+
 interface DeleteCommentProps {
   commentId: string;
   postId: string;

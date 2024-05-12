@@ -49,3 +49,8 @@ export const UserResetPassword = async (formData: UserResetPasswordProps) => {
   );
   return response;
 };
+
+export const GetUser = async (username: string) => {
+  const response = await makeRequest.get(`/user/${username}`);
+  return response.data;
+};
