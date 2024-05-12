@@ -68,7 +68,7 @@ const ProfileComp = () => {
   });
 
   const { data: userPosts, isPending: userPostsPending } = useQuery({
-    queryKey: ["user-post"],
+    queryKey: ["user-post", username],
     queryFn: () => GetPostByUser(usernameByUrl as string),
   });
 
