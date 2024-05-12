@@ -5,7 +5,6 @@ import { Separator } from "../ui/separator";
 import { BadgeCheck, Info, PencilLine, RotateCw } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "@/utils/axios";
 import { useToast } from "../ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,7 +34,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { UseFollowUser, UseUpdateProfile } from "@/api/UserApi";
+import { GetUser, UseFollowUser, UseUpdateProfile } from "@/api/UserApi";
 import { UserPost } from "@/models/Post";
 import LazyLoadedComponent from "../LazyLoadedComponent";
 import {
@@ -43,6 +42,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { GetPostByUser } from "@/api/PostApi";
 
 const UserContent = React.lazy(() => import("./UserContent"));
 const PostContentSkeleton = React.lazy(
@@ -60,21 +60,16 @@ const ProfileComp = () => {
 
   const domain = window.location.hostname;
   const port = window.location.port ? `:${window.location.port}` : "";
+  const usernameByUrl = username?.slice(1);
 
   const { data: user, isPending } = useQuery({
-    queryKey: ["user", username],
-    queryFn: async () => {
-      const response = await makeRequest.get(`/user/${username?.slice(1)}`);
-      return response.data;
-    },
+    queryKey: ["user-profile", username],
+    queryFn: () => GetUser(usernameByUrl as string),
   });
 
   const { data: userPosts, isPending: userPostsPending } = useQuery({
     queryKey: ["user-post"],
-    queryFn: async () => {
-      const response = await makeRequest.get(`/post/${username?.slice(1)}`);
-      return response.data;
-    },
+    queryFn: () => GetPostByUser(usernameByUrl as string),
   });
 
   const { mutate } = useMutation({
@@ -198,7 +193,9 @@ const ProfileComp = () => {
       mutationFn: UseUpdateProfile,
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["user"] });
+        queryClient.invalidateQueries({ queryKey: ["user-profile"] });
         queryClient.invalidateQueries({ queryKey: ["post"] });
+        queryClient.invalidateQueries({ queryKey: ["user-post"] });
         queryClient.invalidateQueries({
           queryKey: ["post-byfollowing"],
         });
