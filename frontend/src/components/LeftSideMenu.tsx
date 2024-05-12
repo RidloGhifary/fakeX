@@ -9,26 +9,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AlignRight } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useToast } from "./ui/use-toast";
 import { UseAppContext } from "@/context/AppContext";
 
 const LeftSideMenu = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const { currentUser } = UseAppContext();
   const { pathname } = useLocation();
   const profileUrl = pathname.split("/")[1];
+  const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: UseLogOut,
     mutationKey: ["log-out"],
+    mutationFn: UseLogOut,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
-      console.log("1");
-      navigate("/sign-in");
-      console.log("2");
     },
     onError: () => {
       toast({
@@ -44,7 +40,7 @@ const LeftSideMenu = () => {
   };
 
   return (
-    <div className="hidden flex-[2] cursor-pointer text-right md:block">
+    <div className="absolute right-3 cursor-pointer text-right md:static md:block md:flex-[2]">
       <DropdownMenu>
         <DropdownMenuTrigger>
           <AlignRight className="text-gray-500" />

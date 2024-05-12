@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, RotateCw } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
@@ -40,7 +40,6 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
   const { toast } = useToast();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -56,7 +55,6 @@ const SignIn = () => {
     mutationKey: ["sign-in"],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
-      navigate("/");
     },
     onError: () => {
       toast({
@@ -131,12 +129,12 @@ const SignIn = () => {
                         )}
                       </div>
                     </FormControl>
+                    <FormMessage />
                     <FormDescription className="text-right">
                       <Link to="/forgot-password" className="text-blue-500">
                         Forgot password?
                       </Link>
                     </FormDescription>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
