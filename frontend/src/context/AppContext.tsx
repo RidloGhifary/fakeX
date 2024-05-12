@@ -40,6 +40,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   const { data: currentUser } = useQuery({
     queryKey: ["user"],
     queryFn: UseGetUser,
+    retry: false,
   });
 
   const { data: postContentDatas, isLoading: postContentIsLoading } = useQuery({
@@ -47,6 +48,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     queryFn: () =>
       currentUser ? UseGetSuggestContent() : Promise.resolve(null),
     enabled: Boolean(currentUser),
+    retry: false,
   });
 
   const {
@@ -56,6 +58,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     queryKey: ["post-byfollowing"],
     queryFn: () => (currentUser ? GetPostByFollowing() : Promise.resolve(null)),
     enabled: Boolean(currentUser),
+    retry: false,
   });
 
   const { data: savePostDatas, isLoading: savePostDatasLoading } = useQuery({
@@ -65,6 +68,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         ? UseGetUserPostSaved(currentUser?._id)
         : Promise.resolve(null),
     enabled: Boolean(currentUser),
+    retry: false,
   });
 
   return (
