@@ -57,11 +57,7 @@ const TimeLine = () => {
                 <PostContent data={post} />
               </LazyLoadedComponent>
             ))}
-        </div>
-      </React.Suspense>
 
-      <React.Suspense fallback={<PostContentSkeleton />}>
-        <div className="mb-56 hidden md:block">
           {postContentDatasByFollowingLoading && <PostContentSkeleton />}
           {pathname === "/byfollowing" &&
             postContentDatasByFollowing?.map((post: Post, i: number) => (
