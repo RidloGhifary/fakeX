@@ -13,16 +13,17 @@ const PostSaved = () => {
   return (
     <React.Fragment>
       <div className="mx-auto max-w-[600px] px-3 pb-56 pt-4 md:px-0 md:py-20">
-        <h1 className="text-center text-white">Saved Content</h1>
-        <Separator className="my-6 border-[.2px] border-gray-800" />
+        {savePostDatas.length < 1 && (
+          <p className="text-center">Looks like you don`t have any</p>
+        )}
         {savePostDatas?.map((savePostData: PostSavedProps, i: number) => (
           <LazyLoadedComponent key={i}>
             <SavedPostContent data={savePostData} />
+            {savePostDatas?.length > 1 && (
+              <Separator className="my-6 border-[.2px] border-gray-800" />
+            )}
           </LazyLoadedComponent>
         ))}
-        {!savePostDatas && (
-          <Separator className="my-6 border-[.2px] border-gray-800" />
-        )}
       </div>
     </React.Fragment>
   );

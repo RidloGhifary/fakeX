@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { makeRequest } from "@/utils/axios";
 import { useQuery } from "@tanstack/react-query";
+import { UseGetPostDetail } from "@/api/PostApi";
 
 const Content = React.lazy(() => import("./Content"));
 const CommentSection = React.lazy(() => import("./CommentSection"));
@@ -11,10 +11,7 @@ const Post = () => {
 
   const { data: postDetail, isLoading: postDetailIsLoading } = useQuery({
     queryKey: ["post-detail", postId],
-    queryFn: async () => {
-      const response = await makeRequest.get(`/post/byId/${postId}`);
-      return response.data;
-    },
+    queryFn: () => UseGetPostDetail(postId as string),
   });
 
   if (postDetailIsLoading) return <p className="text-center">Loading...</p>;

@@ -56,18 +56,11 @@ const LeftSideMenu = () => {
               <DropdownMenuSeparator />
             </React.Fragment>
           )}
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => {
-              toast({
-                variant: "destructive",
-                title: "Failed.",
-                description: "This feature is not available yet.",
-              });
-            }}
-          >
-            Liked
-          </DropdownMenuItem>
+          <Link to={`/@${currentUser.username}/post-liked`}>
+            <DropdownMenuItem className="cursor-pointer">
+              Liked
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuSeparator />
           <Link to={`/@${currentUser.username}/post-saved`}>
             <DropdownMenuItem className="cursor-pointer">
