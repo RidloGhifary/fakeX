@@ -63,7 +63,7 @@ const Content: React.FC<{ data: Post; dataIsLoading: boolean }> = ({
               />
 
               {currentUser._id ===
-              data?.user?._id ? null : currentUser?.following.includes(
+              data?.user?._id ? null : currentUser?.following?.includes(
                   data?.user?._id,
                 ) ? (
                 <TooltipProvider>

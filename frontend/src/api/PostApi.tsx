@@ -12,7 +12,7 @@ export const UseGetContentByFollowing = async () => {
 };
 
 export const UseGetPostDetail = async (postId: string): Promise<Post> => {
-  const response = await makeRequest.get(`/post/${postId}`);
+  const response = await makeRequest.get(`/post/byId/${postId}`);
   return response.data;
 };
 
@@ -75,7 +75,7 @@ export const DeleteComment = async (formData: DeleteCommentProps) => {
 
 interface DeleteReplyCommentProps {
   commentId: string;
-  postId: string;
+  postId: string | undefined;
   replyId: string;
 }
 

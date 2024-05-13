@@ -1,6 +1,5 @@
 import React from "react";
 import UserImage from "../assets/user.png";
-import { PostSavedProps } from "@/models/PostSaved";
 import { Separator } from "./ui/separator";
 import { UseAppContext } from "@/context/AppContext";
 import {
@@ -24,16 +23,17 @@ import MenuPost from "./home/MenuPost";
 import Love from "./home/react/Love";
 import Comment from "./home/react/Comment";
 import Share from "./home/react/Share";
+import { LikedPostProps } from "@/models/LikedPost";
 import { UseFollowUser } from "@/api/UserApi";
 
-const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
+const LikedPostContent: React.FC<{ data: LikedPostProps }> = ({ data }) => {
   const queryClient = useQueryClient();
   const { currentUser } = UseAppContext();
   const { toast } = useToast();
 
   const { mutate } = useMutation({
     mutationKey: ["follow-user"],
-    mutationFn: () => UseFollowUser(data?.post?.user?._id.toString()),
+    mutationFn: () => UseFollowUser(data?.user?._id.toString()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
@@ -55,15 +55,15 @@ const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
       <div className="flex flex-none flex-col items-center gap-4">
         <div className="relative">
           <img
-            src={data?.post?.user.profile_picture || UserImage}
-            alt={data?.post?.user.username}
+            src={data?.user.profile_picture || UserImage}
+            alt={data?.user.username}
             className="h-10 w-10 rounded-full object-cover"
             loading="lazy"
           />
 
           {currentUser._id ===
-          data?.post?.user?._id ? null : currentUser?.following.includes(
-              data?.post?.user?._id,
+          data?.user?._id ? null : currentUser?.following.includes(
+              data?.user?._id,
             ) ? (
             <TooltipProvider>
               <Tooltip>
@@ -99,55 +99,50 @@ const SavedPostContent: React.FC<{ data: PostSavedProps }> = ({ data }) => {
             <HoverCard>
               <HoverCardTrigger>
                 <Link
-                  to={`/profile/@${data?.post?.user.username}`}
+                  to={`/profile/@${data?.user.username}`}
                   className="text-lg hover:underline"
                 >
-                  @{data?.post?.user.username}
+                  @{data?.user.username}
                 </Link>
               </HoverCardTrigger>
               <HoverCardContent className="border-white/50 bg-black text-white">
-                <ProfileHover user={data?.post?.user} />
+                <ProfileHover user={data?.user} />
               </HoverCardContent>
             </HoverCard>
 
             <span>
-              {data?.post?.user.hasBadge && (
-                <BadgeCheck fill="blue" stroke="black" />
-              )}
+              {data?.user.hasBadge && <BadgeCheck fill="blue" stroke="black" />}
             </span>
             <span className="ml-3 text-sm text-gray-500">
-              {moment(data?.post?.createdAt).fromNow()}
+              {moment(data?.createdAt).fromNow()}
             </span>
           </p>
           <Link
-            to={`/@${data?.post?.user?.username}/post/${data?.post?._id}`}
+            to={`/@${data?.user?.username}/post/${data?._id}`}
             className="mt-2 line-clamp-4 font-light"
           >
-            {data?.post?.content}
+            {data?.content}
           </Link>
           <div className="mb-1 mt-10 flex items-center gap-3">
             <div className="flex items-center gap-1">
-              <Love
-                post={data?.post}
-                urlLike={`/post/like/${data?.post?._id}`}
-              />
+              <Love post={data} urlLike={`/post/like/${data?._id}`} />
               <span className="text-sm text-gray-500">
-                {data?.post?.likes?.length}
+                {data?.likes?.length}
               </span>
             </div>
             <div className="flex items-center gap-1">
-              <Comment post={data?.post} url={`${data?.post?._id}`} />
+              <Comment post={data} url={`${data?._id}`} />
               <span className="text-sm text-gray-500">
-                {data?.post?.comments?.length}
+                {data?.comments?.length}
               </span>
             </div>
-            <Share post={data?.post} />
+            <Share post={data} />
           </div>
         </div>
-        <MenuPost post={data?.post} />
+        <MenuPost post={data} />
       </div>
     </section>
   );
 };
 
-export default SavedPostContent;
+export default LikedPostContent;

@@ -7,6 +7,8 @@ import { GetPostByFollowing, UseGetSuggestContent } from "@/api/PostApi";
 import { UseGetUserPostSaved } from "@/api/SavedPostApi";
 import { PostSavedProps } from "@/models/PostSaved";
 import { UseGetUser } from "@/api/UserApi";
+import { GetPostByUserLiked } from "@/api/LikedPostApi";
+import { LikedPostProps } from "../models/LikedPost";
 
 interface AppContextType {
   isLoggedIn: boolean;
@@ -17,6 +19,8 @@ interface AppContextType {
   postContentDatasByFollowingLoading: boolean;
   savePostDatas: PostSavedProps[];
   savePostDatasLoading: boolean;
+  likedPostDatas: LikedPostProps[];
+  likedPostDatasLoading: boolean;
 }
 
 interface AppContextProviderProps {
@@ -25,13 +29,15 @@ interface AppContextProviderProps {
 
 const AppContext = createContext<AppContextType>({
   isLoggedIn: false,
-  postContentIsLoading: false,
+  postContentIsLoading: true,
   currentUser: {} as User,
   postContentDatas: [] as Post[],
   postContentDatasByFollowing: [] as Post[],
   postContentDatasByFollowingLoading: true,
   savePostDatas: [] as PostSavedProps[],
   savePostDatasLoading: true,
+  likedPostDatas: [] as LikedPostProps[],
+  likedPostDatasLoading: true,
 });
 
 export const AppContextProvider: React.FC<AppContextProviderProps> = ({
@@ -71,6 +77,16 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     retry: false,
   });
 
+  const { data: likedPostDatas, isLoading: likedPostDatasLoading } = useQuery({
+    queryKey: ["liked-post", currentUser?._id],
+    queryFn: () =>
+      currentUser
+        ? GetPostByUserLiked(currentUser?._id)
+        : Promise.resolve(null),
+    enabled: Boolean(currentUser),
+    retry: false,
+  });
+
   return (
     <AppContext.Provider
       value={{
@@ -82,6 +98,8 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         postContentDatasByFollowingLoading,
         savePostDatas,
         savePostDatasLoading,
+        likedPostDatas,
+        likedPostDatasLoading,
       }}
     >
       {children}
