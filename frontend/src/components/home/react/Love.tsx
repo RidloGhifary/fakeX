@@ -47,6 +47,9 @@ const Love: React.FC<{
         queryKey: ["save-post"],
       });
       queryClient.invalidateQueries({
+        queryKey: ["liked-post"],
+      });
+      queryClient.invalidateQueries({
         queryKey: ["search-post"],
       });
       queryClient.invalidateQueries({

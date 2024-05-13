@@ -17,6 +17,7 @@ const Home = lazy(() => import("./pages/Home"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Search = lazy(() => import("./pages/Search"));
 const PostSaved = lazy(() => import("./pages/PostSaved"));
+const PostLiked = lazy(() => import("./pages/PostLiked"));
 const PostDetail = lazy(() => import("./pages/PostDetail"));
 const PrivateRoute = lazy(() => import("./components/PrivateRoute"));
 // const LoadingPage = lazy(() => import("./components/LoadingPage"));
@@ -70,6 +71,7 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route path="/search" element={<Search />} />
               <Route path="/:username/post-saved" element={<PostSaved />} />
+              <Route path="/:username/post-liked" element={<PostLiked />} />
               <Route path="/byfollowing" element={<Home />} />
               <Route path="/profile/:username" element={<Profile />} />
               <Route path="/:username/post/:postId" element={<PostDetail />} />
