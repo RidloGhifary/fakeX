@@ -13,6 +13,7 @@ const forgotPassRouter = require("./router/forgotPassRouter.js");
 const postRouter = require("./router/postRouter.js");
 const savedPostRouter = require("./router/savedPostRouter.js");
 const likedPostRouter = require("./router/likedPostRouter.js");
+const notificationRouter = require("./router/notificationRouter.js");
 
 const app = express();
 const PORT = process.env.PORT || 5100;
@@ -36,5 +37,6 @@ app.use("/api/credentials", forgotPassRouter);
 app.use("/api/post", postRouter);
 app.use("/api/saved-post", savedPostRouter);
 app.use("/api/liked-post", likedPostRouter);
+app.use("/api/notification", notificationRouter);
 
 server.listen(PORT, () => console.log(`Running in port : ${PORT}`));

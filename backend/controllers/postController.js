@@ -1,6 +1,7 @@
 const Post = require("../models/Post.js");
 const SavedPost = require("../models/SavedPost.js");
 const User = require("../models/User.js");
+const Notification = require("../models/Notification.js");
 const { validationResult } = require("express-validator");
 const { getIo } = require("../utils/socketIo.js");
 
@@ -229,11 +230,28 @@ const LikePost = async (req, res) => {
     if (currentPost.user && currentPost.user.toString() !== req.id) {
       const io = getIo();
 
-      io.to(currentPost.user.toString()).emit("love-notification", {
-        userPostId: currentPost.user.toString(),
-        senderId: req.id,
-        message: "Love your post",
+      const existingNotification = await Notification.findOne({
+        recipient: currentPost.user,
+        sender: req.id,
+        post: postId,
       });
+
+      if (!existingNotification) {
+        const notification = new Notification({
+          recipient: currentPost.user,
+          sender: req.id,
+          message: `love your post`,
+          post: postId,
+          read: false,
+        });
+        await notification.save();
+
+        io.to(currentPost.user.toString()).emit("love-notification", {
+          userPostId: currentPost.user.toString(),
+          senderId: req.id,
+          message: "Love your post",
+        });
+      }
     }
 
     res.status(200).json({ message: "Post liked successfully" });
