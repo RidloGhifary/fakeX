@@ -56,6 +56,9 @@ const Love: React.FC<{
       queryClient.invalidateQueries({
         queryKey: ["user-post"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["user-notification"],
+      });
     },
     onError: () => {
       toast({
@@ -74,23 +77,6 @@ const Love: React.FC<{
       message: "Love your post",
     });
   };
-
-  React.useEffect(() => {
-    if (currentUser) {
-      socket.emit("join", currentUser?._id);
-    }
-
-    socket.on("love-notification", (data) => {
-      toast({
-        title: "Love post!",
-        description: `${data.senderId} loved your post.`,
-      });
-    });
-
-    return () => {
-      socket.off("love-notification");
-    };
-  }, [currentUser, socket]);
 
   return (
     <div className="cursor-pointer rounded-full p-1 hover:scale-105">

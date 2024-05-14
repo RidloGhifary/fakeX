@@ -21,6 +21,7 @@ const PostSaved = lazy(() => import("./pages/PostSaved"));
 const PostLiked = lazy(() => import("./pages/PostLiked"));
 const PostDetail = lazy(() => import("./pages/PostDetail"));
 const PrivateRoute = lazy(() => import("./components/PrivateRoute"));
+const Activity = lazy(() => import("./pages/Activity"));
 
 export default function App() {
   const { isLoggedIn, currentUser } = UseAppContext();
@@ -70,6 +71,7 @@ export default function App() {
               <Route path="/:username/post-saved" element={<PostSaved />} />
               <Route path="/:username/post-liked" element={<PostLiked />} />
               <Route path="/byfollowing" element={<Home />} />
+              <Route path="/activity" element={<Activity />} />
               <Route path="/profile/:username" element={<Profile />} />
               <Route path="/:username/post/:postId" element={<PostDetail />} />
               <Route path="/reset-password" element={<ResetPassword />} />

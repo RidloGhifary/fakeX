@@ -9,6 +9,8 @@ import { PostSavedProps } from "@/models/PostSaved";
 import { UseGetUser } from "@/api/UserApi";
 import { GetPostByUserLiked } from "@/api/LikedPostApi";
 import { LikedPostProps } from "../models/LikedPost";
+import { GetUserNotification } from "@/api/Notification";
+import { NotificationProps } from "@/models/Notification";
 
 interface AppContextType {
   isLoggedIn: boolean;
@@ -21,6 +23,8 @@ interface AppContextType {
   savePostDatasLoading: boolean;
   likedPostDatas: LikedPostProps[];
   likedPostDatasLoading: boolean;
+  userNotificationDatas: NotificationProps[];
+  userNotificationDatasLoading: boolean;
 }
 
 interface AppContextProviderProps {
@@ -38,6 +42,8 @@ const AppContext = createContext<AppContextType>({
   savePostDatasLoading: true,
   likedPostDatas: [] as LikedPostProps[],
   likedPostDatasLoading: true,
+  userNotificationDatas: [] as NotificationProps[],
+  userNotificationDatasLoading: true,
 });
 
 export const AppContextProvider: React.FC<AppContextProviderProps> = ({
@@ -87,6 +93,17 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     retry: false,
   });
 
+  const {
+    data: userNotificationDatas,
+    isLoading: userNotificationDatasLoading,
+  } = useQuery({
+    queryKey: ["user-notification", currentUser?._id],
+    queryFn: () =>
+      currentUser ? GetUserNotification() : Promise.resolve(null),
+    enabled: Boolean(currentUser),
+    retry: false,
+  });
+
   return (
     <AppContext.Provider
       value={{
@@ -100,6 +117,8 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         savePostDatasLoading,
         likedPostDatas,
         likedPostDatasLoading,
+        userNotificationDatas,
+        userNotificationDatasLoading,
       }}
     >
       {children}

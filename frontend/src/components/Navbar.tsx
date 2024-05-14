@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react";
 import Logo from "../assets/fakeX.png";
-import { Home, Search, SquarePlus, SquareUserRound } from "lucide-react";
+import { Bell, Home, Search, SquarePlus, SquareUserRound } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -170,6 +170,20 @@ const Navbar = () => {
                 </DialogHeader>
               </DialogContent>
             </Dialog>
+          </div>
+          <div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Link to={`/activity`}>
+                    <Bell />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Activity</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <div>
             <TooltipProvider>
