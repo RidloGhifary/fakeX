@@ -1,3 +1,4 @@
+import React from "react";
 import { UseLikePost } from "@/api/PostApi";
 import { useToast } from "@/components/ui/use-toast";
 import { UseAppContext } from "@/context/AppContext";
@@ -6,7 +7,7 @@ import { Post } from "@/models/Post";
 import { UserSum } from "@/models/User";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
-import React from "react";
+import { socket } from "@/utils/socket";
 
 interface CommentProps {
   user: UserSum;
@@ -67,7 +68,29 @@ const Love: React.FC<{
 
   const handleLike = () => {
     mutate(urlLike);
+    socket.emit("love", {
+      userPostId: post?.user?._id,
+      senderId: currentUser._id,
+      message: "Love your post",
+    });
   };
+
+  React.useEffect(() => {
+    if (currentUser) {
+      socket.emit("join", currentUser?._id);
+    }
+
+    socket.on("love-notification", (data) => {
+      toast({
+        title: "Love post!",
+        description: `${data.senderId} loved your post.`,
+      });
+    });
+
+    return () => {
+      socket.off("love-notification");
+    };
+  }, [currentUser, socket]);
 
   return (
     <div className="cursor-pointer rounded-full p-1 hover:scale-105">

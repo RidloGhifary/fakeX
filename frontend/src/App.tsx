@@ -6,6 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { UseAppContext } from "./context/AppContext";
+import { socket } from "./utils/socket";
 
 const SignIn = lazy(() => import("./pages/SignIn"));
 const SignUp = lazy(() => import("./pages/SignUp"));
@@ -20,21 +21,17 @@ const PostSaved = lazy(() => import("./pages/PostSaved"));
 const PostLiked = lazy(() => import("./pages/PostLiked"));
 const PostDetail = lazy(() => import("./pages/PostDetail"));
 const PrivateRoute = lazy(() => import("./components/PrivateRoute"));
-// const LoadingPage = lazy(() => import("./components/LoadingPage"));
 
 export default function App() {
   const { isLoggedIn, currentUser } = UseAppContext();
-  // const [isLoading, setIsLoading] = React.useState(true);
 
-  // React.useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     setIsLoading(true);
-  //   } else {
-  //     setIsLoading(false);
-  //   }
-  // }, [isLoggedIn]);
+  React.useEffect(() => {
+    socket.connect();
 
-  // if (isLoading) return <LoadingPage />;
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <main className=" min-h-dvh bg-black text-white">

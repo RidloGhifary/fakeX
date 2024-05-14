@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const { Server } = require("socket.io");
+const { createServer } = require("http");
+const { initServer } = require("./utils/socketIo.js");
 
 require("dotenv").config();
 require("./db.js");
@@ -26,6 +27,9 @@ app.use(
   })
 );
 
+const server = createServer(app);
+const io = initServer(server);
+
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/credentials", forgotPassRouter);
@@ -33,4 +37,4 @@ app.use("/api/post", postRouter);
 app.use("/api/saved-post", savedPostRouter);
 app.use("/api/liked-post", likedPostRouter);
 
-app.listen(PORT, () => console.log(`Running in port : ${PORT}`));
+server.listen(PORT, () => console.log(`Running in port : ${PORT}`));

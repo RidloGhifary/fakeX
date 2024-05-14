@@ -2,6 +2,7 @@ const Post = require("../models/Post.js");
 const SavedPost = require("../models/SavedPost.js");
 const User = require("../models/User.js");
 const { validationResult } = require("express-validator");
+const { getIo } = require("../utils/socketIo.js");
 
 const GetAllPost = async (_, res) => {
   try {
@@ -225,8 +226,19 @@ const LikePost = async (req, res) => {
     currentPost.likes.push(req.id);
     await currentPost.save();
 
+    if (currentPost.user && currentPost.user.toString() !== req.id) {
+      const io = getIo();
+
+      io.to(currentPost.user.toString()).emit("love-notification", {
+        userPostId: currentPost.user.toString(),
+        senderId: req.id,
+        message: "Love your post",
+      });
+    }
+
     res.status(200).json({ message: "Post liked successfully" });
   } catch (err) {
+    console.log("🚀 ~ LikePost ~ err:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
