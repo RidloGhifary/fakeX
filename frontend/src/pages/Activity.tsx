@@ -54,9 +54,14 @@ const Activity = () => {
       setTimeout(() => {
         updateReadStatusNotificationMutate();
         queryClient.invalidateQueries({ queryKey: ["user-notification"] });
-      }, 1000);
+      }, 10000);
     }
-  }, [activityUrl, currentUser]);
+  }, [
+    activityUrl,
+    currentUser,
+    queryClient,
+    updateReadStatusNotificationMutate,
+  ]);
 
   return (
     <React.Fragment>

@@ -26,11 +26,14 @@ import { UseCreatePost } from "@/api/PostApi";
 import { UseAppContext } from "@/context/AppContext";
 import ProfilePicture from "./ProfilePicture";
 import BackButton from "./BackButton";
+import { socket } from "@/utils/socket";
 
 const Navbar = () => {
   const [textPostContent, setTextPostContent] = React.useState<string>("");
+  const [unreadNotifications, setUnreadNotifications] =
+    React.useState<number>(0);
 
-  const { currentUser } = UseAppContext();
+  const { currentUser, userNotificationDatas } = UseAppContext();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -62,6 +65,32 @@ const Navbar = () => {
     mutate({ content: textPostContent as string });
     setTextPostContent("");
   };
+
+  React.useEffect(() => {
+    if (currentUser) {
+      socket.emit("join", currentUser?._id);
+
+      const handleNotification = () => {
+        queryClient.invalidateQueries({
+          queryKey: ["user-notification", currentUser._id],
+        });
+        setUnreadNotifications((prev) => prev + 1);
+      };
+
+      socket.on("love-notification", handleNotification);
+
+      return () => {
+        socket.off("love-notification", handleNotification);
+      };
+    }
+  }, [currentUser, queryClient]);
+
+  React.useEffect(() => {
+    const notificationAmount = (userNotificationDatas || []).filter(
+      (x) => !x.read,
+    ).length;
+    setUnreadNotifications(notificationAmount);
+  }, [userNotificationDatas]);
 
   return (
     <header className="fixed bottom-0 z-10 w-full max-w-[1100px] bg-black p-3 md:bottom-auto md:top-0">
@@ -174,9 +203,12 @@ const Navbar = () => {
           <div>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger className="relative">
                   <Link to={`/activity`}>
                     <Bell />
+                    {unreadNotifications > 0 && (
+                      <span className="absolute right-0 top-0 flex h-3 w-3 animate-pulse items-center justify-center rounded-full bg-blue-500"></span>
+                    )}
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>
