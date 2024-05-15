@@ -9,5 +9,10 @@ router.get(
   verifyToken,
   notificationController.GetUserNotification
 );
+router.patch(
+  "/read-all",
+  verifyToken,
+  notificationController.UpdateNotificationReadStatus
+);
 
 module.exports = router;

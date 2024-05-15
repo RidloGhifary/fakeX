@@ -17,4 +17,16 @@ const GetUserNotification = async (req, res) => {
   }
 };
 
-module.exports = { GetUserNotification };
+const UpdateNotificationReadStatus = async (req, res) => {
+  try {
+    await Notification.updateMany(
+      { recipient: req.id, read: false },
+      { read: true }
+    );
+    res.status(200).json({ message: "Notification marked as read" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { GetUserNotification, UpdateNotificationReadStatus };

@@ -47,11 +47,16 @@ const NotificationCard = ({ notificationData }: Props) => {
         to={`/@${notificationData?.sender?.username}/post/${notificationData?.post}`}
         className="flex items-center"
       >
-        <img
-          src={notificationData?.sender?.profile_picture}
-          alt={`${notificationData?.sender?.username}'s avatar`}
-          className="mr-4 h-10 w-10 rounded-full object-cover"
-        />
+        <div className="relative">
+          {!notificationData.read && (
+            <div className="absolute left-[-10px] top-1/2 h-1 w-1 -translate-y-1/2 transform rounded-full bg-blue-400"></div>
+          )}
+          <img
+            src={notificationData?.sender?.profile_picture}
+            alt={`${notificationData?.sender?.username}'s avatar`}
+            className="mr-4 h-10 w-10 rounded-full object-cover"
+          />
+        </div>
         <div className="text-base">
           <p>
             <HoverCard>

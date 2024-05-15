@@ -1,8 +1,10 @@
+import { UpdateReadStatus } from "@/api/Notification";
 import { Separator } from "@/components/ui/separator";
 import { UseAppContext } from "@/context/AppContext";
 import { socket } from "@/utils/socket";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 const NotificationCard = React.lazy(
   () => import("@/components/NotificationCard"),
@@ -12,6 +14,8 @@ const Activity = () => {
   const { userNotificationDatas, userNotificationDatasLoading, currentUser } =
     UseAppContext();
   const queryClient = useQueryClient();
+  const { pathname } = useLocation();
+  const activityUrl = pathname.split("/")[1];
 
   React.useEffect(() => {
     if (currentUser) {
@@ -36,6 +40,23 @@ const Activity = () => {
       const dateB = new Date(b.createdAt);
       return dateB.getTime() - dateA.getTime();
     });
+
+  const { mutate: updateReadStatusNotificationMutate } = useMutation({
+    mutationKey: ["update-read-status"],
+    mutationFn: UpdateReadStatus,
+    onError: () => {
+      alert("Something went wrong");
+    },
+  });
+
+  React.useEffect(() => {
+    if (currentUser && activityUrl === "activity") {
+      setTimeout(() => {
+        updateReadStatusNotificationMutate();
+        queryClient.invalidateQueries({ queryKey: ["user-notification"] });
+      }, 1000);
+    }
+  }, [activityUrl, currentUser]);
 
   return (
     <React.Fragment>
