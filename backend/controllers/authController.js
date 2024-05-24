@@ -1,22 +1,14 @@
 const User = require("../models/User.js");
 const UserOtpVerification = require("../models/UserOtpVerification.js");
-// const transporter = require("../utils/nodemailer.js");
-const nodemailer = require("nodemailer");
+const transporter = require("../utils/nodemailer.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 
-let transporter = nodemailer.createTransport({
-  host: "live.smtp.mailtrap.io",
-  port: 587,
-  auth: {
-    user: process.env.AUTH_USER_NODEMAILER,
-    pass: process.env.AUTH_PASS_NODEMAILER,
-  },
-});
-
 transporter.verify((error, success) => {
-  error ? console.log(error) : console.log(success);
+  error
+    ? console.log("Nodemailer error", error)
+    : console.log("Nodemailer success");
 });
 
 const SignUp = async (req, res) => {
@@ -48,8 +40,6 @@ const SignUp = async (req, res) => {
       profile_picture: "",
     });
 
-    const result = await newUser.save();
-
     // TODO - Send verification OTP code
     const otpResult = await sendOtpVerificationCode(result);
 
@@ -57,6 +47,8 @@ const SignUp = async (req, res) => {
       // TODO - Handle failure to send OTP verification code
       return res.status(500).json({ message: "Failed to send OTP code" });
     }
+
+    const result = await newUser.save();
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
     res.cookie("auth_token", token, {
