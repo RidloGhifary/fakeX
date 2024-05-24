@@ -59,6 +59,7 @@ const SignUp = () => {
     mutationKey: ["sign-up"],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      navigate(`/verify-otp/${currentUser._id}`);
     },
     onError: () => {
       toast({
@@ -71,9 +72,9 @@ const SignUp = () => {
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     mutate(data);
-    if (currentUser) {
-      navigate(`/verify-otp/${currentUser._id}`);
-    }
+    // if (currentUser) {
+    //   navigate(`/verify-otp/${currentUser._id}`);
+    // }
   };
 
   return (
